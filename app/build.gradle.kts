@@ -115,6 +115,15 @@ dependencies {
     // AppCompatActivity, for per-app language switching later.
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+    // QR codes: CameraX for the scanner's preview and frames, zxing core (pure
+    // Java, Apache-2.0) to read and draw them. No Play services or ML Kit, so
+    // the F-Droid build carries nothing from Google. Frames are decoded in
+    // memory and never written. Same versions as PassPony.
+    implementation("androidx.camera:camera-core:1.4.1")
+    implementation("androidx.camera:camera-camera2:1.4.1")
+    implementation("androidx.camera:camera-lifecycle:1.4.1")
+    implementation("androidx.camera:camera-view:1.4.1")
+    implementation("com.google.zxing:core:3.5.3")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     testImplementation("junit:junit:4.13.2")

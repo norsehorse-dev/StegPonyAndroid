@@ -1,6 +1,6 @@
 package com.stegpony.android.ui
 
-import android.net.Uri
+import com.stegpony.android.Incoming
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -44,7 +44,7 @@ enum class Tab(@StringRes val label: Int, val icon: ImageVector) {
 }
 
 @Composable
-fun StegPonyRoot(incoming: Uri?, onIncomingHandled: () -> Unit) {
+fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Hide) }
     val hideVm: HideViewModel = viewModel()
     val revealVm: RevealViewModel = viewModel()
@@ -52,11 +52,24 @@ fun StegPonyRoot(incoming: Uri?, onIncomingHandled: () -> Unit) {
     val context = LocalContext.current
     LaunchedEffect(Unit) { Keyring.load(context.applicationContext) }
 
-    // Waits out a running reveal rather than dropping an image shared in meanwhile.
+    // An image waits out a running reveal rather than being dropped.
     LaunchedEffect(incoming, revealVm.blocked) {
-        if (incoming != null && !revealVm.blocked) {
-            tab = Tab.Reveal
-            if (revealVm.open(incoming)) onIncomingHandled()
+        when (incoming) {
+            is Incoming.Image -> if (!revealVm.blocked) {
+                tab = Tab.Reveal
+                if (revealVm.open(incoming.uri)) onIncomingHandled()
+            }
+            is Incoming.KeyText -> {
+                tab = Tab.Keys
+                keysVm.receiveShared(incoming.text.toByteArray(Charsets.UTF_8))
+                onIncomingHandled()
+            }
+            is Incoming.KeyFile -> {
+                tab = Tab.Keys
+                keysVm.receiveFile(incoming.uri)
+                onIncomingHandled()
+            }
+            null -> Unit
         }
     }
 

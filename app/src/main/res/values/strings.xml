@@ -107,7 +107,6 @@
     <string name="source_age">Imported age key</string>
     <string name="source_pgp">OpenPGP key</string>
     <string name="share_public_key">Share public key</string>
-    <string name="copy_public_key">Copy public key</string>
     <string name="contacts_title">Contacts</string>
     <string name="contacts_empty">Add the public keys of people you hide things for.</string>
     <string name="add_contact">Add contact</string>
@@ -130,6 +129,18 @@
     <string name="keys_reset_body">The saved keys can\'t be opened, so they are lost either way. Starting over deletes them and anything hidden for them can no longer be opened on this phone. There is no undo.</string>
     <string name="error_age_passphrase_identity">This age identity file is protected with a passphrase. Export it without one, import it, then delete the copy.</string>
     <string name="keys_unavailable_body">Your keys couldn\'t be opened (%1$s). Nothing has been changed.</string>
+
+    <!-- QR codes and shared keys -->
+    <string name="show_qr">Show QR code</string>
+    <string name="qr_about">Scan this with StegPony or AgePony to add it as a contact.</string>
+    <string name="scan_qr">Scan QR</string>
+    <string name="scan_title">Scan a public key</string>
+    <string name="scan_help">Point the camera at a QR code with an age1… key, or an OpenPGP key from PGPony.</string>
+    <string name="scan_part">Part %1$d of %2$d. Scan the next code.</string>
+    <string name="scan_not_a_key">That QR code isn\'t a public key StegPony can use.</string>
+    <string name="scan_secret_key">That\'s a secret key. Scan the public key instead, and keep the secret one private.</string>
+    <string name="camera_refused">The camera wasn\'t allowed, so the QR code can\'t be scanned. Paste the key or load it from a file instead.</string>
+    <string name="shared_not_a_key">What was shared isn\'t a public key StegPony can use. It needs an age1… key or a Curve25519 OpenPGP key.</string>
 
     <!-- Hardware keys -->
     <string name="add_card">Add a hardware key</string>

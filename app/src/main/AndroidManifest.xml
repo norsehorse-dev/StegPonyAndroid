@@ -18,6 +18,10 @@
       key in should not launch StegPony.
     -->
     <uses-permission android:name="android.permission.NFC" />
+
+    <!-- The camera is asked for only when the QR scanner opens. -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.any" android:required="false" />
     <uses-feature android:name="android.hardware.nfc" android:required="false" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
 
@@ -46,6 +50,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/png" />
                 <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <!--
+              Share a key into StegPony: an age1 key as text (AgePony,
+              anywhere), or an OpenPGP key file (PGPony shares
+              application/pgp-keys). It lands on Keys.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pgp-keys" />
             </intent-filter>
             <!-- Open with StegPony. -->
             <intent-filter>

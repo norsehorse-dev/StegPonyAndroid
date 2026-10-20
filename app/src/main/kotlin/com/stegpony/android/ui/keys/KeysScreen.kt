@@ -18,9 +18,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.QrCode2
+import androidx.compose.material.icons.outlined.QrCodeScanner
+import androidx.compose.ui.graphics.FilterQuality
+import androidx.compose.ui.graphics.asImageBitmap
+import com.stegpony.android.qr.QrBitmap
+import com.stegpony.android.ui.scan.QrScannerDialog
 import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Share
@@ -111,7 +119,7 @@ fun KeysScreen(vm: KeysViewModel) {
                         MyKeyRow(
                             k,
                             onShare = { shareRecipient(context, k.recipient) },
-                            onCopy = { copyRecipient(context, k.recipient) },
+                            onQr = { vm.qrFor = k },
                             onDelete = { vm.pendingDelete = PendingDelete.Mine(k) },
                         )
                     }
@@ -219,6 +227,22 @@ fun KeysScreen(vm: KeysViewModel) {
         )
     }
 
+    if (vm.scanning) {
+        QrScannerDialog(
+            help = stringResource(R.string.scan_help),
+            onDecoded = vm::onScanned,
+            onClose = vm::stopScan,
+            onCameraRefused = {
+                vm.stopScan()
+                vm.contactDraft = vm.contactDraft?.copy(error = context.getString(R.string.camera_refused))
+            },
+        )
+    }
+
+    vm.qrFor?.let { key ->
+        QrDialog(key, onDismiss = { vm.qrFor = null })
+    }
+
     vm.contactDraft?.let { draft ->
         ContactDialog(vm, draft)
     }
@@ -261,7 +285,7 @@ fun KeysScreen(vm: KeysViewModel) {
 }
 
 @Composable
-private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onCopy: () -> Unit, onDelete: () -> Unit) {
+private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onQr: () -> Unit, onDelete: () -> Unit) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
             Text(k.label, style = MaterialTheme.typography.titleSmall)
@@ -280,8 +304,8 @@ private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onCopy: () -> Unit, onDelete
                 Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
             }
         }
+        IconButton(onClick = onQr) { Icon(Icons.Outlined.QrCode2, stringResource(R.string.show_qr)) }
         IconButton(onClick = onShare) { Icon(Icons.Outlined.Share, stringResource(R.string.share_public_key)) }
-        IconButton(onClick = onCopy) { Icon(Icons.Outlined.ContentCopy, stringResource(R.string.copy_public_key)) }
         IconButton(onClick = onDelete) { Icon(Icons.Outlined.Delete, stringResource(R.string.delete)) }
     }
 }
@@ -334,9 +358,15 @@ private fun ContactDialog(vm: KeysViewModel, draft: ContactDraft) {
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                TextButton(onClick = { loadFile.launch(arrayOf("*/*")) }) {
-                    Icon(Icons.Outlined.FileOpen, contentDescription = null)
-                    Text(stringResource(R.string.contact_key_file), Modifier.padding(start = 8.dp))
+                Row {
+                    TextButton(onClick = vm::startScan) {
+                        Icon(Icons.Outlined.QrCodeScanner, contentDescription = null)
+                        Text(stringResource(R.string.scan_qr), Modifier.padding(start = 8.dp))
+                    }
+                    TextButton(onClick = { loadFile.launch(arrayOf("*/*")) }) {
+                        Icon(Icons.Outlined.FileOpen, contentDescription = null)
+                        Text(stringResource(R.string.contact_key_file), Modifier.padding(start = 8.dp))
+                    }
                 }
                 draft.error?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall) }
             }
@@ -363,4 +393,39 @@ private fun shareRecipient(context: Context, recipient: String) {
 private fun copyRecipient(context: Context, recipient: String) {
     context.getSystemService(ClipboardManager::class.java)
         ?.setPrimaryClip(ClipData.newPlainText("age recipient", recipient))
+}
+
+/** Your public key as a QR code, with the text to copy or share. */
+@Composable
+private fun QrDialog(key: MyKey, onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val image = remember(key.recipient) { QrBitmap.encode(key.recipient).asImageBitmap() }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(key.label) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    bitmap = image,
+                    contentDescription = stringResource(R.string.show_qr),
+                    filterQuality = FilterQuality.None,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                )
+                SelectionContainer {
+                    Text(key.recipient, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                }
+                Text(
+                    stringResource(R.string.qr_about),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
+        dismissButton = {
+            TextButton(onClick = { copyRecipient(context, key.recipient) }) { Text(stringResource(R.string.copy)) }
+        },
+    )
 }

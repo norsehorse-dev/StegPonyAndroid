@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.stegpony.android.R
 import com.stegpony.android.card.CardKey
 import com.stegpony.android.io.Files
+import com.stegpony.android.qr.QrChunking
+import com.stegpony.android.ui.scan.ScanVerdict
 import com.stegpony.android.keys.Contact
 import com.stegpony.android.keys.DuplicateKeyException
 import com.stegpony.android.keys.KeySource
@@ -96,11 +98,14 @@ class KeysViewModel(app: Application) : AndroidViewModel(app) {
 
     /** An age identity file, or an OpenPGP secret key (asks for its passphrase if it has one). */
     fun importMine(uri: Uri) = launchTask {
-        val bytes = withContext(Dispatchers.IO) { Files.readBytes(context, uri, MAX_KEY_FILE) }
+        importMineBytes(withContext(Dispatchers.IO) { Files.readBytes(context, uri, MAX_KEY_FILE) })
+    }
+
+    private suspend fun importMineBytes(bytes: ByteArray) {
         val text = bytes.toString(Charsets.UTF_8)
         if (text.startsWith("age-encryption.org/") || text.contains("-----BEGIN AGE ENCRYPTED FILE-----")) {
             errorText = context.getString(R.string.error_age_passphrase_identity)
-            return@launchTask
+            return
         }
         if (text.contains("AGE-SECRET-KEY-1", ignoreCase = true)) {
             val pairs = withContext(Dispatchers.Default) { parseIdentityFile(text) }
@@ -109,7 +114,7 @@ class KeysViewModel(app: Application) : AndroidViewModel(app) {
                 Keyring.addMine(context, label, p.identity, p.recipient, KeySource.AgeImport)
             }
             notice = context.getString(R.string.key_imported)
-            return@launchTask
+            return
         }
         try {
             savePgpSecret(bytes, "")
@@ -212,6 +217,90 @@ class KeysViewModel(app: Application) : AndroidViewModel(app) {
 
     var confirmReset by mutableStateOf(false)
 
+    /** The key whose public half is shown as a QR code, or null. */
+    var qrFor by mutableStateOf<MyKey?>(null)
+
+    /** True while the QR scanner is open over the add-contact dialog. */
+    var scanning by mutableStateOf(false)
+    private val frames = QrChunking.Collector()
+
+    fun startScan() {
+        frames.reset()
+        scanning = true
+    }
+
+    fun stopScan() {
+        scanning = false
+        frames.reset()
+    }
+
+    /**
+     * Judges one scanned code for the add-contact dialog: an age1… recipient
+     * (StegPony, AgePony), an armored OpenPGP public key (PGPony), or one part
+     * of PGPony's multi-code export. Secret keys are refused.
+     */
+    fun onScanned(raw: String): ScanVerdict {
+        val text = if (QrChunking.isFrame(raw)) {
+            when (val outcome = frames.offer(raw)) {
+                is QrChunking.Outcome.Complete -> outcome.text
+                is QrChunking.Outcome.Progress ->
+                    return ScanVerdict.Note(context.getString(R.string.scan_part, outcome.have, outcome.total), false)
+                is QrChunking.Outcome.Duplicate ->
+                    return ScanVerdict.Note(context.getString(R.string.scan_part, outcome.have, outcome.total), false)
+                is QrChunking.Outcome.Restarted ->
+                    return ScanVerdict.Note(context.getString(R.string.scan_part, outcome.have, outcome.total), false)
+                else -> return ScanVerdict.Note(context.getString(R.string.scan_not_a_key), true)
+            }
+        } else {
+            raw
+        }
+        if (isSecret(text)) return ScanVerdict.Note(context.getString(R.string.scan_secret_key), true)
+        return try {
+            val loaded = resolve(text.toByteArray(Charsets.UTF_8))
+            val draft = contactDraft ?: ContactDraft()
+            contactDraft = draft.copy(
+                loaded = loaded,
+                keyText = "",
+                name = draft.name.ifBlank { loaded.suggestedName.orEmpty() },
+                error = null,
+            )
+            stopScan()
+            ScanVerdict.Accept
+        } catch (e: Exception) {
+            ScanVerdict.Note(context.getString(R.string.scan_not_a_key), true)
+        }
+    }
+
+    /**
+     * A key shared in from another app (PGPony, AgePony, a file manager). A
+     * public key opens the add-contact dialog; a secret key goes through the
+     * same import as Keys → Import.
+     */
+    fun receiveFile(uri: Uri) {
+        viewModelScope.launch {
+            try {
+                receiveShared(withContext(Dispatchers.IO) { Files.readBytes(context, uri, MAX_KEY_FILE) })
+            } catch (e: Throwable) {
+                errorText = errorMessage(context, e)
+            }
+        }
+    }
+
+    fun receiveShared(bytes: ByteArray) {
+        if (isSecret(bytes.toString(Charsets.UTF_8))) {
+            launchTask { importMineBytes(bytes) }
+            return
+        }
+        viewModelScope.launch {
+            try {
+                val loaded = withContext(Dispatchers.Default) { resolve(bytes) }
+                contactDraft = ContactDraft(name = loaded.suggestedName.orEmpty(), loaded = loaded)
+            } catch (e: Throwable) {
+                errorText = context.getString(R.string.shared_not_a_key)
+            }
+        }
+    }
+
     /** True while the add-hardware-key dialog is open. */
     var addingCard by mutableStateOf(false)
 
@@ -232,6 +321,13 @@ class KeysViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     companion object {
+        /** Secret key material, which never becomes a contact. */
+        fun isSecret(text: String): Boolean =
+            text.contains("AGE-SECRET-KEY-1", ignoreCase = true) ||
+                text.contains("-----BEGIN PGP PRIVATE KEY BLOCK-----") ||
+                text.startsWith("age-encryption.org/") ||
+                text.contains("-----BEGIN AGE ENCRYPTED FILE-----")
+
         const val MAX_KEY_FILE = 1L * 1024 * 1024
 
         /** "Ana Example <ana@example.org>" shows as "Ana Example". */
