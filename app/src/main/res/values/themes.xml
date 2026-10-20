@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose does the real theming (ui/theme/Theme.kt); this covers the
+         moment before the first frame. -->
+    <style name="Theme.StegPony" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>

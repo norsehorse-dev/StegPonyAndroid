@@ -1,0 +1,26 @@
+# Local config, never committed
+local.properties
+keystore.properties
+*.keystore
+*.jks
+
+# Build outputs
+build/
+.gradle/
+.kotlin/
+*.apk
+*.aab
+
+# Rust library and UniFFI bindings, produced by scripts/build-core.sh
+core/src/main/jniLibs/
+core/src/main/kotlin/uniffi/
+
+# IDE and OS
+.idea/
+*.iml
+.DS_Store
+
+# Working files
+drafts/
+_archive/
+_to_delete/

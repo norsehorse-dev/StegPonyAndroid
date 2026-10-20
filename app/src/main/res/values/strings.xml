@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StegPony</string>
+
+    <string name="tab_hide">Hide</string>
+    <string name="tab_reveal">Reveal</string>
+    <string name="tab_keys">Keys</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Shared -->
+    <string name="pick_photo">Photos</string>
+    <string name="pick_file">Files</string>
+    <string name="passphrase_label">Passphrase</string>
+    <string name="show_passphrase">Show passphrase</string>
+    <string name="hide_passphrase">Hide passphrase</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="copy">Copy</string>
+    <string name="close">Close</string>
+    <string name="rating_low">low detectability</string>
+    <string name="rating_medium">medium detectability</string>
+    <string name="rating_high">high detectability</string>
+    <string name="reading_cover">Reading the image…</string>
+
+    <!-- Hide -->
+    <string name="hide_cover_title">Cover image</string>
+    <string name="hide_cover_hint">Use a photo you took yourself and haven\'t posted anywhere. Someone holding the original can compare the two.</string>
+    <string name="mode_jpeg">JPEG</string>
+    <string name="mode_lossless">Lossless (PNG)</string>
+    <string name="mode_jpeg_about">Stays a JPEG with the camera\'s own compression, so it looks like any other photo from your phone.</string>
+    <string name="mode_lossless_about">Saved as a PNG.</string>
+    <string name="mode_lossless_from_jpeg_about">Saved as a PNG. A camera photo saved as PNG is unusual in itself, so JPEG is usually the better choice.</string>
+    <string name="hide_message_title">What to hide</string>
+    <string name="payload_text">Text</string>
+    <string name="payload_file">File</string>
+    <string name="message_label">Message</string>
+    <string name="pick_payload_file">Choose a file</string>
+    <string name="capacity_summary">Room for up to %1$d bytes of text. Detectability stays low up to about %2$d.</string>
+    <string name="capacity_summary_no_low">Room for up to %1$d bytes of text. Anything hidden in an image this size is easier to detect.</string>
+    <string name="meter_fits">%1$d of %2$d bytes, %3$s</string>
+    <string name="meter_too_big">%1$d bytes, but this image holds %2$d</string>
+    <string name="hide_key_title">Lock it with</string>
+    <string name="key_passphrase">Passphrase</string>
+    <string name="key_recipient">Someone\'s public key</string>
+    <string name="passphrase_again_label">Passphrase again</string>
+    <string name="recipient_label">Public key</string>
+    <string name="recipient_hint">Paste their age1… key. Only their secret key will open it.</string>
+    <string name="hide_decoy_title">Decoy</string>
+    <string name="decoy_about">A second message under a second passphrase. If someone makes you open the image, give them this one. Nobody can tell whether an image has a decoy.</string>
+    <string name="decoy_message_label">Decoy message</string>
+    <string name="decoy_passphrase_label">Decoy passphrase</string>
+    <string name="keep_metadata">Keep metadata</string>
+    <string name="keep_metadata_about">Off removes location, time and device details. Turn on only if the photo needs them to look normal.</string>
+    <string name="hide_button">Hide</string>
+    <string name="hiding">Hiding. This can take several seconds on a large photo.</string>
+    <string name="need_cover">Choose a cover image.</string>
+    <string name="need_payload">Write a message or choose a file.</string>
+    <string name="need_passphrase">Enter a passphrase.</string>
+    <string name="passphrases_differ">The two passphrases don\'t match.</string>
+    <string name="need_recipient">Paste a public key.</string>
+    <string name="need_decoy_text">Write the decoy message.</string>
+    <string name="need_decoy_passphrase">Enter a decoy passphrase.</string>
+    <string name="decoy_same_passphrase">The decoy needs a different passphrase.</string>
+    <string name="hide_done_title">Done</string>
+    <string name="hide_done_rating">Hidden, %1$s.</string>
+    <string name="send_as_file">Send it as a file or document. A messenger\'s photo mode recompresses the picture and destroys what\'s hidden. Don\'t share the original photo anywhere.</string>
+
+    <!-- Reveal -->
+    <string name="reveal_image_title">Image</string>
+    <string name="reveal_image_hint">Choose the image, or share it to StegPony from another app.</string>
+    <string name="reveal_key_title">Open it with</string>
+    <string name="reveal_keys_soon">Opening with your own key comes with the Keys screen.</string>
+    <string name="reveal_button">Reveal</string>
+    <string name="revealing">Looking…</string>
+    <string name="nothing_found_title">Nothing found</string>
+    <string name="nothing_found_body">Either nothing is hidden in this image, or it was hidden with a different passphrase. StegPony can\'t tell which, and neither can anyone else.</string>
+    <string name="found_text_title">Hidden message</string>
+    <string name="found_file_title">Hidden file</string>
+    <string name="copy_clears">The clipboard clears after %1$d seconds.</string>
+
+    <!-- Keys -->
+    <string name="keys_coming">Your identity, contacts\' keys and OpenPGP keys come in the next build. Until then, hide for someone by pasting their age1… key on the Hide screen.</string>
+
+    <!-- Settings -->
+    <string name="about_title">About</string>
+    <string name="about_app_version">StegPony %1$s</string>
+    <string name="about_core_version">Core %1$s</string>
+    <string name="about_format_version">Image format version %1$d</string>
+    <string name="limits_title">What StegPony can\'t promise</string>
+    <string name="limits_body">Hiding lowers the odds of being noticed. It doesn\'t make it impossible. A large message in a small photo, a cover that exists somewhere else, or someone who already knows you use StegPony all weaken it. Anything that re-encodes the image, such as resizing, filters or a messenger\'s photo mode, destroys what\'s hidden.</string>
+
+    <!-- Errors -->
+    <string name="error_bad_image">This image couldn\'t be read.</string>
+    <string name="error_unsupported_image">This kind of image can\'t be used. StegPony works with JPEG and PNG.</string>
+    <string name="error_cover_too_small">This image is too small to hide anything in.</string>
+    <string name="error_does_not_fit">It doesn\'t fit in this image. Shorten it, or use a larger photo.</string>
+    <string name="error_bad_key">That key can\'t be used. Check that it was pasted in full.</string>
+    <string name="error_wrong_key_passphrase">Wrong passphrase for this key.</string>
+    <string name="error_secret_not_in_file">This key file doesn\'t hold the secret key. It may live on a hardware key.</string>
+    <string name="error_device_cancelled">Cancelled.</string>
+    <string name="error_key_device">The hardware key reported a problem: %1$s</string>
+    <string name="error_failed">Something went wrong: %1$s</string>
+    <string name="error_file_too_large">That file is over %1$d MB.</string>
+    <string name="error_io">The file couldn\'t be read or written.</string>
+    <string name="error_memory">Not enough memory for this image.</string>
+</resources>

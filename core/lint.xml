@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!--
+      The generated UniFFI bindings (src/main/kotlin/uniffi/) probe for
+      java.lang.ref.Cleaner by reflection and fall back to a JNA cleaner below
+      API 33. Lint's NewApi check cannot see that guard. Ignored for the
+      generated path only.
+    -->
+    <issue id="NewApi">
+        <ignore path="**/uniffi/**" />
+    </issue>
+</lint>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A photo frame with a few pixels out of place. Placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:fillType="evenOdd"
+        android:pathData="M32,36h44v36h-44z M36,40v28h36v-28z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M39,65 L49,52 L56,60 L61,55 L69,65 Z" />
+    <path
+        android:fillColor="#FFC0C1FF"
+        android:pathData="M58,43h4v4h-4z M64,47h4v4h-4z M54,49h3v3h-3z" />
+</vector>

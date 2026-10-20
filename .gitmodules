@@ -1,0 +1,3 @@
+[submodule "third_party/stegponycore"]
+	path = third_party/stegponycore
+	url = https://github.com/norsehorse-dev/StegPonyCore.git
