@@ -28,7 +28,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material.icons.outlined.Key
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import com.stegpony.android.ui.card.HardwareKeyDialog
+import com.stegpony.android.ui.card.canUseHardwareKeys
 import androidx.compose.runtime.collectAsState
 import com.stegpony.android.keys.Keyring
 import com.stegpony.android.keys.KeyringState
@@ -56,7 +60,8 @@ import uniffi.stegpony_ffi.Payload
 fun RevealScreen(vm: RevealViewModel) {
     SecureScreenEffect()
     val context = LocalContext.current
-    val myKeyCount = (Keyring.state.collectAsState().value as? KeyringState.Ready)?.keys?.mine?.size ?: 0
+    val myKeyCount = (Keyring.state.collectAsState().value as? KeyringState.Ready)?.keys?.softwareKeys?.size ?: 0
+    val hardwareKeysUsable = remember(context) { canUseHardwareKeys(context) }
     val scope = rememberCoroutineScope()
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let(vm::open)
@@ -122,6 +127,26 @@ fun RevealScreen(vm: RevealViewModel) {
 
         Button(onClick = vm::reveal, enabled = vm.canReveal(myKeyCount > 0), modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.reveal_button))
+        }
+        if (hardwareKeysUsable) {
+            OutlinedButton(
+                onClick = vm::openCard,
+                enabled = vm.hasImage && !vm.busy,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(Icons.Outlined.Key, contentDescription = null)
+                Text(stringResource(R.string.reveal_with_card), Modifier.padding(start = 8.dp))
+            }
+        }
+        val cardOp = vm.cardOperation
+        if (cardOp != null) {
+            HardwareKeyDialog(
+                title = stringResource(R.string.reveal_with_card),
+                askPin = true,
+                operation = cardOp,
+                onSuccess = vm::cardResult,
+                onDismiss = vm::closeCard,
+            )
         }
         if (vm.busy) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

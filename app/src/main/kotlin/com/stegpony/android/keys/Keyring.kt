@@ -15,9 +15,19 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 /** Where one of your own keys came from. */
-enum class KeySource { Generated, AgeImport, Pgp }
+enum class KeySource {
+    Generated,
+    AgeImport,
+    Pgp,
 
-/** One of your keys: the secret (an AGE-SECRET-KEY-1… identity) and its public half. */
+    /** On an OpenPGP card; [MyKey.identity] is empty and the card does the key exchange. */
+    Hardware,
+}
+
+/**
+ * One of your keys: the secret (an AGE-SECRET-KEY-1… identity) and its public
+ * half. A hardware key has only the public half; its secret stays on the card.
+ */
 data class MyKey(
     val id: String,
     val label: String,
@@ -42,7 +52,11 @@ data class Contact(
 data class Keys(
     val mine: List<MyKey> = emptyList(),
     val contacts: List<Contact> = emptyList(),
-)
+) {
+    /** Your keys whose secret is on this phone. */
+    val softwareKeys: List<MyKey> get() = mine.filter { it.source != KeySource.Hardware }
+    val hardwareKeys: List<MyKey> get() = mine.filter { it.source == KeySource.Hardware }
+}
 
 sealed interface KeyringState {
     data object Loading : KeyringState

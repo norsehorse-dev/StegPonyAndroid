@@ -53,8 +53,8 @@ fun StegPonyRoot(incoming: Uri?, onIncomingHandled: () -> Unit) {
     LaunchedEffect(Unit) { Keyring.load(context.applicationContext) }
 
     // Waits out a running reveal rather than dropping an image shared in meanwhile.
-    LaunchedEffect(incoming, revealVm.busy) {
-        if (incoming != null && !revealVm.busy) {
+    LaunchedEffect(incoming, revealVm.blocked) {
+        if (incoming != null && !revealVm.blocked) {
             tab = Tab.Reveal
             if (revealVm.open(incoming)) onIncomingHandled()
         }

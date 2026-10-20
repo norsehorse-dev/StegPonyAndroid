@@ -7,6 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stegpony.android.card.HardwareKey
+import com.stegpony.android.card.OpenPgpCardSession
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
 import com.stegpony.android.keys.Keyring
@@ -46,7 +48,7 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Returns false when a reveal is running and the image wasn't taken. */
     fun open(uri: Uri): Boolean {
-        if (busy) return false
+        if (blocked) return false
         errorText = null
         outcome = null
         loading = true
@@ -74,7 +76,7 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
 
     fun reveal() {
         val bytes = imageBytes ?: return
-        val mine = Keyring.current.mine
+        val mine = Keyring.current.softwareKeys
         if (!canReveal(mine.isNotEmpty())) return
         errorText = null
         outcome = null
@@ -115,6 +117,36 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    /**
+     * The hardware-key operation for the current image, run on the card
+     * thread, while the card dialog is open. The image is fixed when the
+     * dialog opens: an image shared in meanwhile waits (see [blocked]).
+     */
+    var cardOperation by mutableStateOf<((OpenPgpCardSession, ByteArray) -> Payload?)?>(null)
+        private set
+
+    /** A reveal or a hardware-key dialog is under way; a new image waits. */
+    val blocked: Boolean get() = busy || cardOperation != null
+
+    fun openCard() {
+        val bytes = imageBytes ?: return
+        if (blocked) return
+        cardOperation = { session, pin -> HardwareKey.reveal(session, pin, bytes) }
+    }
+
+    fun closeCard() {
+        cardOperation = null
+    }
+
+    fun cardResult(found: Payload?) {
+        cardOperation = null
+        errorText = null
+        outcome = if (found != null) RevealOutcome.Found(found) else RevealOutcome.NothingFound
+        passphrase = ""
+    }
+
+    val hasImage: Boolean get() = imageBytes != null && !loading
 
     companion object {
         fun isSecretKey(text: String): Boolean = text.trim().startsWith("AGE-SECRET-KEY-1", ignoreCase = true)

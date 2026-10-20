@@ -10,6 +10,17 @@
         android:name="android.permission.INTERNET"
         tools:node="remove" />
 
+    <!--
+      Hardware keys: OpenPGP cards over NFC, and over USB. Neither is
+      required, so the app installs on phones with neither; the hardware-key
+      buttons are hidden there. USB access is granted per device at run time,
+      so there is no permission for it, and no USB attach filter: plugging a
+      key in should not launch StegPony.
+    -->
+    <uses-permission android:name="android.permission.NFC" />
+    <uses-feature android:name="android.hardware.nfc" android:required="false" />
+    <uses-feature android:name="android.hardware.usb.host" android:required="false" />
+
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"

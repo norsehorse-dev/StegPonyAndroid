@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stegpony.android.R
+import com.stegpony.android.card.CardKey
 import com.stegpony.android.io.Files
 import com.stegpony.android.keys.Contact
 import com.stegpony.android.keys.DuplicateKeyException
@@ -210,6 +211,18 @@ class KeysViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     var confirmReset by mutableStateOf(false)
+
+    /** True while the add-hardware-key dialog is open. */
+    var addingCard by mutableStateOf(false)
+
+    /** Saves the public half of a card's decryption key, read without a PIN. */
+    fun addHardware(key: CardKey) {
+        addingCard = false
+        launchTask {
+            Keyring.addMine(context, key.label, "", key.recipient, KeySource.Hardware, key.fingerprint)
+            notice = context.getString(R.string.card_added, key.label)
+        }
+    }
 
     fun retryLoad() = launchTask { Keyring.retry(context) }
 

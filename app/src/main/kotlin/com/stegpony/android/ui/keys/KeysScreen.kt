@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
@@ -46,6 +47,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import com.stegpony.android.R
+import com.stegpony.android.card.HardwareKey
+import com.stegpony.android.ui.card.HardwareKeyDialog
+import com.stegpony.android.ui.card.canUseHardwareKeys
 import com.stegpony.android.keys.Contact
 import com.stegpony.android.keys.KeySource
 import com.stegpony.android.keys.Keyring
@@ -67,6 +71,7 @@ fun KeysScreen(vm: KeysViewModel) {
     SecureScreenEffect()
     val context = LocalContext.current
     val state by Keyring.state.collectAsState()
+    val hardwareKeysUsable = remember(context) { canUseHardwareKeys(context) }
     val importMine = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(vm::importMine)
     }
@@ -120,6 +125,12 @@ fun KeysScreen(vm: KeysViewModel) {
                             Text(stringResource(R.string.import_key), Modifier.padding(start = 8.dp))
                         }
                     }
+                    if (hardwareKeysUsable) {
+                        OutlinedButton(onClick = { vm.addingCard = true }, enabled = !vm.busy) {
+                            Icon(Icons.Outlined.Key, contentDescription = null)
+                            Text(stringResource(R.string.add_card), Modifier.padding(start = 8.dp))
+                        }
+                    }
                     Text(
                         stringResource(R.string.import_key_about),
                         style = MaterialTheme.typography.bodySmall,
@@ -150,6 +161,16 @@ fun KeysScreen(vm: KeysViewModel) {
         if (vm.busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
         vm.notice?.let { Text(it, style = MaterialTheme.typography.bodyMedium) }
         vm.errorText?.let { Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium) }
+    }
+
+    if (vm.addingCard) {
+        HardwareKeyDialog(
+            title = stringResource(R.string.add_card),
+            askPin = false,
+            operation = { session, _ -> HardwareKey.readDecryptionKey(session) },
+            onSuccess = vm::addHardware,
+            onDismiss = { vm.addingCard = false },
+        )
     }
 
     vm.newKeyLabel?.let { label ->
@@ -219,7 +240,9 @@ fun KeysScreen(vm: KeysViewModel) {
     vm.pendingDelete?.let { target ->
         val (title, body) = when (target) {
             is PendingDelete.Mine -> stringResource(R.string.delete_key_title, target.key.label) to
-                stringResource(R.string.delete_key_body)
+                stringResource(
+                    if (target.key.source == KeySource.Hardware) R.string.delete_card_body else R.string.delete_key_body,
+                )
             is PendingDelete.Other -> stringResource(R.string.delete_contact_title, target.contact.name) to
                 stringResource(R.string.delete_contact_body)
         }
@@ -247,6 +270,7 @@ private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onCopy: () -> Unit, onDelete
                     KeySource.Generated -> stringResource(R.string.source_generated)
                     KeySource.AgeImport -> stringResource(R.string.source_age)
                     KeySource.Pgp -> stringResource(R.string.source_pgp)
+                    KeySource.Hardware -> stringResource(R.string.source_hardware)
                 },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,

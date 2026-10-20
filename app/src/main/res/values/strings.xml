@@ -131,6 +131,37 @@
     <string name="error_age_passphrase_identity">This age identity file is protected with a passphrase. Export it without one, import it, then delete the copy.</string>
     <string name="keys_unavailable_body">Your keys couldn\'t be opened (%1$s). Nothing has been changed.</string>
 
+    <!-- Hardware keys -->
+    <string name="add_card">Add a hardware key</string>
+    <string name="card_added">Added %1$s. Share its public key like any other.</string>
+    <string name="source_hardware">Hardware key (the secret stays on the key)</string>
+    <string name="delete_card_body">Only the public key saved here is removed. The hardware key itself is not touched, and you can add it again.</string>
+    <string name="reveal_with_card">Use a hardware key</string>
+    <string name="card_pin_label">PIN</string>
+    <string name="card_pin_about">The key\'s user PIN. It goes to the key once and is not kept.</string>
+    <string name="card_continue">Continue</string>
+    <string name="card_try_again">Try again</string>
+    <string name="card_tap">Hold your key to the back of the phone and keep it there until this finishes.</string>
+    <string name="card_tap_or_plug">Hold your key to the back of the phone, or plug it in. Keep it there until this finishes.</string>
+    <string name="card_usb_working">Working with the plugged-in key. If it blinks, touch it.</string>
+    <string name="card_usb_permission">Allow StegPony to use the plugged-in key when Android asks.</string>
+    <string name="card_enable_nfc">NFC is off. Turn it on in Android settings, or plug the key in.</string>
+    <string name="card_plug_in">This phone has no NFC. Plug the key in.</string>
+    <string name="card_no_link">This phone can\'t reach a hardware key: no NFC and no USB host support.</string>
+    <string name="card_lift">Done. You can take the key away.</string>
+    <string name="card_allow_usb">Allow USB access</string>
+    <string name="card_nfc_settings">NFC settings</string>
+    <plurals name="card_wrong_pin">
+        <item quantity="one">Wrong PIN. 1 try left before the PIN locks.</item>
+        <item quantity="other">Wrong PIN. %1$d tries left before the PIN locks.</item>
+    </plurals>
+    <string name="card_pin_blocked">The PIN is locked after too many wrong tries. Unlock it with the admin PIN (PGPony or GnuPG can do this).</string>
+    <string name="card_lost">The key was lost before it finished. Hold it still, or check the cable, and try again.</string>
+    <string name="card_not_openpgp">This isn\'t an OpenPGP key, or its OpenPGP app is turned off.</string>
+    <string name="card_not_cv25519">This key\'s decryption key is %1$s. StegPony needs a Curve25519 (cv25519) key.</string>
+    <string name="card_no_decryption_key">This key has no decryption key yet. Generate or move a cv25519 key onto it first.</string>
+    <string name="card_failed">The hardware key reported a problem: %1$s</string>
+
     <!-- Settings -->
     <string name="about_title">About</string>
     <string name="about_app_version">StegPony %1$s</string>
