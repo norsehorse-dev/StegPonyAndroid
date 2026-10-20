@@ -19,7 +19,11 @@ import kotlinx.coroutines.withContext
 import uniffi.stegpony_ffi.Payload
 import uniffi.stegpony_ffi.RevealSecret
 import uniffi.stegpony_ffi.identityKeyPair
+import uniffi.stegpony_ffi.revealText
 import uniffi.stegpony_ffi.reveal as revealImage
+
+/** Where to look: an image, or pasted text. */
+enum class RevealSource { Image, Text }
 
 sealed interface RevealOutcome {
     data class Found(val payload: Payload) : RevealOutcome
@@ -27,6 +31,11 @@ sealed interface RevealOutcome {
 }
 
 class RevealViewModel(app: Application) : AndroidViewModel(app) {
+    var source by mutableStateOf(RevealSource.Image)
+        private set
+    /** Pasted or shared-in text to look in. */
+    var pastedText by mutableStateOf("")
+
     var image by mutableStateOf<PickedFile?>(null)
         private set
     // State, not a plain field: canReveal reads it first, and a read Compose
@@ -46,9 +55,27 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
 
     private val context get() = getApplication<Application>()
 
+    fun selectSource(s: RevealSource) {
+        if (blocked || s == source) return
+        source = s
+        outcome = null
+        errorText = null
+    }
+
+    /** Text shared in from another app. Returns false when a reveal is running and it wasn't taken. */
+    fun openText(text: String): Boolean {
+        if (blocked) return false
+        source = RevealSource.Text
+        pastedText = text
+        outcome = null
+        errorText = null
+        return true
+    }
+
     /** Returns false when a reveal is running and the image wasn't taken. */
     fun open(uri: Uri): Boolean {
         if (blocked) return false
+        source = RevealSource.Image
         errorText = null
         outcome = null
         loading = true
@@ -72,10 +99,13 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
 
     /** Ready once there is an image and something to try: a passphrase or at least one of your keys. */
     fun canReveal(haveKeys: Boolean): Boolean =
-        imageBytes != null && (passphrase.isNotEmpty() || haveKeys) && !busy && !loading
+        hasInput && (passphrase.isNotEmpty() || haveKeys) && !busy && !loading
 
     fun reveal() {
-        val bytes = imageBytes ?: return
+        val bytes = imageBytes
+        val text = pastedText
+        val fromText = source == RevealSource.Text
+        if (!fromText && bytes == null) return
         val mine = Keyring.current.softwareKeys
         if (!canReveal(mine.isNotEmpty())) return
         errorText = null
@@ -94,7 +124,11 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
                         typed.isNotEmpty() -> listOf(RevealSecret.Passphrase(typed))
                         else -> mine.map { RevealSecret.Identity(it.identity) }
                     }
-                    revealImage(bytes, secrets, emptyList())
+                    if (fromText) {
+                        revealText(text, secrets, emptyList()).payload
+                    } else {
+                        revealImage(bytes!!, secrets, emptyList())
+                    }
                 }
                 outcome = if (found != null) RevealOutcome.Found(found) else RevealOutcome.NothingFound
                 passphrase = ""
@@ -130,9 +164,28 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
     val blocked: Boolean get() = busy || cardOperation != null
 
     fun openCard() {
-        val bytes = imageBytes ?: return
-        if (blocked) return
-        cardOperation = { session, pin -> HardwareKey.reveal(session, pin, bytes) }
+        if (blocked || !hasInput) return
+        if (source == RevealSource.Image) {
+            val bytes = imageBytes ?: return
+            cardOperation = { session: OpenPgpCardSession, pin: ByteArray -> HardwareKey.reveal(session, pin, bytes) }
+            return
+        }
+        // Check that it is StegPony text before asking for the key's PIN; with
+        // no keys this only reads the text.
+        val text = pastedText
+        errorText = null
+        outcome = null
+        busy = true
+        viewModelScope.launch {
+            try {
+                withContext(Dispatchers.Default) { revealText(text, emptyList(), emptyList()) }
+                cardOperation = { session: OpenPgpCardSession, pin: ByteArray -> HardwareKey.revealText(session, pin, text) }
+            } catch (e: Throwable) {
+                errorText = errorMessage(context, e)
+            } finally {
+                busy = false
+            }
+        }
     }
 
     fun closeCard() {
@@ -148,6 +201,13 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
 
     val hasImage: Boolean get() = imageBytes != null && !loading
 
+    /** Something to look in, for the current source. */
+    val hasInput: Boolean
+        get() = when (source) {
+            RevealSource.Image -> hasImage
+            RevealSource.Text -> pastedText.isNotBlank()
+        }
+
     companion object {
         fun isSecretKey(text: String): Boolean = text.trim().startsWith("AGE-SECRET-KEY-1", ignoreCase = true)
     }
@@ -155,6 +215,7 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
     /** Forgets what was revealed. */
     fun close() {
         outcome = null
+        if (source == RevealSource.Text) pastedText = ""
         Files.clearShared(context, Files.AREA_REVEAL)
     }
 }

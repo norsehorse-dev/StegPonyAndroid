@@ -1,6 +1,7 @@
 package com.stegpony.android.ui
 
 import com.stegpony.android.Incoming
+import com.stegpony.android.io.SharedText
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -57,17 +58,20 @@ fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
     val context = LocalContext.current
     LaunchedEffect(Unit) { Keyring.load(context.applicationContext) }
 
-    // An image waits out a running reveal rather than being dropped.
+    // An image or text waits out a running reveal rather than being dropped.
     LaunchedEffect(incoming, revealVm.blocked) {
         when (incoming) {
             is Incoming.Image -> if (!revealVm.blocked) {
                 tab = Tab.Reveal
                 if (revealVm.open(incoming.uri)) onIncomingHandled()
             }
-            is Incoming.KeyText -> {
+            is Incoming.Text -> if (SharedText.isKey(incoming.text)) {
                 tab = Tab.Keys
                 keysVm.receiveShared(incoming.text.toByteArray(Charsets.UTF_8))
                 onIncomingHandled()
+            } else if (!revealVm.blocked) {
+                tab = Tab.Reveal
+                if (revealVm.openText(incoming.text)) onIncomingHandled()
             }
             is Incoming.KeyFile -> {
                 tab = Tab.Keys

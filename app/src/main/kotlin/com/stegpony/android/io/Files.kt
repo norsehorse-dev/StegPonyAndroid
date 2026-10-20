@@ -133,4 +133,10 @@ object Files {
         val stamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(now)
         return "IMG_$stamp.$extension"
     }
+
+    /** A plain name for saved text, like a note app would give it. */
+    fun textOutputName(now: Date = Date()): String {
+        val stamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(now)
+        return "Note_$stamp.txt"
+    }
 }

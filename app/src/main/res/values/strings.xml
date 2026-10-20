@@ -17,12 +17,19 @@
     <string name="share">Share</string>
     <string name="copy">Copy</string>
     <string name="close">Close</string>
+    <string name="paste">Paste</string>
+    <string name="clear">Clear</string>
+    <string name="carrier_photo">Photo</string>
+    <string name="carrier_text">Text</string>
     <string name="rating_low">low detectability</string>
     <string name="rating_medium">medium detectability</string>
     <string name="rating_high">high detectability</string>
     <string name="reading_cover">Reading the image…</string>
 
     <!-- Hide -->
+    <string name="hide_in_title">Hide in</string>
+    <string name="carrier_photo_about">Hidden in the fine detail of a photo, sent as a file. Holds the most and is the hardest to notice.</string>
+    <string name="carrier_text_about">Hidden in text you paste into a message, an email or a note. Holds far less than a photo, and is easier to notice.</string>
     <string name="hide_cover_title">Cover image</string>
     <string name="hide_cover_hint">Use a photo you took yourself and haven\'t posted anywhere. Someone holding the original can compare the two.</string>
     <string name="mode_jpeg">JPEG</string>
@@ -65,6 +72,36 @@
     <string name="decoy_same_passphrase">The decoy needs a different passphrase.</string>
     <string name="hide_done_title">Done</string>
     <string name="hide_done_rating">Hidden, %1$s.</string>
+    <string name="text_kind_title">Kind of text</string>
+    <string name="text_mode_words">Words</string>
+    <string name="text_mode_zero_width">Invisible characters</string>
+    <string name="text_mode_words_about">A run of ordinary words that reads as nonsense. It gets past automated filters and a quick glance, not someone who reads it. Even a short message takes over 130 words.</string>
+    <string name="text_mode_zero_width_about">Weak. Invisible characters tucked into a message you write, which looks unchanged. Many apps remove these characters, and any tool that looks for them finds them at once. Fine for a note or a document, not against anyone who checks.</string>
+    <string name="cover_text_label">Visible message</string>
+    <string name="cover_text_hint">What everyone sees. Write something ordinary. Longer messages spread the hidden characters out more.</string>
+    <string name="need_cover_text">Write the visible message.</string>
+    <string name="error_text_too_long">Too long to hide in text. Shorten it, or use a photo.</string>
+    <string name="text_too_long">Too long for text, which holds up to %1$d bytes. Use a photo instead.</string>
+    <plurals name="text_size_words">
+        <item quantity="one">About %1$d word.</item>
+        <item quantity="other">About %1$d words.</item>
+    </plurals>
+    <plurals name="text_size_chars">
+        <item quantity="one">%1$d invisible character.</item>
+        <item quantity="other">%1$d invisible characters.</item>
+    </plurals>
+    <string name="text_size_room">%1$d more bytes fit before it gets longer.</string>
+    <string name="hiding_text">Hiding…</string>
+    <plurals name="text_done_words">
+        <item quantity="one">%1$d word.</item>
+        <item quantity="other">%1$d words.</item>
+    </plurals>
+    <plurals name="text_done_chars">
+        <item quantity="one">Your message, with %1$d invisible character inside.</item>
+        <item quantity="other">Your message, with %1$d invisible characters inside.</item>
+    </plurals>
+    <string name="text_send_words">Send the words exactly as they are. Capitals, punctuation and line breaks don\'t matter, but a changed, missing or added word breaks it, so watch for autocorrect. The clipboard clears after %1$d seconds.</string>
+    <string name="text_send_zero_width">Send a test to yourself first: many apps quietly remove invisible characters, and then nothing can be revealed. The clipboard clears after %1$d seconds.</string>
     <string name="send_as_file">Send it as a file or document. A messenger\'s photo mode recompresses the picture and destroys what\'s hidden. Don\'t share the original photo anywhere.</string>
 
     <!-- Cover handling -->
@@ -79,14 +116,21 @@
     <string name="cover_note_downloads">This came from Downloads, so a copy may exist online and could be compared with yours. A photo you just took is safer.</string>
 
     <!-- Reveal -->
+    <string name="reveal_in_title">Look in</string>
+    <string name="reveal_text_title">Text</string>
+    <string name="reveal_text_label">Paste the text</string>
+    <string name="reveal_text_hint">Paste the whole text exactly as you received it, or share it to StegPony from another app.</string>
+    <string name="nothing_found_text_body">This is StegPony text, but nothing opened with what was tried. It was hidden with a different passphrase or key, or for a decoy you don\'t have. StegPony can\'t tell which.</string>
+    <string name="error_not_steg_text">Nothing is hidden in this text. It has no invisible characters, and \"%1$s\" isn\'t one of StegPony\'s words. If it came through an app that removes invisible characters, the hidden part is gone; if a word was changed, ask for the text again.</string>
+    <string name="error_text_incomplete">Part of the hidden text is missing or was changed. Copy the whole text again, exactly as you received it. Some apps remove invisible characters, and autocorrect can change words.</string>
     <string name="reveal_image_title">Image</string>
     <string name="reveal_image_hint">Choose the image, or share it to StegPony from another app.</string>
     <string name="reveal_key_title">Open it with</string>
     <string name="reveal_no_keys">Enter the passphrase, or paste a secret key (AGE-SECRET-KEY-1…). To skip this next time, add your key on the Keys screen.</string>
     <string name="reveal_secret_label">Passphrase or secret key</string>
     <plurals name="reveal_tries_keys">
-        <item quantity="one">Leave this empty to open it with your key. Enter a passphrase only for an image hidden with one, or paste a different secret key.</item>
-        <item quantity="other">Leave this empty to open it with your %1$d keys. Enter a passphrase only for an image hidden with one, or paste a different secret key.</item>
+        <item quantity="one">Leave this empty to open it with your key. Enter a passphrase only for something hidden with one, or paste a different secret key.</item>
+        <item quantity="other">Leave this empty to open it with your %1$d keys. Enter a passphrase only for something hidden with one, or paste a different secret key.</item>
     </plurals>
     <string name="reveal_button">Reveal</string>
     <string name="revealing">Looking…</string>
@@ -210,7 +254,7 @@
     <string name="about_title">About</string>
     <string name="about_app_version">StegPony %1$s</string>
     <string name="about_core_version">Core %1$s</string>
-    <string name="about_format_version">Image format version %1$d</string>
+    <string name="about_format_version">Format version %1$d</string>
 
     <!-- Errors -->
     <string name="error_bad_image">This image couldn\'t be read.</string>
@@ -233,11 +277,13 @@
     <string name="help_row_subtitle">Read this before relying on it</string>
     <string name="back">Back</string>
     <string name="help_what_title">What StegPony does</string>
-    <string name="help_what_body">StegPony encrypts a message or file and hides it in the fine detail of a photo. The photo still looks and opens like any other. Without the right passphrase or key, there is nothing to find: no header, no marker, and no way to tell an image with something hidden from one without.\n\nPassphrases are stretched with Argon2id, keys use X25519 (the same keys as age), and the content is sealed with ChaCha20-Poly1305. Every image has room for two hidden messages; the second is either your decoy or random filler, so the two cases look the same.</string>
+    <string name="help_what_body">StegPony encrypts a message or file and hides it in the fine detail of a photo, or in text. The photo still looks and opens like any other. Without the right passphrase or key, there is nothing to find: no header, no marker, and no way to tell an image with something hidden from one without.\n\nPassphrases are stretched with Argon2id, keys use X25519 (the same keys as age), and the content is sealed with ChaCha20-Poly1305. Every image and every text has room for two hidden messages; the second is either your decoy or random filler, so the two cases look the same.</string>
     <string name="help_sending_title">Sending the image</string>
     <string name="help_sending_body">Send the file exactly as StegPony saved it: as a file or document attachment, by email, or through a service that keeps files unchanged. Anything that re-encodes the picture destroys what\'s hidden. That includes most messengers\' photo mode, resizing, editing, filters, and some cloud and social services.\n\nNever send or post the original photo as well. Anyone holding both can compare them.</string>
     <string name="help_covers_title">Choosing a cover</string>
     <string name="help_covers_body">The best cover is a photo you take just for this, with StegPony\'s camera or your own, that has never been shared anywhere. Use each photo once. StegPony warns when a photo was used before, or looks like a download or a messenger copy.\n\nJPEG mode keeps the photo a JPEG with your camera\'s own compression, which is what photos from a phone normally are. Lossless mode saves a PNG; use it for images that were PNGs to begin with.</string>
+    <string name="help_text_title">Hiding in text</string>
+    <string name="help_text_body">Text holds far less than a photo and is easier to notice, so use it when a photo can\'t be sent. What\'s hidden is encrypted the same way, with the same passphrases, keys and decoy.\n\nWords: the hidden data becomes a run of ordinary words that reads as nonsense. It gets past automated filters and a quick look, not a person who reads it. Even a short message takes over 130 words, because every text has room for a decoy. Capitals, punctuation and line breaks can change on the way; a changed, missing or added word can\'t.\n\nInvisible characters: the hidden data becomes characters that don\'t show, tucked into a message you write. It is weak. Many apps, websites and keyboards remove these characters, and anyone who looks for them finds them at once. Send a test to yourself through the same app before relying on it.</string>
     <string name="help_rating_title">Detectability rating</string>
     <string name="help_rating_body">The rating says how hard the result should be to tell apart from an untouched photo, based on how much is hidden for the size and detail of the photo. Low, Medium and High come from tests with a standard detector on real phone photos, and are set below what those tests showed, because better detectors exist.\n\nLow is a good aim. Keep messages short, and use a large, detailed photo for files. A high rating doesn\'t mean the content can be read; it means someone looking for hidden content has a better chance of noticing that something is there.</string>
     <string name="help_secrets_title">Passphrases and keys</string>
@@ -245,7 +291,7 @@
     <string name="help_hardware_title">Hardware keys</string>
     <string name="help_hardware_body">An OpenPGP hardware key (YubiKey, Nitrokey, Token2) with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
     <string name="help_decoy_title">Decoy</string>
-    <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image, give them the decoy. Nobody can tell from the image whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows every image has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
+    <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
     <string name="help_phone_title">On this phone</string>
     <string name="help_phone_body">StegPony has no network access. Your keys and contacts are encrypted with a key held in Android\'s secure hardware, and are left out of backups and phone transfers. Screenshots are blocked on Reveal and Keys, and copied messages leave the clipboard after a minute.\n\nThe app lock and the launcher disguise slow down a casual look at your phone. They don\'t hide that StegPony is installed: its real name still shows in Android\'s app settings.</string>
     <string name="help_limits_title">What StegPony can\'t protect against</string>

@@ -5,6 +5,7 @@ import uniffi.stegpony_ffi.KeyDevice
 import uniffi.stegpony_ffi.Payload
 import uniffi.stegpony_ffi.StegException
 import uniffi.stegpony_ffi.recipientFromX25519
+import uniffi.stegpony_ffi.revealText as revealInText
 import uniffi.stegpony_ffi.reveal as revealImage
 
 /** The card's decryption key, as StegPony uses it. */
@@ -66,7 +67,18 @@ object HardwareKey {
      * for this key. A card error is rethrown as itself, not as the core's
      * wrapper, so the UI can say what happened (wrong PIN, key moved away).
      */
-    fun reveal(session: OpenPgpCardSession, pin: ByteArray, image: ByteArray): Payload? {
+    fun reveal(session: OpenPgpCardSession, pin: ByteArray, image: ByteArray): Payload? =
+        withCard(session, pin) { device -> revealImage(image, emptyList(), listOf(device)) }
+
+    /** As [reveal], for pasted text. */
+    fun revealText(session: OpenPgpCardSession, pin: ByteArray, text: String): Payload? =
+        withCard(session, pin) { device -> revealInText(text, emptyList(), listOf(device)).payload }
+
+    private fun withCard(
+        session: OpenPgpCardSession,
+        pin: ByteArray,
+        look: (CardKeyDevice) -> Payload?,
+    ): Payload? {
         val key = readDecryptionKey(session)
         // Check the PIN now, before the slow image work, so a wrong PIN is
         // reported at once, and even for an image the card is never asked
@@ -74,7 +86,7 @@ object HardwareKey {
         session.verify(OpenPgpCard.PW1_OTHER, pin)
         val device = CardKeyDevice(session, pin, key.recipient)
         return try {
-            revealImage(image, emptyList(), listOf(device))
+            look(device)
         } catch (e: StegException.KeyDevice) {
             throw device.failure ?: e
         }

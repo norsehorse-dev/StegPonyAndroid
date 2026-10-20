@@ -51,6 +51,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.stegpony.android.R
@@ -69,6 +70,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.stegpony_ffi.ImageFormat
 import uniffi.stegpony_ffi.ImageMode
+import uniffi.stegpony_ffi.TextMode
+import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.outlined.ContentCopy
+import android.content.Intent
+import com.stegpony.android.ui.common.Clipboard
 
 @Composable
 fun HideScreen(vm: HideViewModel) {
@@ -106,106 +112,132 @@ fun HideScreen(vm: HideViewModel) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Section(stringResource(R.string.hide_cover_title)) {
+        Section(stringResource(R.string.hide_in_title)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                val compact = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
-                OutlinedButton(
-                    onClick = { takingPhoto = true },
-                    enabled = !vm.busy && !vm.loading,
-                    contentPadding = compact,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
-                    Text(stringResource(R.string.take_photo), Modifier.padding(start = 6.dp), maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = {
-                        pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    },
-                    enabled = !vm.busy && !vm.loading,
-                    contentPadding = compact,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Icon(Icons.Outlined.Image, contentDescription = null)
-                    Text(stringResource(R.string.pick_photo), Modifier.padding(start = 6.dp), maxLines = 1)
-                }
-                OutlinedButton(
-                    onClick = { pickImageFile.launch(arrayOf("image/jpeg", "image/png")) },
-                    enabled = !vm.busy && !vm.loading,
-                    contentPadding = compact,
-                    modifier = Modifier.weight(1f),
-                ) {
-                    Icon(Icons.Outlined.Folder, contentDescription = null)
-                    Text(stringResource(R.string.pick_file), Modifier.padding(start = 6.dp), maxLines = 1)
-                }
-            }
-            if (takingPhoto) {
-                CameraCaptureDialog(
-                    onCaptured = { bytes ->
-                        takingPhoto = false
-                        vm.useCaptured(bytes)
-                    },
-                    onClose = { takingPhoto = false },
-                    onCameraRefused = {
-                        takingPhoto = false
-                        vm.errorText = context.getString(R.string.camera_refused_cover)
-                    },
+                FilterChip(
+                    selected = vm.carrier == Carrier.Image,
+                    onClick = { vm.selectCarrier(Carrier.Image) },
+                    label = { Text(stringResource(R.string.carrier_photo)) },
+                    enabled = !vm.busy,
+                )
+                FilterChip(
+                    selected = vm.carrier == Carrier.Text,
+                    onClick = { vm.selectCarrier(Carrier.Text) },
+                    label = { Text(stringResource(R.string.carrier_text)) },
+                    enabled = !vm.busy,
                 )
             }
-            if (cover != null) {
-                Text(
-                    if (cover.fresh) stringResource(R.string.cover_fresh) else cover.file.name,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                cover.notes.forEach { note ->
+            Text(
+                stringResource(if (vm.carrier == Carrier.Image) R.string.carrier_photo_about else R.string.carrier_text_about),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+
+        if (vm.carrier == Carrier.Image) {
+            Section(stringResource(R.string.hide_cover_title)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val compact = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
+                    OutlinedButton(
+                        onClick = { takingPhoto = true },
+                        enabled = !vm.busy && !vm.loading,
+                        contentPadding = compact,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
+                        Text(stringResource(R.string.take_photo), Modifier.padding(start = 6.dp), maxLines = 1)
+                    }
+                    OutlinedButton(
+                        onClick = {
+                            pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        },
+                        enabled = !vm.busy && !vm.loading,
+                        contentPadding = compact,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(Icons.Outlined.Image, contentDescription = null)
+                        Text(stringResource(R.string.pick_photo), Modifier.padding(start = 6.dp), maxLines = 1)
+                    }
+                    OutlinedButton(
+                        onClick = { pickImageFile.launch(arrayOf("image/jpeg", "image/png")) },
+                        enabled = !vm.busy && !vm.loading,
+                        contentPadding = compact,
+                        modifier = Modifier.weight(1f),
+                    ) {
+                        Icon(Icons.Outlined.Folder, contentDescription = null)
+                        Text(stringResource(R.string.pick_file), Modifier.padding(start = 6.dp), maxLines = 1)
+                    }
+                }
+                if (takingPhoto) {
+                    CameraCaptureDialog(
+                        onCaptured = { bytes ->
+                            takingPhoto = false
+                            vm.useCaptured(bytes)
+                        },
+                        onClose = { takingPhoto = false },
+                        onCameraRefused = {
+                            takingPhoto = false
+                            vm.errorText = context.getString(R.string.camera_refused_cover)
+                        },
+                    )
+                }
+                if (cover != null) {
+                    Text(
+                        if (cover.fresh) stringResource(R.string.cover_fresh) else cover.file.name,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    cover.notes.forEach { note ->
+                        Text(
+                            stringResource(
+                                when (note) {
+                                    CoverNote.Reused -> R.string.cover_note_reused
+                                    CoverNote.NoCameraDetails -> R.string.cover_note_not_camera
+                                    CoverNote.FromDownloads -> R.string.cover_note_downloads
+                                },
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (note == CoverNote.Reused) MaterialTheme.colorScheme.error else detectabilityColor(Detectability.MEDIUM),
+                        )
+                    }
+                    if (cover.modes.size > 1) {
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            cover.modes.forEach { m ->
+                                FilterChip(
+                                    selected = vm.mode == m,
+                                    onClick = { vm.selectMode(m) },
+                                    label = { Text(stringResource(if (m == ImageMode.JPEG) R.string.mode_jpeg else R.string.mode_lossless)) },
+                                    enabled = !vm.busy,
+                                )
+                            }
+                        }
+                    }
                     Text(
                         stringResource(
-                            when (note) {
-                                CoverNote.Reused -> R.string.cover_note_reused
-                                CoverNote.NoCameraDetails -> R.string.cover_note_not_camera
-                                CoverNote.FromDownloads -> R.string.cover_note_downloads
+                            when {
+                                vm.mode == ImageMode.JPEG -> R.string.mode_jpeg_about
+                                cover.format == ImageFormat.JPEG -> R.string.mode_lossless_from_jpeg_about
+                                else -> R.string.mode_lossless_about
                             },
                         ),
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (note == CoverNote.Reused) MaterialTheme.colorScheme.error else detectabilityColor(Detectability.MEDIUM),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    Text(
+                        stringResource(R.string.hide_cover_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
-                if (cover.modes.size > 1) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        cover.modes.forEach { m ->
-                            FilterChip(
-                                selected = vm.mode == m,
-                                onClick = { vm.selectMode(m) },
-                                label = { Text(stringResource(if (m == ImageMode.JPEG) R.string.mode_jpeg else R.string.mode_lossless)) },
-                                enabled = !vm.busy,
-                            )
-                        }
+                if (vm.loading) {
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                        Text(stringResource(R.string.reading_cover), style = MaterialTheme.typography.bodySmall)
                     }
                 }
-                Text(
-                    stringResource(
-                        when {
-                            vm.mode == ImageMode.JPEG -> R.string.mode_jpeg_about
-                            cover.format == ImageFormat.JPEG -> R.string.mode_lossless_from_jpeg_about
-                            else -> R.string.mode_lossless_about
-                        },
-                    ),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            } else {
-                Text(
-                    stringResource(R.string.hide_cover_hint),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
             }
-            if (vm.loading) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                    Text(stringResource(R.string.reading_cover), style = MaterialTheme.typography.bodySmall)
-                }
-            }
+        } else {
+            TextCarrierSection(vm)
         }
 
         Section(stringResource(R.string.hide_message_title)) {
@@ -240,7 +272,9 @@ fun HideScreen(vm: HideViewModel) {
                     }
                 }
             }
-            if (capacity != null) {
+            if (vm.carrier == Carrier.Text) {
+                TextSizeNote(vm)
+            } else if (capacity != null) {
                 if (payloadLen != null) {
                     CapacityMeter(
                         used = payloadLen,
@@ -342,7 +376,7 @@ fun HideScreen(vm: HideViewModel) {
             }
         }
 
-        if (cover != null && vm.mode == ImageMode.JPEG) {
+        if (vm.carrier == Carrier.Image && cover != null && vm.mode == ImageMode.JPEG) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.keep_metadata), style = MaterialTheme.typography.bodyMedium)
@@ -367,9 +401,9 @@ fun HideScreen(vm: HideViewModel) {
         if (vm.busy) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
-                Text(stringResource(R.string.hiding), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(if (vm.carrier == Carrier.Text) R.string.hiding_text else R.string.hiding), style = MaterialTheme.typography.bodySmall)
             }
-        } else if (blocker != null && cover != null && !vm.loading) {
+        } else if (blocker != null && (cover != null || vm.carrier == Carrier.Text) && !vm.loading) {
             Text(
                 stringResource(blocker),
                 style = MaterialTheme.typography.bodySmall,
@@ -380,7 +414,16 @@ fun HideScreen(vm: HideViewModel) {
             Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodyMedium)
         }
 
-        if (result != null) {
+        val textResult = vm.textResult
+        if (vm.carrier == Carrier.Text && textResult != null) {
+            TextResultSection(
+                result = textResult,
+                onSave = { saveImage.launch(NewDocument(textResult.name, "text/plain")) },
+                onError = { vm.errorText = it },
+            )
+        }
+
+        if (vm.carrier == Carrier.Image && result != null) {
             Section(stringResource(R.string.hide_done_title)) {
                 Text(
                     stringResource(R.string.hide_done_rating, detectabilityLabel(result.detectability)),
@@ -428,5 +471,126 @@ private fun RecipientOption(label: String, selected: Boolean, onSelect: () -> Un
     ) {
         RadioButton(selected = selected, onClick = null)
         Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 8.dp))
+    }
+}
+
+@Composable
+private fun TextCarrierSection(vm: HideViewModel) {
+    Section(stringResource(R.string.text_kind_title)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(
+                selected = vm.textMode == TextMode.WORDS,
+                onClick = { vm.selectTextMode(TextMode.WORDS) },
+                label = { Text(stringResource(R.string.text_mode_words)) },
+                enabled = !vm.busy,
+            )
+            FilterChip(
+                selected = vm.textMode == TextMode.ZERO_WIDTH,
+                onClick = { vm.selectTextMode(TextMode.ZERO_WIDTH) },
+                label = { Text(stringResource(R.string.text_mode_zero_width)) },
+                enabled = !vm.busy,
+            )
+        }
+        Text(
+            stringResource(if (vm.textMode == TextMode.WORDS) R.string.text_mode_words_about else R.string.text_mode_zero_width_about),
+            style = MaterialTheme.typography.bodySmall,
+            color = if (vm.textMode == TextMode.WORDS) {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            } else {
+                detectabilityColor(Detectability.HIGH)
+            },
+        )
+        if (vm.textMode == TextMode.ZERO_WIDTH) {
+            OutlinedTextField(
+                value = vm.coverText,
+                onValueChange = { vm.coverText = it },
+                label = { Text(stringResource(R.string.cover_text_label)) },
+                supportingText = { Text(stringResource(R.string.cover_text_hint)) },
+                minLines = 2,
+                modifier = Modifier.fillMaxWidth(),
+            )
+        }
+    }
+}
+
+@Composable
+private fun TextSizeNote(vm: HideViewModel) {
+    val fit = vm.textFit
+    val words = vm.textMode == TextMode.WORDS
+    val note = when {
+        fit == null -> null
+        !fit.fits -> stringResource(R.string.text_too_long, fit.maxTextBytes.toLong())
+        words -> pluralStringResource(R.plurals.text_size_words, fit.size.toInt(), fit.size.toLong())
+        else -> pluralStringResource(R.plurals.text_size_chars, fit.size.toInt(), fit.size.toLong())
+    }
+    if (note != null) {
+        Text(
+            note,
+            style = MaterialTheme.typography.bodySmall,
+            color = if (fit?.fits == false) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+    val room = vm.textRoom
+    if (room != null) {
+        Text(
+            stringResource(R.string.text_size_room, room),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+/** Longest stretch of hidden text shown on screen; the rest is in Copy, Share and Save. */
+private const val PREVIEW_CHARS = 1200
+
+@Composable
+private fun TextResultSection(result: TextResult, onSave: () -> Unit, onError: (String) -> Unit) {
+    val context = LocalContext.current
+    Section(stringResource(R.string.hide_done_title)) {
+        val shown = if (result.mode == TextMode.ZERO_WIDTH) visibleText(result.text) else result.text
+        val preview = if (shown.length > PREVIEW_CHARS) shown.take(PREVIEW_CHARS) + "…" else shown
+        SelectionContainer {
+            Text(preview, style = MaterialTheme.typography.bodyMedium)
+        }
+        Text(
+            if (result.mode == TextMode.WORDS) {
+                pluralStringResource(R.plurals.text_done_words, result.size.toInt(), result.size)
+            } else {
+                pluralStringResource(R.plurals.text_done_chars, result.size.toInt(), result.size)
+            },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = { Clipboard.copySensitive(context, result.text) }) {
+                Icon(Icons.Outlined.ContentCopy, contentDescription = null)
+                Text(stringResource(R.string.copy), Modifier.padding(start = 8.dp))
+            }
+            OutlinedButton(onClick = {
+                try {
+                    val send = Intent(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, result.text)
+                    context.startActivity(Intent.createChooser(send, null))
+                } catch (e: Exception) {
+                    onError(errorMessage(context, e))
+                }
+            }) {
+                Icon(Icons.Outlined.Share, contentDescription = null)
+                Text(stringResource(R.string.share), Modifier.padding(start = 8.dp))
+            }
+            OutlinedButton(onClick = onSave) {
+                Icon(Icons.Outlined.Save, contentDescription = null)
+                Text(stringResource(R.string.save), Modifier.padding(start = 8.dp))
+            }
+        }
+        Text(
+            stringResource(
+                if (result.mode == TextMode.WORDS) R.string.text_send_words else R.string.text_send_zero_width,
+                Clipboard.CLEAR_AFTER_SECONDS,
+            ),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }

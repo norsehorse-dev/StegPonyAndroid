@@ -77,7 +77,7 @@
                 <data android:mimeType="image/png" />
                 <data android:mimeType="image/jpeg" />
             </intent-filter>
-            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
+            <!-- Share text or a key in. A key (age1 text, or an OpenPGP key file: PGPony shares application/pgp-keys) goes to Keys; other text goes to Reveal. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />

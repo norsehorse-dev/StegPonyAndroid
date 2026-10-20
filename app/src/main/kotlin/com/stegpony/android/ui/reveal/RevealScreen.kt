@@ -17,6 +17,10 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ContentCopy
+import androidx.compose.material.icons.outlined.ContentPaste
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.OutlinedTextField
+import android.content.ClipboardManager
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Save
@@ -81,34 +85,88 @@ fun RevealScreen(vm: RevealViewModel) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Section(stringResource(R.string.reveal_image_title)) {
+        Section(stringResource(R.string.reveal_in_title)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                OutlinedButton(
-                    onClick = {
-                        pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    },
-                    enabled = !vm.busy,
-                ) {
-                    Icon(Icons.Outlined.Image, contentDescription = null)
-                    Text(stringResource(R.string.pick_photo), Modifier.padding(start = 8.dp))
+                FilterChip(
+                    selected = vm.source == RevealSource.Image,
+                    onClick = { vm.selectSource(RevealSource.Image) },
+                    label = { Text(stringResource(R.string.carrier_photo)) },
+                    enabled = !vm.blocked,
+                )
+                FilterChip(
+                    selected = vm.source == RevealSource.Text,
+                    onClick = { vm.selectSource(RevealSource.Text) },
+                    label = { Text(stringResource(R.string.carrier_text)) },
+                    enabled = !vm.blocked,
+                )
+            }
+        }
+
+        if (vm.source == RevealSource.Image) {
+            Section(stringResource(R.string.reveal_image_title)) {
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        },
+                        enabled = !vm.busy,
+                    ) {
+                        Icon(Icons.Outlined.Image, contentDescription = null)
+                        Text(stringResource(R.string.pick_photo), Modifier.padding(start = 8.dp))
+                    }
+                    OutlinedButton(onClick = { pickFile.launch(arrayOf("image/jpeg", "image/png")) }, enabled = !vm.busy) {
+                        Icon(Icons.Outlined.Folder, contentDescription = null)
+                        Text(stringResource(R.string.pick_file), Modifier.padding(start = 8.dp))
+                    }
                 }
-                OutlinedButton(onClick = { pickFile.launch(arrayOf("image/jpeg", "image/png")) }, enabled = !vm.busy) {
-                    Icon(Icons.Outlined.Folder, contentDescription = null)
-                    Text(stringResource(R.string.pick_file), Modifier.padding(start = 8.dp))
+                val image = vm.image
+                if (image != null) {
+                    Text(image.name, style = MaterialTheme.typography.bodyMedium)
+                } else {
+                    Text(
+                        stringResource(R.string.reveal_image_hint),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (vm.loading) {
+                    CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
                 }
             }
-            val image = vm.image
-            if (image != null) {
-                Text(image.name, style = MaterialTheme.typography.bodyMedium)
-            } else {
+        } else {
+            Section(stringResource(R.string.reveal_text_title)) {
+                OutlinedTextField(
+                    value = vm.pastedText,
+                    onValueChange = { vm.pastedText = it },
+                    label = { Text(stringResource(R.string.reveal_text_label)) },
+                    minLines = 3,
+                    maxLines = 10,
+                    enabled = !vm.blocked,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedButton(
+                        onClick = {
+                            val clip = context.getSystemService(ClipboardManager::class.java)?.primaryClip
+                            val pasted = clip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.coerceToText(context)?.toString()
+                            if (pasted != null) vm.pastedText = pasted
+                        },
+                        enabled = !vm.blocked,
+                    ) {
+                        Icon(Icons.Outlined.ContentPaste, contentDescription = null)
+                        Text(stringResource(R.string.paste), Modifier.padding(start = 8.dp))
+                    }
+                    if (vm.pastedText.isNotEmpty()) {
+                        TextButton(onClick = { vm.pastedText = "" }, enabled = !vm.blocked) {
+                            Text(stringResource(R.string.clear))
+                        }
+                    }
+                }
                 Text(
-                    stringResource(R.string.reveal_image_hint),
+                    stringResource(R.string.reveal_text_hint),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-            }
-            if (vm.loading) {
-                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
             }
         }
 
@@ -131,7 +189,7 @@ fun RevealScreen(vm: RevealViewModel) {
         if (hardwareKeysUsable) {
             OutlinedButton(
                 onClick = vm::openCard,
-                enabled = vm.hasImage && !vm.busy,
+                enabled = vm.hasInput && !vm.busy,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(Icons.Outlined.Key, contentDescription = null)
@@ -161,7 +219,10 @@ fun RevealScreen(vm: RevealViewModel) {
         when (val outcome = vm.outcome) {
             null -> Unit
             RevealOutcome.NothingFound -> Section(stringResource(R.string.nothing_found_title)) {
-                Text(stringResource(R.string.nothing_found_body), style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    stringResource(if (vm.source == RevealSource.Text) R.string.nothing_found_text_body else R.string.nothing_found_body),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
             is RevealOutcome.Found -> when (val p = outcome.payload) {
                 is Payload.Text -> Section(stringResource(R.string.found_text_title)) {

@@ -28,5 +28,6 @@ class FilesTest {
             TimeZone.setDefault(zone)
         }
         assertTrue(Files.outputName("png").matches(Regex("IMG_\\d{8}_\\d{6}\\.png")))
+        assertTrue(Files.textOutputName().matches(Regex("Note_\\d{8}_\\d{6}\\.txt")))
     }
 }

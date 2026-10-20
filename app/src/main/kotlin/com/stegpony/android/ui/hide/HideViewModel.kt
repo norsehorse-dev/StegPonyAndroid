@@ -28,9 +28,17 @@ import uniffi.stegpony_ffi.HideSecret
 import uniffi.stegpony_ffi.ImageFormat
 import uniffi.stegpony_ffi.ImageMode
 import uniffi.stegpony_ffi.Payload
+import uniffi.stegpony_ffi.StegException
+import uniffi.stegpony_ffi.TextFit
+import uniffi.stegpony_ffi.TextMode
 import uniffi.stegpony_ffi.filePayloadLen
+import uniffi.stegpony_ffi.hideText
 import uniffi.stegpony_ffi.parseRecipient
+import uniffi.stegpony_ffi.textFit
 import uniffi.stegpony_ffi.textPayloadLen
+
+/** What the payload is hidden in: a photo, or text to paste somewhere. */
+enum class Carrier { Image, Text }
 
 enum class PayloadKind { Text, File }
 enum class KeyKind { Passphrase, Recipient }
@@ -67,7 +75,17 @@ class HideResult(val bytes: ByteArray, val format: ImageFormat, val detectabilit
     val mime: String get() = if (format == ImageFormat.JPEG) "image/jpeg" else "image/png"
 }
 
+/** Text with the payload in it: StegPony words, or the cover message with invisible characters. */
+class TextResult(val text: String, val mode: TextMode, val size: Long, val name: String)
+
 class HideViewModel(app: Application) : AndroidViewModel(app) {
+    var carrier by mutableStateOf(Carrier.Image)
+        private set
+    var textMode by mutableStateOf(TextMode.WORDS)
+        private set
+    /** The visible message invisible characters are placed in. */
+    var coverText by mutableStateOf("")
+
     var cover by mutableStateOf<LoadedCover?>(null)
         private set
     var mode by mutableStateOf(ImageMode.JPEG)
@@ -109,6 +127,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     var busy by mutableStateOf(false)
         private set
     var result by mutableStateOf<HideResult?>(null)
+        private set
+    var textResult by mutableStateOf<TextResult?>(null)
         private set
     var errorText by mutableStateOf<String?>(null)
 
@@ -158,6 +178,20 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                 loading = false
             }
         }
+    }
+
+    fun selectCarrier(c: Carrier) {
+        if (busy || c == carrier) return
+        carrier = c
+        result = null
+        textResult = null
+        errorText = null
+    }
+
+    fun selectTextMode(m: TextMode) {
+        if (busy) return
+        textMode = m
+        textResult = null
     }
 
     fun selectMode(m: ImageMode) {
@@ -219,6 +253,20 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
 
     val capacity: CoverCapacity? get() = capacities[mode]
 
+    /** How big the hidden text will be, or null when there is nothing to hide yet. */
+    val textFit: TextFit?
+        get() {
+            val len = payloadLen ?: return null
+            return textFit(textMode, len.toULong(), decoyLen?.toULong())
+        }
+
+    /** Bytes the message (or decoy) can grow before the hidden text gets longer. */
+    val textRoom: Long?
+        get() {
+            val f = textFit?.takeIf { it.fits } ?: return null
+            return (f.bucketPayloadBytes.toLong() - maxOf(payloadLen ?: 0L, decoyLen ?: 0L)).coerceAtLeast(0L)
+        }
+
     /** Whether the payload (and decoy) fit in the current mode, once capacity is known. */
     val fit: Fit?
         get() {
@@ -231,10 +279,12 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     /** What still stands between the user and the Hide button, or null when ready. */
     val blocker: Int?
         get() = when {
-            cover == null -> R.string.need_cover
-            capacity == null -> R.string.reading_cover
+            carrier == Carrier.Image && cover == null -> R.string.need_cover
+            carrier == Carrier.Image && capacity == null -> R.string.reading_cover
             payloadLen == null -> R.string.need_payload
-            fit?.fits != true -> R.string.error_does_not_fit
+            carrier == Carrier.Image && fit?.fits != true -> R.string.error_does_not_fit
+            carrier == Carrier.Text && textFit?.fits != true -> R.string.error_text_too_long
+            carrier == Carrier.Text && textMode == TextMode.ZERO_WIDTH && coverText.isBlank() -> R.string.need_cover_text
             keyKind == KeyKind.Passphrase && passphrase.isEmpty() -> R.string.need_passphrase
             keyKind == KeyKind.Passphrase && passphrase != passphraseAgain -> R.string.passphrases_differ
             keyKind == KeyKind.Recipient && effectiveRecipient.isEmpty() -> R.string.need_recipient
@@ -245,42 +295,58 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         }
 
     fun hide() {
-        val c = cover ?: return
         if (busy || blocker != null) return
+        val c = cover
+        if (carrier == Carrier.Image && c == null) return
         errorText = null
         result = null
+        textResult = null
         busy = true
         viewModelScope.launch {
             try {
-                val out = withContext(Dispatchers.Default) {
-                    val secret = when (keyKind) {
-                        KeyKind.Passphrase -> HideSecret.Passphrase(passphrase)
-                        KeyKind.Recipient -> HideSecret.Recipient(parseRecipient(effectiveRecipient))
-                    }
-                    val payload = when (payloadKind) {
-                        PayloadKind.Text -> Payload.Text(text)
-                        PayloadKind.File -> {
-                            val f = file ?: throw IllegalStateException("no file")
-                            val data = withContext(Dispatchers.IO) {
-                                Files.readBytes(context, f.uri, Files.MAX_PAYLOAD_BYTES)
-                            }
-                            Payload.File(f.name, f.mime ?: OCTET_STREAM, data)
-                        }
-                    }
-                    val decoy = if (decoyOn) Decoy(Payload.Text(decoyText), HideSecret.Passphrase(decoyPassphrase)) else null
-                    c.cover.hide(mode, payload, secret, decoy, keepMetadata && mode == ImageMode.JPEG)
+                val secret = when (keyKind) {
+                    KeyKind.Passphrase -> HideSecret.Passphrase(passphrase)
+                    KeyKind.Recipient -> HideSecret.Recipient(parseRecipient(effectiveRecipient))
                 }
-                val ext = if (out.format == ImageFormat.JPEG) "jpg" else "png"
-                result = HideResult(out.image, out.format, out.detectability, Files.outputName(ext))
-                // Remember the cover, and the output, so neither is used as a
-                // cover again without a warning. Best effort.
-                runCatching { CoverHistory.add(context, c.fingerprint, CoverHistory.fingerprint(out.image)) }
+                val payload = when (payloadKind) {
+                    PayloadKind.Text -> Payload.Text(text)
+                    PayloadKind.File -> {
+                        val f = file ?: throw IllegalStateException("no file")
+                        val data = withContext(Dispatchers.IO) {
+                            Files.readBytes(context, f.uri, Files.MAX_PAYLOAD_BYTES)
+                        }
+                        Payload.File(f.name, f.mime ?: OCTET_STREAM, data)
+                    }
+                }
+                val decoy = if (decoyOn) Decoy(Payload.Text(decoyText), HideSecret.Passphrase(decoyPassphrase)) else null
+                if (carrier == Carrier.Text) {
+                    val mode = textMode
+                    val size = textFit?.size?.toLong() ?: 0L
+                    val out = withContext(Dispatchers.Default) {
+                        hideText(mode, if (mode == TextMode.ZERO_WIDTH) coverText else "", payload, secret, decoy)
+                    }
+                    textResult = TextResult(out, mode, size, Files.textOutputName())
+                } else {
+                    val loaded = c ?: return@launch
+                    val out = withContext(Dispatchers.Default) {
+                        loaded.cover.hide(mode, payload, secret, decoy, keepMetadata && mode == ImageMode.JPEG)
+                    }
+                    val ext = if (out.format == ImageFormat.JPEG) "jpg" else "png"
+                    result = HideResult(out.image, out.format, out.detectability, Files.outputName(ext))
+                    // Remember the cover, and the output, so neither is used as a
+                    // cover again without a warning. Best effort.
+                    runCatching { CoverHistory.add(context, loaded.fingerprint, CoverHistory.fingerprint(out.image)) }
+                }
                 // Secrets are not kept around once used.
                 passphrase = ""
                 passphraseAgain = ""
                 decoyPassphrase = ""
             } catch (e: Throwable) {
-                errorText = errorMessage(context, e)
+                errorText = if (carrier == Carrier.Text && e is StegException.PayloadTooLarge) {
+                    context.getString(R.string.error_text_too_long)
+                } else {
+                    errorMessage(context, e)
+                }
             } finally {
                 busy = false
             }
@@ -288,10 +354,13 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun save(uri: Uri) {
-        val r = result ?: return
+        val bytes = when (carrier) {
+            Carrier.Image -> result?.bytes
+            Carrier.Text -> textResult?.text?.toByteArray(Charsets.UTF_8)
+        } ?: return
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) { Files.write(context, uri, r.bytes) }
+                withContext(Dispatchers.IO) { Files.write(context, uri, bytes) }
             } catch (e: Throwable) {
                 errorText = errorMessage(context, e)
             }
@@ -301,6 +370,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     /** Starts over with a new cover; the payload and keys stay. */
     fun clearResult() {
         result = null
+        textResult = null
     }
 
     override fun onCleared() {

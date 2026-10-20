@@ -28,16 +28,16 @@ sealed interface Incoming {
     /** An image to look inside: goes to Reveal. */
     data class Image(val uri: Uri) : Incoming
 
-    /** Shared text, such as an age1… key: goes to Keys. */
-    data class KeyText(val text: String) : Incoming
+    /** Shared text: a key goes to Keys, anything else to Reveal (see SharedText). */
+    data class Text(val text: String) : Incoming
 
     /** A key file, such as PGPony's application/pgp-keys share: goes to Keys. */
     data class KeyFile(val uri: Uri) : Incoming
 }
 
 /**
- * Single activity. An image shared in, or opened with StegPony, goes straight
- * to Reveal; a key shared in goes to Keys.
+ * Single activity. An image or text shared in, or an image opened with
+ * StegPony, goes straight to Reveal; a key shared in goes to Keys.
  */
 class MainActivity : AppCompatActivity() {
     private val incoming = mutableStateOf<Incoming?>(null)
@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
         return when {
             type.startsWith("image/") -> uri?.let { Incoming.Image(it) }
             uri != null -> Incoming.KeyFile(uri)
-            else -> intent.getStringExtra(Intent.EXTRA_TEXT)?.let { Incoming.KeyText(it) }
+            else -> intent.getStringExtra(Intent.EXTRA_TEXT)?.let { Incoming.Text(it) }
         }
     }
 }
