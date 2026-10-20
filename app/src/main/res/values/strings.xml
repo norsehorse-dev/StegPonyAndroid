@@ -211,8 +211,6 @@
     <string name="about_app_version">StegPony %1$s</string>
     <string name="about_core_version">Core %1$s</string>
     <string name="about_format_version">Image format version %1$d</string>
-    <string name="limits_title">What StegPony can\'t promise</string>
-    <string name="limits_body">Hiding lowers the odds of being noticed. It doesn\'t make it impossible. A large message in a small photo, a cover that exists somewhere else, or someone who already knows you use StegPony all weaken it. Anything that re-encodes the image, such as resizing, filters or a messenger\'s photo mode, destroys what\'s hidden.</string>
 
     <!-- Errors -->
     <string name="error_bad_image">This image couldn\'t be read.</string>
@@ -228,4 +226,45 @@
     <string name="error_file_too_large">That file is over %1$d MB.</string>
     <string name="error_io">The file couldn\'t be read or written.</string>
     <string name="error_memory">Not enough memory for this image.</string>
+
+    <!-- Help, More from NorseHorse, About -->
+    <string name="help_title">Help</string>
+    <string name="help_row_title">How StegPony works, and its limits</string>
+    <string name="help_row_subtitle">Read this before relying on it</string>
+    <string name="back">Back</string>
+    <string name="help_what_title">What StegPony does</string>
+    <string name="help_what_body">StegPony encrypts a message or file and hides it in the fine detail of a photo. The photo still looks and opens like any other. Without the right passphrase or key, there is nothing to find: no header, no marker, and no way to tell an image with something hidden from one without.\n\nPassphrases are stretched with Argon2id, keys use X25519 (the same keys as age), and the content is sealed with ChaCha20-Poly1305. Every image has room for two hidden messages; the second is either your decoy or random filler, so the two cases look the same.</string>
+    <string name="help_sending_title">Sending the image</string>
+    <string name="help_sending_body">Send the file exactly as StegPony saved it: as a file or document attachment, by email, or through a service that keeps files unchanged. Anything that re-encodes the picture destroys what\'s hidden. That includes most messengers\' photo mode, resizing, editing, filters, and some cloud and social services.\n\nNever send or post the original photo as well. Anyone holding both can compare them.</string>
+    <string name="help_covers_title">Choosing a cover</string>
+    <string name="help_covers_body">The best cover is a photo you take just for this, with StegPony\'s camera or your own, that has never been shared anywhere. Use each photo once. StegPony warns when a photo was used before, or looks like a download or a messenger copy.\n\nJPEG mode keeps the photo a JPEG with your camera\'s own compression, which is what photos from a phone normally are. Lossless mode saves a PNG; use it for images that were PNGs to begin with.</string>
+    <string name="help_rating_title">Detectability rating</string>
+    <string name="help_rating_body">The rating says how hard the result should be to tell apart from an untouched photo, based on how much is hidden for the size and detail of the photo. Low, Medium and High come from tests with a standard detector on real phone photos, and are set below what those tests showed, because better detectors exist.\n\nLow is a good aim. Keep messages short, and use a large, detailed photo for files. A high rating doesn\'t mean the content can be read; it means someone looking for hidden content has a better chance of noticing that something is there.</string>
+    <string name="help_secrets_title">Passphrases and keys</string>
+    <string name="help_secrets_body">A passphrase protects the message only as well as it resists guessing. Use several random words, not something about you, and share it in person or over a channel you trust.\n\nWith a public key there is no shared secret: you hide for someone\'s age1… key, and only their secret key opens it. A Curve25519 OpenPGP key from PGPony or GnuPG works the same way. StegPony keeps your secret keys encrypted on this phone; it never stores passphrases.</string>
+    <string name="help_hardware_title">Hardware keys</string>
+    <string name="help_hardware_body">An OpenPGP hardware key (YubiKey, Nitrokey, Token2) with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
+    <string name="help_decoy_title">Decoy</string>
+    <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image, give them the decoy. Nobody can tell from the image whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows every image has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
+    <string name="help_phone_title">On this phone</string>
+    <string name="help_phone_body">StegPony has no network access. Your keys and contacts are encrypted with a key held in Android\'s secure hardware, and are left out of backups and phone transfers. Screenshots are blocked on Reveal and Keys, and copied messages leave the clipboard after a minute.\n\nThe app lock and the launcher disguise slow down a casual look at your phone. They don\'t hide that StegPony is installed: its real name still shows in Android\'s app settings.</string>
+    <string name="help_limits_title">What StegPony can\'t protect against</string>
+    <string name="help_limits_body">Hiding lowers the odds of being noticed; it doesn\'t make them zero. StegPony can\'t protect you from:\n\n• someone who has the original photo you hid in;\n• a detector trained on photos from your own camera, especially with a lot hidden;\n• someone who knows StegPony is installed and insists on a second passphrase;\n• a forensic examination of your unlocked phone;\n• anyone who sees whom you send images to, and when. StegPony hides what you send, not that you sent it.</string>
+    <string name="more_title">More from NorseHorse</string>
+    <string name="more_footer">Other apps from the same developer.</string>
+    <string name="more_family">pony.norsehor.se</string>
+    <string name="more_pgpony">OpenPGP messages, files, and keys</string>
+    <string name="more_agepony">Simple, modern file encryption (age)</string>
+    <string name="more_passpony">Password manager for pass and passage</string>
+    <string name="more_vaultpony">VeraCrypt compatible encrypted vaults</string>
+    <string name="more_scrubpony">Remove location and other metadata from photos</string>
+    <string name="more_tappony">Tap an NFC tag to trigger a webhook</string>
+    <string name="more_quorumpony">Quorum key backup and recovery</string>
+    <string name="more_carrierpony">PGP chat and encrypted files</string>
+    <string name="more_burnpony">Self-destructing encrypted messages</string>
+    <string name="more_relaypony">Encrypted file transfer</string>
+    <string name="about_source_app">Source code (app)</string>
+    <string name="about_source_core">Source code (core)</string>
+    <string name="licenses_title">Open-source licenses</string>
+    <string name="licenses_row_subtitle">The open-source parts StegPony is built from</string>
 </resources>

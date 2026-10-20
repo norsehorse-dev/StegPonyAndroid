@@ -8,7 +8,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import android.content.Intent
+import android.net.Uri
+import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -48,8 +54,21 @@ import com.stegpony.android.ui.common.Section
 import uniffi.stegpony_ffi.coreVersion
 import uniffi.stegpony_ffi.formatVersion
 
+private enum class SettingsPage { Main, Help, Licenses }
+
 @Composable
 fun SettingsScreen() {
+    var page by rememberSaveable { mutableStateOf(SettingsPage.Main) }
+    BackHandler(enabled = page != SettingsPage.Main) { page = SettingsPage.Main }
+    when (page) {
+        SettingsPage.Main -> SettingsMain(onHelp = { page = SettingsPage.Help }, onLicenses = { page = SettingsPage.Licenses })
+        SettingsPage.Help -> HelpScreen(onBack = { page = SettingsPage.Main })
+        SettingsPage.Licenses -> LicensesScreen(onBack = { page = SettingsPage.Main })
+    }
+}
+
+@Composable
+private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var historyOn by remember { mutableStateOf(CoverHistory.isEnabled(context)) }
@@ -68,6 +87,9 @@ fun SettingsScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        Section(stringResource(R.string.help_title)) {
+            LinkRow(stringResource(R.string.help_row_title), stringResource(R.string.help_row_subtitle), onClick = onHelp)
+        }
         Section(stringResource(R.string.privacy_title)) {
             SettingSwitch(
                 title = stringResource(R.string.app_lock_switch),
@@ -186,13 +208,23 @@ fun SettingsScreen() {
                 }
             }
         }
+        Section(stringResource(R.string.more_title)) {
+            OTHER_APPS.forEach { app ->
+                LinkRow(app.name, stringResource(app.tagline)) { openUrl(context, app.url) }
+            }
+            Text(
+                stringResource(R.string.more_footer),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Section(stringResource(R.string.about_title)) {
             Text(stringResource(R.string.about_app_version, BuildConfig.VERSION_NAME), style = MaterialTheme.typography.bodyMedium)
             Text(stringResource(R.string.about_core_version, core), style = MaterialTheme.typography.bodyMedium)
             Text(stringResource(R.string.about_format_version, format.toInt()), style = MaterialTheme.typography.bodyMedium)
-        }
-        Section(stringResource(R.string.limits_title)) {
-            Text(stringResource(R.string.limits_body), style = MaterialTheme.typography.bodyMedium)
+            LinkRow(stringResource(R.string.about_source_app), APP_REPO_URL.removePrefix("https://")) { openUrl(context, APP_REPO_URL) }
+            LinkRow(stringResource(R.string.about_source_core), CORE_REPO_URL.removePrefix("https://")) { openUrl(context, CORE_REPO_URL) }
+            LinkRow(stringResource(R.string.licenses_title), stringResource(R.string.licenses_row_subtitle), onClick = onLicenses)
         }
     }
 }
@@ -210,3 +242,42 @@ private fun SettingSwitch(title: String, about: String, checked: Boolean, onChan
         Switch(checked = checked, onCheckedChange = onChange)
     }
 }
+
+@Composable
+private fun LinkRow(title: String, subtitle: String, onClick: () -> Unit) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 6.dp),
+    ) {
+        Text(title, style = MaterialTheme.typography.bodyMedium)
+        Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    }
+}
+
+/** Opens a link in the browser. StegPony itself has no network access. */
+fun openUrl(context: android.content.Context, url: String) {
+    runCatching {
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    }
+}
+
+private data class OtherApp(val name: String, @StringRes val tagline: Int, val url: String)
+
+private val OTHER_APPS = listOf(
+    OtherApp("All NorseHorse Pony apps", R.string.more_family, "https://pony.norsehor.se"),
+    OtherApp("PGPony", R.string.more_pgpony, "https://pgpony.app"),
+    OtherApp("AgePony", R.string.more_agepony, "https://agepony.com"),
+    OtherApp("PassPony", R.string.more_passpony, "https://passpony.app"),
+    OtherApp("VaultPony", R.string.more_vaultpony, "https://vaultpony.app"),
+    OtherApp("ScrubPony", R.string.more_scrubpony, "https://scrubpony.app"),
+    OtherApp("TapPony", R.string.more_tappony, "https://tappony.app"),
+    OtherApp("QuorumPony", R.string.more_quorumpony, "https://quorumpony.com"),
+    OtherApp("CarrierPony", R.string.more_carrierpony, "https://carrierpony.com"),
+    OtherApp("BurnPony", R.string.more_burnpony, "https://burnpony.app"),
+    OtherApp("RelayPony", R.string.more_relaypony, "https://relaypony.app"),
+)
+
+private const val APP_REPO_URL = "https://github.com/norsehorse-dev/StegPonyAndroid"
+private const val CORE_REPO_URL = "https://github.com/norsehorse-dev/StegPonyCore"
