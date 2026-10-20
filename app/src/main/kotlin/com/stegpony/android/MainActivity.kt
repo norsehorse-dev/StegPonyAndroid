@@ -6,7 +6,18 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.IntentFilter
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.core.content.ContextCompat
+import com.stegpony.android.lock.AppLock
+import com.stegpony.android.lock.ScreenPrivacy
+import com.stegpony.android.ui.LocalTab
+import com.stegpony.android.ui.Tab
+import com.stegpony.android.ui.lock.LockScreen
 import androidx.core.content.IntentCompat
 import com.stegpony.android.io.Files
 import com.stegpony.android.ui.StegPonyRoot
@@ -38,14 +49,52 @@ class MainActivity : AppCompatActivity() {
             Files.clearShared(this)
             incoming.value = incomingFrom(intent)
         }
+        ScreenPrivacy.load(this)
+        // Decide before the first frame, so a locked app never shows its screens.
+        AppLock.onStart(this)
+        ContextCompat.registerReceiver(
+            this,
+            screenOff,
+            IntentFilter(Intent.ACTION_SCREEN_OFF),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         setContent {
             StegPonyTheme {
-                StegPonyRoot(
-                    incoming = incoming.value,
-                    onIncomingHandled = { incoming.value = null },
-                )
+                val tab = rememberSaveable { mutableStateOf(Tab.Hide) }
+                CompositionLocalProvider(LocalTab provides tab) {
+                    if (AppLock.locked) {
+                        LockScreen()
+                    } else {
+                        StegPonyRoot(
+                            incoming = incoming.value,
+                            onIncomingHandled = { incoming.value = null },
+                        )
+                    }
+                }
             }
         }
+    }
+
+    /** With the app lock on, the screen turning off locks at once. */
+    private val screenOff = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            AppLock.lockNow(this@MainActivity)
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        AppLock.onStart(this)
+    }
+
+    override fun onStop() {
+        AppLock.onStop()
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        runCatching { unregisterReceiver(screenOff) }
+        super.onDestroy()
     }
 
     override fun onNewIntent(intent: Intent) {

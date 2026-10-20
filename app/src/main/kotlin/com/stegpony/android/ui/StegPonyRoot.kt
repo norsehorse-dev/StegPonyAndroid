@@ -17,9 +17,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,6 +36,9 @@ import com.stegpony.android.ui.reveal.RevealScreen
 import com.stegpony.android.ui.reveal.RevealViewModel
 import com.stegpony.android.ui.settings.SettingsScreen
 
+/** The selected tab, provided from above the lock screen (see MainActivity). */
+val LocalTab = staticCompositionLocalOf<MutableState<Tab>> { error("no tab state") }
+
 enum class Tab(@StringRes val label: Int, val icon: ImageVector) {
     Hide(R.string.tab_hide, Icons.Outlined.VisibilityOff),
     Reveal(R.string.tab_reveal, Icons.Outlined.Visibility),
@@ -45,7 +48,9 @@ enum class Tab(@StringRes val label: Int, val icon: ImageVector) {
 
 @Composable
 fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
-    var tab by rememberSaveable { mutableStateOf(Tab.Hide) }
+    // Held by the activity's composition, above the lock screen, so the tab
+    // survives being locked and unlocked.
+    var tab by LocalTab.current
     val hideVm: HideViewModel = viewModel()
     val revealVm: RevealViewModel = viewModel()
     val keysVm: KeysViewModel = viewModel()

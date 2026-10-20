@@ -185,6 +185,15 @@
     <string name="card_failed">The hardware key reported a problem: %1$s</string>
 
     <!-- Settings -->
+    <string name="privacy_title">Privacy</string>
+    <string name="app_lock_switch">App lock</string>
+    <string name="app_lock_about">Ask for your fingerprint, face or screen lock to open StegPony, and again after a minute away or when the screen turns off.</string>
+    <string name="app_lock_no_screen_lock">Set a screen lock on the phone first. The app lock uses it.</string>
+    <string name="lock_now">Lock now</string>
+    <string name="lock_title">Unlock StegPony</string>
+    <string name="lock_unlock">Unlock</string>
+    <string name="secure_hide_switch">Block screenshots on Hide</string>
+    <string name="secure_hide_about">Also keeps Hide out of the recent-apps view. Reveal and Keys always block screenshots.</string>
     <string name="covers_title">Covers</string>
     <string name="cover_history_switch">Warn when a cover is reused</string>
     <string name="cover_history_about">StegPony keeps fingerprints of the photos you\'ve hidden in, encrypted and on this phone only, to warn before one is used again. Turning this off forgets them.</string>

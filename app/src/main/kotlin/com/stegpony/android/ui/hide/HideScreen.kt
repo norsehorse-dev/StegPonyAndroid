@@ -38,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.stegpony.android.lock.ScreenPrivacy
 import com.stegpony.android.ui.camera.CameraCaptureDialog
 import uniffi.stegpony_ffi.Detectability
 import androidx.compose.runtime.LaunchedEffect
@@ -71,8 +72,9 @@ import uniffi.stegpony_ffi.ImageMode
 
 @Composable
 fun HideScreen(vm: HideViewModel) {
-    // The message and passphrases are on this screen too.
-    SecureScreenEffect()
+    // The message and passphrases are on this screen too; Settings can allow
+    // screenshots here.
+    if (ScreenPrivacy.secureHide) SecureScreenEffect()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
