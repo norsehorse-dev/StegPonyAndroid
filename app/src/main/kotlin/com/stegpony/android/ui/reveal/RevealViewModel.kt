@@ -25,7 +25,10 @@ sealed interface RevealOutcome {
 class RevealViewModel(app: Application) : AndroidViewModel(app) {
     var image by mutableStateOf<PickedFile?>(null)
         private set
-    private var imageBytes: ByteArray? = null
+    // State, not a plain field: canReveal reads it first, and a read Compose
+    // can't track would leave the Reveal button stuck until something else
+    // recomposed the screen.
+    private var imageBytes by mutableStateOf<ByteArray?>(null)
     var loading by mutableStateOf(false)
         private set
 
