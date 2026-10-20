@@ -4,11 +4,11 @@ Hide an encrypted message or file inside an ordinary photo, and get it back with
 
 Work in progress toward 1.0. What the development build does today:
 
-- Hide text or a file in a JPEG (kept as a JPEG, with the camera's own compression) or in a PNG, under a passphrase or someone's `age1…` public key, with an optional decoy under a second passphrase.
-- A capacity meter that rates how detectable the result would be (low, medium, high), from a steganalysis baseline on real phone photos.
-- Location and other private metadata removed by default.
-- Reveal with a passphrase; share an image into StegPony, or open one with it, to land on Reveal.
-- No network permission. Screenshots are blocked on Reveal and Keys.
+- **Hide** text or a file in a JPEG (kept as a JPEG, with the camera's own compression) or a PNG, under a passphrase, a contact's key or one of your own, with an optional decoy under a second passphrase. Take the cover with the in-app camera, or pick one; StegPony warns before a cover is reused, or when it looks like a download or a messenger copy.
+- **Detectability rating**: a capacity meter rates how detectable the result would be (low, medium, high), from a steganalysis baseline on real phone photos.
+- **Reveal** with a passphrase, your saved keys, a pasted secret key, or an OpenPGP hardware key (YubiKey, Nitrokey, Token2) over NFC or USB, where the key does the X25519 step and its secret never leaves it. Share an image into StegPony, or open one with it, to land on Reveal.
+- **Keys**: create age-compatible keys, import age identities and Curve25519 OpenPGP keys (from PGPony or GnuPG), add contacts by paste, file, QR code or share, and show your public key as a QR code. Keys and contacts are encrypted with a Keystore key and left out of backups.
+- **Privacy**: no network permission, location and other metadata removed by default, app lock, screenshots blocked, clipboard cleared after a minute, and an optional launcher disguise.
 
 Images go to the core as their exact file bytes and come back the same way. The app never decodes a cover to a bitmap for the core, and saves and shares the bytes the core wrote.
 
