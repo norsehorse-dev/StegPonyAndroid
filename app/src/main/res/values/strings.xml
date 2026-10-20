@@ -45,6 +45,8 @@
     <string name="passphrase_again_label">Passphrase again</string>
     <string name="recipient_label">Public key</string>
     <string name="recipient_hint">Paste their age1… key. Only their secret key will open it.</string>
+    <string name="recipient_yours">%1$s (yours)</string>
+    <string name="recipient_paste">Paste a key</string>
     <string name="hide_decoy_title">Decoy</string>
     <string name="decoy_about">A second message under a second passphrase. If someone makes you open the image, give them this one. Nobody can tell whether an image has a decoy.</string>
     <string name="decoy_message_label">Decoy message</string>
@@ -69,7 +71,11 @@
     <string name="reveal_image_title">Image</string>
     <string name="reveal_image_hint">Choose the image, or share it to StegPony from another app.</string>
     <string name="reveal_key_title">Open it with</string>
-    <string name="reveal_keys_soon">Opening with your own key comes with the Keys screen.</string>
+    <string name="reveal_no_keys">Add your own key on the Keys screen to open images hidden for you.</string>
+    <plurals name="reveal_tries_keys">
+        <item quantity="one">Leave the passphrase empty to open it with your key. Enter one only for an image hidden with a passphrase.</item>
+        <item quantity="other">Leave the passphrase empty to open it with your %1$d keys. Enter one only for an image hidden with a passphrase.</item>
+    </plurals>
     <string name="reveal_button">Reveal</string>
     <string name="revealing">Looking…</string>
     <string name="nothing_found_title">Nothing found</string>
@@ -79,7 +85,50 @@
     <string name="copy_clears">The clipboard clears after %1$d seconds.</string>
 
     <!-- Keys -->
-    <string name="keys_coming">Your identity, contacts\' keys and OpenPGP keys come in the next build. Until then, hide for someone by pasting their age1… key on the Hide screen.</string>
+    <string name="my_keys_title">Your keys</string>
+    <string name="my_keys_empty">No keys yet. Create one to receive images hidden for you, then share its public key.</string>
+    <string name="create_key">Create a key</string>
+    <string name="create_key_about">A new key works with age, so the public key can also receive files from age and AgePony.</string>
+    <string name="key_name_label">Name</string>
+    <string name="default_key_label">My key</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="key_created">Key created. Share its public key with whoever will hide things for you.</string>
+    <string name="import_key">Import</string>
+    <string name="import_key_about">Import an age identity file, or an OpenPGP secret key with a Curve25519 encryption key (cv25519 or X25519).</string>
+    <string name="imported_key_label">Imported key</string>
+    <string name="pgp_key_label">OpenPGP key</string>
+    <string name="key_imported">Key imported.</string>
+    <string name="pgp_passphrase_title">Key passphrase</string>
+    <string name="pgp_passphrase_about">This OpenPGP key is protected. Its passphrase is used once to unlock it and is not kept.</string>
+    <string name="unlock">Unlock</string>
+    <string name="source_generated">Created on this phone</string>
+    <string name="source_age">Imported age key</string>
+    <string name="source_pgp">OpenPGP key</string>
+    <string name="share_public_key">Share public key</string>
+    <string name="copy_public_key">Copy public key</string>
+    <string name="contacts_title">Contacts</string>
+    <string name="contacts_empty">Add the public keys of people you hide things for.</string>
+    <string name="add_contact">Add contact</string>
+    <string name="contact_name_label">Name</string>
+    <string name="contact_key_label">Public key (age1… or OpenPGP)</string>
+    <string name="contact_key_file">Load from a file</string>
+    <string name="contact_key_loaded">Key loaded:</string>
+    <string name="default_contact_name">Contact</string>
+    <string name="contact_added">Added %1$s.</string>
+    <string name="key_duplicate">You already have this key, as %1$s.</string>
+    <string name="delete">Delete</string>
+    <string name="delete_key_title">Delete %1$s?</string>
+    <string name="delete_key_body">Anything hidden for this key can no longer be opened on this phone. There is no undo.</string>
+    <string name="delete_contact_title">Delete %1$s?</string>
+    <string name="delete_contact_body">You can add them again from their public key.</string>
+    <string name="keys_unavailable_title">Keys unavailable</string>
+    <string name="keys_retry">Try again</string>
+    <string name="keys_reset">Start over</string>
+    <string name="keys_reset_title">Delete all keys and contacts?</string>
+    <string name="keys_reset_body">The saved keys can\'t be opened, so they are lost either way. Starting over deletes them and anything hidden for them can no longer be opened on this phone. There is no undo.</string>
+    <string name="error_age_passphrase_identity">This age identity file is protected with a passphrase. Export it without one, import it, then delete the copy.</string>
+    <string name="keys_unavailable_body">Your keys couldn\'t be opened (%1$s). Nothing has been changed.</string>
 
     <!-- Settings -->
     <string name="about_title">About</string>

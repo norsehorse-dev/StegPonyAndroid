@@ -118,4 +118,6 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     testImplementation("junit:junit:4.13.2")
+    // android.jar's org.json is a stub on the JVM; the real one for KeyringJsonTest.
+    testImplementation("org.json:json:20240303")
 }

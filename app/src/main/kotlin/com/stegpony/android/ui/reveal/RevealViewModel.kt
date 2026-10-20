@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
+import com.stegpony.android.keys.Keyring
 import com.stegpony.android.ui.common.errorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -66,15 +67,25 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
         return true
     }
 
-    val canReveal: Boolean get() = imageBytes != null && passphrase.isNotEmpty() && !busy && !loading
+    /** Ready once there is an image and something to try: a passphrase or at least one of your keys. */
+    fun canReveal(haveKeys: Boolean): Boolean =
+        imageBytes != null && (passphrase.isNotEmpty() || haveKeys) && !busy && !loading
 
     fun reveal() {
         val bytes = imageBytes ?: return
-        if (!canReveal) return
+        val mine = Keyring.current.mine
+        if (!canReveal(mine.isNotEmpty())) return
         errorText = null
         outcome = null
         busy = true
-        val secrets = listOf(RevealSecret.Passphrase(passphrase))
+        // A typed passphrase is tried alone. Trying your keys as well would
+        // defeat a decoy: someone made to open an image hidden for their own
+        // key types the decoy passphrase, and the key would open the real one.
+        val secrets: List<RevealSecret> = if (passphrase.isNotEmpty()) {
+            listOf(RevealSecret.Passphrase(passphrase))
+        } else {
+            mine.map { RevealSecret.Identity(it.identity) }
+        }
         viewModelScope.launch {
             try {
                 val found = withContext(Dispatchers.Default) { revealImage(bytes, secrets, emptyList()) }

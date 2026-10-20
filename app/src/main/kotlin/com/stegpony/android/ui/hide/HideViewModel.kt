@@ -11,6 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.stegpony.android.R
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
+import com.stegpony.android.keys.Keyring
 import com.stegpony.android.ui.common.errorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -60,7 +61,20 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     var keyKind by mutableStateOf(KeyKind.Passphrase)
     var passphrase by mutableStateOf("")
     var passphraseAgain by mutableStateOf("")
+    /** A pasted age1… key, used when no saved key is picked. */
     var recipient by mutableStateOf("")
+    /** The recipient of a contact or one of your own keys, picked from the keyring. */
+    var pickedRecipient by mutableStateOf<String?>(null)
+
+    /** A picked key counts only while it is still in the keyring. */
+    private val effectiveRecipient: String
+        get() {
+            val keys = Keyring.current
+            val picked = pickedRecipient?.takeIf { r ->
+                keys.contacts.any { it.recipient == r } || keys.mine.any { it.recipient == r }
+            }
+            return picked ?: recipient.trim()
+        }
 
     var decoyOn by mutableStateOf(false)
     var decoyText by mutableStateOf("")
@@ -184,7 +198,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
             fit?.fits != true -> R.string.error_does_not_fit
             keyKind == KeyKind.Passphrase && passphrase.isEmpty() -> R.string.need_passphrase
             keyKind == KeyKind.Passphrase && passphrase != passphraseAgain -> R.string.passphrases_differ
-            keyKind == KeyKind.Recipient && recipient.isBlank() -> R.string.need_recipient
+            keyKind == KeyKind.Recipient && effectiveRecipient.isEmpty() -> R.string.need_recipient
             decoyOn && decoyText.isEmpty() -> R.string.need_decoy_text
             decoyOn && decoyPassphrase.isEmpty() -> R.string.need_decoy_passphrase
             decoyOn && keyKind == KeyKind.Passphrase && decoyPassphrase == passphrase -> R.string.decoy_same_passphrase
@@ -202,7 +216,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                 val out = withContext(Dispatchers.Default) {
                     val secret = when (keyKind) {
                         KeyKind.Passphrase -> HideSecret.Passphrase(passphrase)
-                        KeyKind.Recipient -> HideSecret.Recipient(parseRecipient(recipient.trim()))
+                        KeyKind.Recipient -> HideSecret.Recipient(parseRecipient(effectiveRecipient))
                     }
                     val payload = when (payloadKind) {
                         PayloadKind.Text -> Payload.Text(text)

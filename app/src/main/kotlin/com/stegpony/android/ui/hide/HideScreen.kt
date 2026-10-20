@@ -29,7 +29,15 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.material3.RadioButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.semantics.Role
+import com.stegpony.android.keys.Keyring
+import com.stegpony.android.keys.KeyringState
+import com.stegpony.android.keys.Keys
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -72,6 +80,7 @@ fun HideScreen(vm: HideViewModel) {
         uri?.let(vm::save)
     }
 
+    val keys = (Keyring.state.collectAsState().value as? KeyringState.Ready)?.keys ?: Keys()
     val cover = vm.cover
     val capacity = vm.capacity
     val payloadLen = vm.payloadLen
@@ -225,14 +234,35 @@ fun HideScreen(vm: HideViewModel) {
                         isError = vm.passphraseAgain.isNotEmpty() && vm.passphraseAgain != vm.passphrase,
                     )
                 }
-                KeyKind.Recipient -> OutlinedTextField(
-                    value = vm.recipient,
-                    onValueChange = { vm.recipient = it },
-                    label = { Text(stringResource(R.string.recipient_label)) },
-                    supportingText = { Text(stringResource(R.string.recipient_hint)) },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                KeyKind.Recipient -> {
+                    val saved = (
+                        keys.contacts.map { it.name to it.recipient } +
+                            keys.mine.map { stringResource(R.string.recipient_yours, it.label) to it.recipient }
+                        ).distinctBy { it.second }
+                    // A picked key that has since been deleted falls back to pasting.
+                    LaunchedEffect(saved) {
+                        val picked = vm.pickedRecipient
+                        if (picked != null && saved.none { it.second == picked }) vm.pickedRecipient = null
+                    }
+                    saved.forEach { (name, r) ->
+                        RecipientOption(name, vm.pickedRecipient == r) { vm.pickedRecipient = r }
+                    }
+                    if (saved.isNotEmpty()) {
+                        RecipientOption(stringResource(R.string.recipient_paste), vm.pickedRecipient == null) {
+                            vm.pickedRecipient = null
+                        }
+                    }
+                    if (vm.pickedRecipient == null) {
+                        OutlinedTextField(
+                            value = vm.recipient,
+                            onValueChange = { vm.recipient = it },
+                            label = { Text(stringResource(R.string.recipient_label)) },
+                            supportingText = { Text(stringResource(R.string.recipient_hint)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                }
             }
         }
 
@@ -331,5 +361,18 @@ fun HideScreen(vm: HideViewModel) {
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun RecipientOption(label: String, selected: Boolean, onSelect: () -> Unit) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .selectable(selected = selected, onClick = onSelect, role = Role.RadioButton),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        RadioButton(selected = selected, onClick = null)
+        Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.padding(start = 8.dp))
     }
 }

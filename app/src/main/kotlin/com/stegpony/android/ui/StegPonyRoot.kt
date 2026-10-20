@@ -23,12 +23,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stegpony.android.R
 import com.stegpony.android.ui.hide.HideScreen
 import com.stegpony.android.ui.hide.HideViewModel
+import com.stegpony.android.keys.Keyring
 import com.stegpony.android.ui.keys.KeysScreen
+import com.stegpony.android.ui.keys.KeysViewModel
 import com.stegpony.android.ui.reveal.RevealScreen
 import com.stegpony.android.ui.reveal.RevealViewModel
 import com.stegpony.android.ui.settings.SettingsScreen
@@ -45,6 +48,9 @@ fun StegPonyRoot(incoming: Uri?, onIncomingHandled: () -> Unit) {
     var tab by rememberSaveable { mutableStateOf(Tab.Hide) }
     val hideVm: HideViewModel = viewModel()
     val revealVm: RevealViewModel = viewModel()
+    val keysVm: KeysViewModel = viewModel()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) { Keyring.load(context.applicationContext) }
 
     // Waits out a running reveal rather than dropping an image shared in meanwhile.
     LaunchedEffect(incoming, revealVm.busy) {
@@ -76,7 +82,7 @@ fun StegPonyRoot(incoming: Uri?, onIncomingHandled: () -> Unit) {
             when (tab) {
                 Tab.Hide -> HideScreen(hideVm)
                 Tab.Reveal -> RevealScreen(revealVm)
-                Tab.Keys -> KeysScreen()
+                Tab.Keys -> KeysScreen(keysVm)
                 Tab.Settings -> SettingsScreen()
             }
         }

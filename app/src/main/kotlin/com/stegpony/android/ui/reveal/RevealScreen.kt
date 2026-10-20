@@ -29,6 +29,9 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import com.stegpony.android.keys.Keyring
+import com.stegpony.android.keys.KeyringState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +56,7 @@ import uniffi.stegpony_ffi.Payload
 fun RevealScreen(vm: RevealViewModel) {
     SecureScreenEffect()
     val context = LocalContext.current
+    val myKeyCount = (Keyring.state.collectAsState().value as? KeyringState.Ready)?.keys?.mine?.size ?: 0
     val scope = rememberCoroutineScope()
     val pickPhoto = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         uri?.let(vm::open)
@@ -106,13 +110,17 @@ fun RevealScreen(vm: RevealViewModel) {
         Section(stringResource(R.string.reveal_key_title)) {
             PassphraseField(vm.passphrase, { vm.passphrase = it }, stringResource(R.string.passphrase_label))
             Text(
-                stringResource(R.string.reveal_keys_soon),
+                if (myKeyCount > 0) {
+                    context.resources.getQuantityString(R.plurals.reveal_tries_keys, myKeyCount, myKeyCount)
+                } else {
+                    stringResource(R.string.reveal_no_keys)
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
 
-        Button(onClick = vm::reveal, enabled = vm.canReveal, modifier = Modifier.fillMaxWidth()) {
+        Button(onClick = vm::reveal, enabled = vm.canReveal(myKeyCount > 0), modifier = Modifier.fillMaxWidth()) {
             Text(stringResource(R.string.reveal_button))
         }
         if (vm.busy) {
