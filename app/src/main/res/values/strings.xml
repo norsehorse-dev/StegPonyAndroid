@@ -67,6 +67,17 @@
     <string name="hide_done_rating">Hidden, %1$s.</string>
     <string name="send_as_file">Send it as a file or document. A messenger\'s photo mode recompresses the picture and destroys what\'s hidden. Don\'t share the original photo anywhere.</string>
 
+    <!-- Cover handling -->
+    <string name="take_photo">Camera</string>
+    <string name="camera_title">Take a cover photo</string>
+    <string name="camera_shutter">Take photo</string>
+    <string name="camera_failed">The photo couldn\'t be taken. Try again.</string>
+    <string name="camera_refused_cover">The camera wasn\'t allowed. Pick a photo you took earlier instead.</string>
+    <string name="cover_fresh">Photo taken just now. It isn\'t saved anywhere else.</string>
+    <string name="cover_note_reused">You\'ve hidden something in this photo before. Anyone holding two versions of one photo can compare them, so use a new one.</string>
+    <string name="cover_note_not_camera">This photo has no camera details, so it may be a download or a saved messenger image. If a copy exists elsewhere, it can be compared with yours. A photo you just took is safer.</string>
+    <string name="cover_note_downloads">This came from Downloads, so a copy may exist online and could be compared with yours. A photo you just took is safer.</string>
+
     <!-- Reveal -->
     <string name="reveal_image_title">Image</string>
     <string name="reveal_image_hint">Choose the image, or share it to StegPony from another app.</string>
@@ -174,6 +185,14 @@
     <string name="card_failed">The hardware key reported a problem: %1$s</string>
 
     <!-- Settings -->
+    <string name="covers_title">Covers</string>
+    <string name="cover_history_switch">Warn when a cover is reused</string>
+    <string name="cover_history_about">StegPony keeps fingerprints of the photos you\'ve hidden in, encrypted and on this phone only, to warn before one is used again. Turning this off forgets them.</string>
+    <string name="cover_history_forget">Forget</string>
+    <plurals name="cover_history_count">
+        <item quantity="one">1 cover remembered</item>
+        <item quantity="other">%1$d covers remembered</item>
+    </plurals>
     <string name="about_title">About</string>
     <string name="about_app_version">StegPony %1$s</string>
     <string name="about_core_version">Core %1$s</string>

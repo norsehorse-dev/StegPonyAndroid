@@ -31,7 +31,15 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.stegpony.android.ui.camera.CameraCaptureDialog
+import uniffi.stegpony_ffi.Detectability
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.semantics.Role
@@ -82,6 +90,7 @@ fun HideScreen(vm: HideViewModel) {
 
     val keys = (Keyring.state.collectAsState().value as? KeyringState.Ready)?.keys ?: Keys()
     val cover = vm.cover
+    var takingPhoto by remember { mutableStateOf(false) }
     val capacity = vm.capacity
     val payloadLen = vm.payloadLen
     val fit = vm.fit
@@ -97,25 +106,68 @@ fun HideScreen(vm: HideViewModel) {
     ) {
         Section(stringResource(R.string.hide_cover_title)) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                val compact = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
+                OutlinedButton(
+                    onClick = { takingPhoto = true },
+                    enabled = !vm.busy && !vm.loading,
+                    contentPadding = compact,
+                    modifier = Modifier.weight(1f),
+                ) {
+                    Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
+                    Text(stringResource(R.string.take_photo), Modifier.padding(start = 6.dp), maxLines = 1)
+                }
                 OutlinedButton(
                     onClick = {
                         pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     },
-                    enabled = !vm.busy,
+                    enabled = !vm.busy && !vm.loading,
+                    contentPadding = compact,
+                    modifier = Modifier.weight(1f),
                 ) {
                     Icon(Icons.Outlined.Image, contentDescription = null)
-                    Text(stringResource(R.string.pick_photo), Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.pick_photo), Modifier.padding(start = 6.dp), maxLines = 1)
                 }
                 OutlinedButton(
                     onClick = { pickImageFile.launch(arrayOf("image/jpeg", "image/png")) },
-                    enabled = !vm.busy,
+                    enabled = !vm.busy && !vm.loading,
+                    contentPadding = compact,
+                    modifier = Modifier.weight(1f),
                 ) {
                     Icon(Icons.Outlined.Folder, contentDescription = null)
-                    Text(stringResource(R.string.pick_file), Modifier.padding(start = 8.dp))
+                    Text(stringResource(R.string.pick_file), Modifier.padding(start = 6.dp), maxLines = 1)
                 }
             }
+            if (takingPhoto) {
+                CameraCaptureDialog(
+                    onCaptured = { bytes ->
+                        takingPhoto = false
+                        vm.useCaptured(bytes)
+                    },
+                    onClose = { takingPhoto = false },
+                    onCameraRefused = {
+                        takingPhoto = false
+                        vm.errorText = context.getString(R.string.camera_refused_cover)
+                    },
+                )
+            }
             if (cover != null) {
-                Text(cover.file.name, style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    if (cover.fresh) stringResource(R.string.cover_fresh) else cover.file.name,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                cover.notes.forEach { note ->
+                    Text(
+                        stringResource(
+                            when (note) {
+                                CoverNote.Reused -> R.string.cover_note_reused
+                                CoverNote.NoCameraDetails -> R.string.cover_note_not_camera
+                                CoverNote.FromDownloads -> R.string.cover_note_downloads
+                            },
+                        ),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (note == CoverNote.Reused) MaterialTheme.colorScheme.error else detectabilityColor(Detectability.MEDIUM),
+                    )
+                }
                 if (cover.modes.size > 1) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         cover.modes.forEach { m ->

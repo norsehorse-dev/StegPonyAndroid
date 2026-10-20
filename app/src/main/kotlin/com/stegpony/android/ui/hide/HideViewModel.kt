@@ -11,7 +11,10 @@ import androidx.lifecycle.viewModelScope
 import com.stegpony.android.R
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
+import android.media.ExifInterface
+import com.stegpony.android.keys.CoverHistory
 import com.stegpony.android.keys.Keyring
+import java.io.ByteArrayInputStream
 import com.stegpony.android.ui.common.errorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,8 +35,29 @@ import uniffi.stegpony_ffi.textPayloadLen
 enum class PayloadKind { Text, File }
 enum class KeyKind { Passphrase, Recipient }
 
+/** Something worth knowing about a cover before hiding in it. */
+enum class CoverNote {
+    /** You've hidden in this photo before (or it is something StegPony wrote). */
+    Reused,
+
+    /** A JPEG without camera details: maybe a download or a saved messenger image, which may exist elsewhere. */
+    NoCameraDetails,
+
+    /** Picked from Downloads, so a copy may exist online. */
+    FromDownloads,
+}
+
 /** The cover as read: its file, the core's view of it, and capacity per mode once known. */
-class LoadedCover(val file: PickedFile, val cover: Cover, val format: ImageFormat) {
+class LoadedCover(
+    val file: PickedFile,
+    val cover: Cover,
+    val format: ImageFormat,
+    /** See [CoverHistory.fingerprint]. */
+    val fingerprint: String,
+    val notes: List<CoverNote>,
+    /** Taken just now with the in-app camera. */
+    val fresh: Boolean,
+) {
     /** Modes this cover can use, best first. */
     val modes: List<ImageMode> =
         if (format == ImageFormat.JPEG) listOf(ImageMode.JPEG, ImageMode.LOSSLESS) else listOf(ImageMode.LOSSLESS)
@@ -90,7 +114,16 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
 
     private val context get() = getApplication<Application>()
 
-    fun pickCover(uri: Uri) {
+    fun pickCover(uri: Uri) = loadCover(fresh = false) {
+        Files.describe(context, uri) to Files.readBytes(context, uri, Files.MAX_IMAGE_BYTES)
+    }
+
+    /** A photo just taken with the in-app camera. */
+    fun useCaptured(bytes: ByteArray) = loadCover(fresh = true) {
+        PickedFile(Uri.EMPTY, Files.outputName("jpg"), bytes.size.toLong(), "image/jpeg") to bytes
+    }
+
+    private fun loadCover(fresh: Boolean, read: suspend () -> Pair<PickedFile, ByteArray>) {
         if (busy || loading) return
         errorText = null
         result = null
@@ -98,10 +131,16 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             try {
                 val loaded = withContext(Dispatchers.IO) {
-                    val picked = Files.describe(context, uri)
-                    val bytes = Files.readBytes(context, uri, Files.MAX_IMAGE_BYTES)
+                    val (picked, bytes) = read()
                     val c = Cover(bytes)
-                    LoadedCover(picked, c, c.format())
+                    val format = c.format()
+                    val fingerprint = CoverHistory.fingerprint(bytes)
+                    val notes = buildList {
+                        if (CoverHistory.contains(context, fingerprint)) add(CoverNote.Reused)
+                        if (!fresh && isDownload(picked.uri)) add(CoverNote.FromDownloads)
+                        if (!fresh && format == ImageFormat.JPEG && !hasCameraDetails(bytes)) add(CoverNote.NoCameraDetails)
+                    }
+                    LoadedCover(picked, c, format, fingerprint, notes, fresh)
                 }
                 cover?.cover?.destroy()
                 cover = loaded
@@ -233,6 +272,9 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                 }
                 val ext = if (out.format == ImageFormat.JPEG) "jpg" else "png"
                 result = HideResult(out.image, out.format, out.detectability, Files.outputName(ext))
+                // Remember the cover, and the output, so neither is used as a
+                // cover again without a warning. Best effort.
+                runCatching { CoverHistory.add(context, c.fingerprint, CoverHistory.fingerprint(out.image)) }
                 // Secrets are not kept around once used.
                 passphrase = ""
                 passphraseAgain = ""
@@ -265,6 +307,19 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         cover?.cover?.destroy()
         super.onCleared()
     }
+
+    private fun isDownload(uri: Uri): Boolean {
+        val authority = uri.authority.orEmpty()
+        return authority == "com.android.providers.downloads.documents" ||
+            authority == "downloads" ||
+            uri.path.orEmpty().contains("/Download/", ignoreCase = true)
+    }
+
+    /** A camera writes its make or model into EXIF; downloads and messenger copies usually lose them. */
+    private fun hasCameraDetails(bytes: ByteArray): Boolean = runCatching {
+        val exif = ExifInterface(ByteArrayInputStream(bytes))
+        exif.getAttribute(ExifInterface.TAG_MAKE) != null || exif.getAttribute(ExifInterface.TAG_MODEL) != null
+    }.getOrDefault(true)
 
     companion object {
         const val OCTET_STREAM = "application/octet-stream"
