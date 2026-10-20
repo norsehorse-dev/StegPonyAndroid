@@ -36,12 +36,15 @@
         android:theme="@style/Theme.StegPony">
 
         <!--
-          The activity itself has no intent filters. Every way in (the
-          launcher, share targets, open-with) is on the activity-alias
-          entries below, one per launcher disguise, so the name and icon in
-          the launcher AND in share sheets follow the disguise. Exactly one
-          alias is enabled at a time (ui/settings/Disguise.kt). The disabled
-          ones start disabled here; never a real app's name or icon.
+          The activity itself has no intent filters. The launcher entry is on
+          the activity-alias entries below, one per launcher disguise; exactly
+          one is enabled at a time (ui/settings/Disguise.kt), and the disabled
+          ones start disabled here. Never a real app's name or icon.
+
+          Only the undisguised alias takes shares and open-with. Android's
+          share sheet shows the app's real name next to an alias's label
+          ("StegPony Photo Tools"), so a disguised StegPony stays out of share
+          sheets altogether.
         -->
         <activity
             android:name=".MainActivity"
@@ -100,31 +103,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Share an image in, or open one with it: goes to Reveal. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/pgp-keys" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/pgp-keys" />
-            </intent-filter>
         </activity-alias>
 
         <activity-alias
@@ -139,31 +117,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Share an image in, or open one with it: goes to Reveal. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/pgp-keys" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/pgp-keys" />
-            </intent-filter>
         </activity-alias>
 
         <activity-alias
@@ -177,31 +130,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <!-- Share an image in, or open one with it: goes to Reveal. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="image/png" />
-                <data android:mimeType="image/jpeg" />
-            </intent-filter>
-            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/pgp-keys" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="application/pgp-keys" />
             </intent-filter>
         </activity-alias>
 
