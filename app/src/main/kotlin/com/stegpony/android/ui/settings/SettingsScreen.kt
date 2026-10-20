@@ -8,7 +8,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.RadioButton
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -42,6 +54,7 @@ fun SettingsScreen() {
     val scope = rememberCoroutineScope()
     var historyOn by remember { mutableStateOf(CoverHistory.isEnabled(context)) }
     var lockOn by remember { mutableStateOf(AppLock.isEnabled(context)) }
+    var disguise by remember { mutableStateOf(Disguise.current(context)) }
     var lockError by remember { mutableStateOf<String?>(null) }
     val lockTitle = stringResource(R.string.lock_title)
     var remembered by remember { mutableIntStateOf(0) }
@@ -93,6 +106,44 @@ fun SettingsScreen() {
                 about = stringResource(R.string.secure_hide_about),
                 checked = ScreenPrivacy.secureHide,
                 onChange = { ScreenPrivacy.setSecureHide(context, it) },
+            )
+        }
+        Section(stringResource(R.string.disguise_title)) {
+            Disguise.entries.forEach { d ->
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .selectable(selected = disguise == d, role = Role.RadioButton) {
+                            if (disguise != d) {
+                                Disguise.apply(context, d)
+                                disguise = d
+                            }
+                        }
+                        .padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    RadioButton(selected = disguise == d, onClick = null)
+                    Box(
+                        Modifier
+                            .padding(horizontal = 12.dp)
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(colorResource(d.background)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(d.foreground),
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp),
+                        )
+                    }
+                    Text(stringResource(d.label), style = MaterialTheme.typography.bodyMedium)
+                }
+            }
+            Text(
+                stringResource(R.string.disguise_about),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         Section(stringResource(R.string.covers_title)) {

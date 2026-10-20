@@ -2,4 +2,7 @@
 <resources>
     <color name="window_background">#FFFBFAFF</color>
     <color name="ic_launcher_background">#FF2E2F5E</color>
+    <color name="disguise_photo_tools_background">#FF546E7A</color>
+    <color name="disguise_notes_background">#FF8D6E63</color>
+    <color name="disguise_utilities_background">#FF00796B</color>
 </resources>

@@ -35,27 +35,46 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StegPony">
 
+        <!--
+          The activity itself has no intent filters. Every way in (the
+          launcher, share targets, open-with) is on the activity-alias
+          entries below, one per launcher disguise, so the name and icon in
+          the launcher AND in share sheets follow the disguise. Exactly one
+          alias is enabled at a time (ui/settings/Disguise.kt). The disabled
+          ones start disabled here; never a real app's name or icon.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity-alias
+            android:name=".LauncherDefault"
+            android:enabled="true"
+            android:exported="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:roundIcon="@mipmap/ic_launcher"
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Share an image into StegPony to look inside it. -->
+            <!-- Share an image in, or open one with it: goes to Reveal. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/png" />
                 <data android:mimeType="image/jpeg" />
             </intent-filter>
-            <!--
-              Share a key into StegPony: an age1 key as text (AgePony,
-              anywhere), or an OpenPGP key file (PGPony shares
-              application/pgp-keys). It lands on Keys.
-            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -67,14 +86,124 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="application/pgp-keys" />
             </intent-filter>
-            <!-- Open with StegPony. -->
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherPhotoTools"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_disguise_photo_tools"
+            android:label="@string/disguise_photo_tools"
+            android:roundIcon="@mipmap/ic_disguise_photo_tools"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Share an image in, or open one with it: goes to Reveal. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/png" />
                 <data android:mimeType="image/jpeg" />
             </intent-filter>
-        </activity>
+            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherNotes"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_disguise_notes"
+            android:label="@string/disguise_notes"
+            android:roundIcon="@mipmap/ic_disguise_notes"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Share an image in, or open one with it: goes to Reveal. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity-alias
+            android:name=".LauncherUtilities"
+            android:enabled="false"
+            android:exported="true"
+            android:icon="@mipmap/ic_disguise_utilities"
+            android:label="@string/disguise_utilities"
+            android:roundIcon="@mipmap/ic_disguise_utilities"
+            android:targetActivity=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Share an image in, or open one with it: goes to Reveal. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/jpeg" />
+            </intent-filter>
+            <!-- Share a key in: age1 text, or an OpenPGP key file (PGPony shares application/pgp-keys). Goes to Keys. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="application/pgp-keys" />
+            </intent-filter>
+        </activity-alias>
 
         <!-- Share-out hands other apps the exact bytes the core wrote. -->
         <provider
