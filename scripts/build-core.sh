@@ -60,9 +60,11 @@ cargo ndk --platform 26 -t arm64-v8a -t x86_64 -o "$JNI_OUT" \
   build --release --locked -p stegpony-ffi
 
 # uniffi-bindgen reads the interface from metadata sections in the library. The
-# release profile does not strip them, so the arm64 library serves.
+# release profile does not strip them, so the arm64 library serves. The
+# generator is a host program: the Android linker flags above would break its
+# build on macOS, and nothing from it ships, so it builds without them.
 BINDINGS_OUT="$(mktemp -d)"
-cargo run -q --locked -p stegpony-ffi --features cli --bin uniffi-bindgen -- \
+env -u RUSTFLAGS cargo run -q --locked -p stegpony-ffi --features cli --bin uniffi-bindgen -- \
   generate --library "$JNI_OUT/arm64-v8a/libstegpony_ffi.so" \
   --language kotlin --no-format --out-dir "$BINDINGS_OUT"
 popd >/dev/null
