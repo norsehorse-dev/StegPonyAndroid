@@ -108,7 +108,7 @@ fun RevealScreen(vm: RevealViewModel) {
         }
 
         Section(stringResource(R.string.reveal_key_title)) {
-            PassphraseField(vm.passphrase, { vm.passphrase = it }, stringResource(R.string.passphrase_label))
+            PassphraseField(vm.passphrase, { vm.passphrase = it }, stringResource(R.string.reveal_secret_label))
             Text(
                 if (myKeyCount > 0) {
                     context.resources.getQuantityString(R.plurals.reveal_tries_keys, myKeyCount, myKeyCount)

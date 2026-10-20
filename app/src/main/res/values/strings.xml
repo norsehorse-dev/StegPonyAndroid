@@ -71,10 +71,11 @@
     <string name="reveal_image_title">Image</string>
     <string name="reveal_image_hint">Choose the image, or share it to StegPony from another app.</string>
     <string name="reveal_key_title">Open it with</string>
-    <string name="reveal_no_keys">Add your own key on the Keys screen to open images hidden for you.</string>
+    <string name="reveal_no_keys">Enter the passphrase, or paste a secret key (AGE-SECRET-KEY-1…). To skip this next time, add your key on the Keys screen.</string>
+    <string name="reveal_secret_label">Passphrase or secret key</string>
     <plurals name="reveal_tries_keys">
-        <item quantity="one">Leave the passphrase empty to open it with your key. Enter one only for an image hidden with a passphrase.</item>
-        <item quantity="other">Leave the passphrase empty to open it with your %1$d keys. Enter one only for an image hidden with a passphrase.</item>
+        <item quantity="one">Leave this empty to open it with your key. Enter a passphrase only for an image hidden with one, or paste a different secret key.</item>
+        <item quantity="other">Leave this empty to open it with your %1$d keys. Enter a passphrase only for an image hidden with one, or paste a different secret key.</item>
     </plurals>
     <string name="reveal_button">Reveal</string>
     <string name="revealing">Looking…</string>

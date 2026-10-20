@@ -16,6 +16,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.stegpony_ffi.Payload
 import uniffi.stegpony_ffi.RevealSecret
+import uniffi.stegpony_ffi.identityKeyPair
 import uniffi.stegpony_ffi.reveal as revealImage
 
 sealed interface RevealOutcome {
@@ -81,14 +82,18 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
         // A typed passphrase is tried alone. Trying your keys as well would
         // defeat a decoy: someone made to open an image hidden for their own
         // key types the decoy passphrase, and the key would open the real one.
-        val secrets: List<RevealSecret> = if (passphrase.isNotEmpty()) {
-            listOf(RevealSecret.Passphrase(passphrase))
-        } else {
-            mine.map { RevealSecret.Identity(it.identity) }
-        }
+        // A pasted AGE-SECRET-KEY-1… is a key, used once and not saved.
+        val typed = passphrase
         viewModelScope.launch {
             try {
-                val found = withContext(Dispatchers.Default) { revealImage(bytes, secrets, emptyList()) }
+                val found = withContext(Dispatchers.Default) {
+                    val secrets: List<RevealSecret> = when {
+                        isSecretKey(typed) -> listOf(RevealSecret.Identity(identityKeyPair(typed.trim()).identity))
+                        typed.isNotEmpty() -> listOf(RevealSecret.Passphrase(typed))
+                        else -> mine.map { RevealSecret.Identity(it.identity) }
+                    }
+                    revealImage(bytes, secrets, emptyList())
+                }
                 outcome = if (found != null) RevealOutcome.Found(found) else RevealOutcome.NothingFound
                 passphrase = ""
             } catch (e: Throwable) {
@@ -109,6 +114,10 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
                 errorText = errorMessage(context, e)
             }
         }
+    }
+
+    companion object {
+        fun isSecretKey(text: String): Boolean = text.trim().startsWith("AGE-SECRET-KEY-1", ignoreCase = true)
     }
 
     /** Forgets what was revealed. */
