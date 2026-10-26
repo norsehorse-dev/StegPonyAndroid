@@ -11,16 +11,25 @@ import android.os.Handler
 import android.os.Looper
 import android.os.PersistableBundle
 import android.view.WindowManager
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -33,10 +42,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -54,6 +66,7 @@ import uniffi.stegpony_ffi.StegException
 fun errorMessage(context: Context, e: Throwable): String = when (e) {
     is StegException.BadCover -> context.getString(R.string.error_bad_image)
     is StegException.UnsupportedCover -> context.getString(R.string.error_unsupported_image)
+    is StegException.PreparationFailed -> context.getString(R.string.error_telegram_headroom)
     is StegException.CoverTooSmall -> context.getString(R.string.error_cover_too_small)
     is StegException.PayloadTooLarge -> context.getString(R.string.error_does_not_fit)
     is StegException.BadKey -> context.getString(R.string.error_bad_key)
@@ -124,6 +137,71 @@ fun Section(title: String, modifier: Modifier = Modifier, content: @Composable (
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text(title, style = MaterialTheme.typography.titleMedium)
             content()
+        }
+    }
+}
+
+/**
+ * One choice from a list, shown as a bordered row that opens a menu. Used where
+ * the options will grow or their translated labels would not fit a row of chips.
+ */
+@Composable
+fun <T> ChoiceField(
+    label: String,
+    selected: T,
+    options: List<T>,
+    optionLabel: @Composable (T) -> String,
+    onSelect: (T) -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    val shape = MaterialTheme.shapes.extraSmall
+    val disabled = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+    Box(modifier.fillMaxWidth()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .heightIn(min = 56.dp)
+                .clip(shape)
+                .border(1.dp, if (enabled) MaterialTheme.colorScheme.outline else disabled, shape)
+                .clickable(enabled = enabled, role = Role.DropdownList) { expanded = true }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(Modifier.weight(1f)) {
+                Text(
+                    label,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else disabled,
+                )
+                Text(
+                    optionLabel(selected),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = if (enabled) MaterialTheme.colorScheme.onSurface else disabled,
+                )
+            }
+            Icon(
+                Icons.Outlined.ArrowDropDown,
+                contentDescription = null,
+                tint = if (enabled) MaterialTheme.colorScheme.onSurfaceVariant else disabled,
+            )
+        }
+        DropdownMenu(expanded = expanded && enabled, onDismissRequest = { expanded = false }) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(optionLabel(option)) },
+                    trailingIcon = if (option == selected) {
+                        { Icon(Icons.Outlined.Check, contentDescription = null) }
+                    } else {
+                        null
+                    },
+                    onClick = {
+                        expanded = false
+                        onSelect(option)
+                    },
+                )
+            }
         }
     }
 }

@@ -39,11 +39,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.stegpony.android.R
+import com.stegpony.android.ui.common.FullScreen
 import java.util.concurrent.Executors
 import kotlinx.coroutines.delay
 
@@ -75,7 +74,8 @@ fun QrScannerDialog(
     }
     if (!granted) return
 
-    Dialog(onDismissRequest = onClose, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    // Drawn over the app in its own window, not in a dialog (see FullScreen).
+    FullScreen(onBack = onClose) {
         ScannerContent(help, onDecoded, onClose)
     }
 }

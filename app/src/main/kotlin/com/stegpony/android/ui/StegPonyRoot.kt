@@ -5,6 +5,7 @@ import com.stegpony.android.io.SharedText
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Key
@@ -17,17 +18,23 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stegpony.android.R
+import com.stegpony.android.ui.common.FullScreenHost
+import com.stegpony.android.ui.common.FullScreenLayer
+import com.stegpony.android.ui.common.LocalFullScreenHost
 import com.stegpony.android.ui.hide.HideScreen
 import com.stegpony.android.ui.hide.HideViewModel
 import com.stegpony.android.keys.Keyring
@@ -82,31 +89,40 @@ fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
         }
     }
 
-    Scaffold(
-        bottomBar = {
-            NavigationBar {
-                Tab.entries.forEach { t ->
-                    NavigationBarItem(
-                        selected = tab == t,
-                        onClick = { tab = t },
-                        icon = { Icon(t.icon, contentDescription = null) },
-                        label = { Text(stringResource(t.label)) },
-                    )
+    // The camera is drawn here, over everything, rather than in a dialog window.
+    val fullScreen = remember { FullScreenHost() }
+    CompositionLocalProvider(LocalFullScreenHost provides fullScreen) {
+        Box(Modifier.fillMaxSize()) {
+            Scaffold(
+                // Hidden from TalkBack while the camera covers it.
+                modifier = if (fullScreen.content != null) Modifier.clearAndSetSemantics {} else Modifier,
+                bottomBar = {
+                    NavigationBar {
+                        Tab.entries.forEach { t ->
+                            NavigationBarItem(
+                                selected = tab == t,
+                                onClick = { tab = t },
+                                icon = { Icon(t.icon, contentDescription = null) },
+                                label = { Text(stringResource(t.label)) },
+                            )
+                        }
+                    }
+                },
+            ) { padding ->
+                Box(
+                    Modifier
+                        .padding(padding)
+                        .consumeWindowInsets(padding),
+                ) {
+                    when (tab) {
+                        Tab.Hide -> HideScreen(hideVm)
+                        Tab.Reveal -> RevealScreen(revealVm)
+                        Tab.Keys -> KeysScreen(keysVm)
+                        Tab.Settings -> SettingsScreen()
+                    }
                 }
             }
-        },
-    ) { padding ->
-        Box(
-            Modifier
-                .padding(padding)
-                .consumeWindowInsets(padding),
-        ) {
-            when (tab) {
-                Tab.Hide -> HideScreen(hideVm)
-                Tab.Reveal -> RevealScreen(revealVm)
-                Tab.Keys -> KeysScreen(keysVm)
-                Tab.Settings -> SettingsScreen()
-            }
+            FullScreenLayer(fullScreen)
         }
     }
 }

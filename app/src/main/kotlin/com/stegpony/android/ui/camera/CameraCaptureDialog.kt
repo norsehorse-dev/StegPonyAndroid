@@ -50,11 +50,10 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.stegpony.android.R
+import com.stegpony.android.ui.common.FullScreen
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -84,7 +83,8 @@ fun CameraCaptureDialog(
     }
     if (!granted) return
 
-    Dialog(onDismissRequest = onClose, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+    // Drawn over the app in its own window, not in a dialog (see FullScreen).
+    FullScreen(onBack = onClose) {
         CaptureContent(onCaptured, onClose)
     }
 }

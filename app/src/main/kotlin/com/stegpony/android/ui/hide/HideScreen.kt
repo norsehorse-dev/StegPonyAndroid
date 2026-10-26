@@ -33,6 +33,7 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.material3.RadioButton
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.outlined.PhotoCamera
+import androidx.compose.material.icons.outlined.Science
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -57,6 +58,7 @@ import androidx.compose.ui.unit.dp
 import com.stegpony.android.R
 import com.stegpony.android.io.Files
 import com.stegpony.android.ui.common.CapacityMeter
+import com.stegpony.android.ui.common.ChoiceField
 import com.stegpony.android.ui.common.CreateTypedDocument
 import com.stegpony.android.ui.common.NewDocument
 import com.stegpony.android.ui.common.PassphraseField
@@ -135,6 +137,7 @@ fun HideScreen(vm: HideViewModel) {
         }
 
         if (vm.carrier == Carrier.Image) {
+            SendAsSection(vm)
             Section(stringResource(R.string.hide_cover_title)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     val compact = PaddingValues(horizontal = 8.dp, vertical = 8.dp)
@@ -199,29 +202,33 @@ fun HideScreen(vm: HideViewModel) {
                             color = if (note == CoverNote.Reused) MaterialTheme.colorScheme.error else detectabilityColor(Detectability.MEDIUM),
                         )
                     }
-                    if (cover.modes.size > 1) {
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            cover.modes.forEach { m ->
-                                FilterChip(
-                                    selected = vm.mode == m,
-                                    onClick = { vm.selectMode(m) },
-                                    label = { Text(stringResource(if (m == ImageMode.JPEG) R.string.mode_jpeg else R.string.mode_lossless)) },
-                                    enabled = !vm.busy,
-                                )
+                    if (vm.sendAs == SendAs.TelegramPhoto) {
+                        TelegramCopyStatus(vm)
+                    } else {
+                        if (cover.modes.size > 1) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                cover.modes.forEach { m ->
+                                    FilterChip(
+                                        selected = vm.mode == m,
+                                        onClick = { vm.selectMode(m) },
+                                        label = { Text(stringResource(if (m == ImageMode.JPEG) R.string.mode_jpeg else R.string.mode_lossless)) },
+                                        enabled = !vm.busy,
+                                    )
+                                }
                             }
                         }
+                        Text(
+                            stringResource(
+                                when {
+                                    vm.mode == ImageMode.JPEG -> R.string.mode_jpeg_about
+                                    cover.format == ImageFormat.JPEG -> R.string.mode_lossless_from_jpeg_about
+                                    else -> R.string.mode_lossless_about
+                                },
+                            ),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
-                    Text(
-                        stringResource(
-                            when {
-                                vm.mode == ImageMode.JPEG -> R.string.mode_jpeg_about
-                                cover.format == ImageFormat.JPEG -> R.string.mode_lossless_from_jpeg_about
-                                else -> R.string.mode_lossless_about
-                            },
-                        ),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
                 } else {
                     Text(
                         stringResource(R.string.hide_cover_hint),
@@ -292,6 +299,13 @@ fun HideScreen(vm: HideViewModel) {
                         } else {
                             stringResource(R.string.capacity_summary_no_low, capacity.maxTextBytes.toLong())
                         },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                if (vm.sendAs == SendAs.TelegramPhoto) {
+                    Text(
+                        stringResource(R.string.telegram_rating_short),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -376,7 +390,7 @@ fun HideScreen(vm: HideViewModel) {
             }
         }
 
-        if (vm.carrier == Carrier.Image && cover != null && vm.mode == ImageMode.JPEG) {
+        if (vm.carrier == Carrier.Image && cover != null && vm.sendAs == SendAs.File && vm.mode == ImageMode.JPEG) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(stringResource(R.string.keep_metadata), style = MaterialTheme.typography.bodyMedium)
@@ -403,7 +417,7 @@ fun HideScreen(vm: HideViewModel) {
                 CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
                 Text(stringResource(if (vm.carrier == Carrier.Text) R.string.hiding_text else R.string.hiding), style = MaterialTheme.typography.bodySmall)
             }
-        } else if (blocker != null && (cover != null || vm.carrier == Carrier.Text) && !vm.loading) {
+        } else if (blocker != null && (cover != null || vm.carrier == Carrier.Text) && !vm.loading && blocker != R.string.preparing_telegram && blocker != R.string.telegram_not_ready) {
             Text(
                 stringResource(blocker),
                 style = MaterialTheme.typography.bodySmall,
@@ -430,6 +444,13 @@ fun HideScreen(vm: HideViewModel) {
                     color = detectabilityColor(result.detectability),
                     style = MaterialTheme.typography.bodyMedium,
                 )
+                if (result.sentAs == SendAs.TelegramPhoto) {
+                    Text(
+                        stringResource(R.string.telegram_rating_note),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Button(onClick = { saveImage.launch(NewDocument(result.name, result.mime)) }) {
                         Icon(Icons.Outlined.Save, contentDescription = null)
@@ -452,7 +473,95 @@ fun HideScreen(vm: HideViewModel) {
                     }
                 }
                 Text(
-                    stringResource(R.string.send_as_file),
+                    stringResource(if (result.sentAs == SendAs.TelegramPhoto) R.string.send_telegram else R.string.send_as_file),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** How the image will be sent, chosen before the cover so a Telegram copy can be made as soon as it loads. */
+@Composable
+private fun SendAsSection(vm: HideViewModel) {
+    Section(stringResource(R.string.send_as_title)) {
+        ChoiceField(
+            label = stringResource(R.string.send_as_label),
+            selected = vm.sendAs,
+            options = SendAs.entries,
+            optionLabel = { s ->
+                stringResource(
+                    when (s) {
+                        SendAs.File -> R.string.send_as_file_option
+                        SendAs.TelegramPhoto -> R.string.send_as_telegram_option
+                    },
+                )
+            },
+            onSelect = vm::selectSendAs,
+            enabled = !vm.busy && !vm.loading,
+        )
+        when (vm.sendAs) {
+            SendAs.File -> Text(
+                stringResource(R.string.send_as_file_about),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            SendAs.TelegramPhoto -> {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(
+                        Icons.Outlined.Science,
+                        contentDescription = null,
+                        tint = detectabilityColor(Detectability.MEDIUM),
+                        modifier = Modifier.size(20.dp),
+                    )
+                    Text(
+                        stringResource(R.string.experimental),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = detectabilityColor(Detectability.MEDIUM),
+                    )
+                }
+                Text(
+                    stringResource(R.string.send_as_telegram_about),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                val verified = vm.telegramProfile?.lastVerified
+                Text(
+                    if (verified != null) {
+                        stringResource(R.string.telegram_last_verified, verified)
+                    } else {
+                        stringResource(R.string.telegram_not_verified)
+                    },
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
+}
+
+/** The Telegram copy of the cover: being made, ready (with its size), or why it couldn't be made. */
+@Composable
+private fun TelegramCopyStatus(vm: HideViewModel) {
+    val report = vm.preparationReport
+    val error = vm.prepareError
+    when {
+        vm.preparing -> Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+            Text(stringResource(R.string.preparing_telegram), style = MaterialTheme.typography.bodySmall)
+        }
+        error != null -> Text(error, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+        report != null -> {
+            Text(
+                stringResource(R.string.telegram_copy_size, report.outputWidth.toInt(), report.outputHeight.toInt()),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            val areas = report.headroomAreas.toInt()
+            if (areas > 0) {
+                Text(
+                    pluralStringResource(R.plurals.telegram_copy_adjusted, areas, areas),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
