@@ -23,6 +23,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.stegpony.android.card.CardInfo
+import com.stegpony.android.card.OpenPgpCard
 import com.stegpony.android.card.OpenPgpCardException
 import com.stegpony.android.card.OpenPgpCardSession
 import java.util.concurrent.atomic.AtomicBoolean
@@ -149,6 +150,15 @@ class OpenPgpCardReader(private val activity: Activity) {
                 t.awaitRemoval(holdUntilRemovedMs)
             }
             Result.success(value)
+        } catch (e: OpenPgpCardException.NotAnOpenPgpCard) {
+            // PGPony 4.7.0 item 29: a key that answers but will not open its
+            // OpenPGP application over NFC (the Nitrokey 3 turns it off there)
+            // gets a plain explanation instead of the raw status word.
+            Result.failure(
+                if (e.noResponse || e.sw == OpenPgpCard.SW_FILE_NOT_FOUND || e.sw == OpenPgpCard.SW_CONDITIONS_NOT_SATISFIED)
+                    OpenPgpCardException.NotAnOpenPgpCard(NFC_OPENPGP_UNAVAILABLE, e.sw, e.noResponse)
+                else e
+            )
         } catch (e: OpenPgpCardException) {
             Result.failure(e)
         } catch (e: Exception) {
@@ -162,6 +172,11 @@ class OpenPgpCardReader(private val activity: Activity) {
     }
 
     companion object {
+        /** Shown as card_nfc_openpgp_unavailable by HardwareKeyDialog. */
+        const val NFC_OPENPGP_UNAVAILABLE =
+            "This key did not open its OpenPGP application over NFC. Some keys, the Nitrokey 3 among them, " +
+                "turn OpenPGP off over NFC. If your key has USB, plug it in and try again."
+
         fun isNfcAvailable(context: Context): Boolean =
             NfcAdapter.getDefaultAdapter(context) != null
 

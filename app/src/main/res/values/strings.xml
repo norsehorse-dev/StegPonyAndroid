@@ -243,6 +243,7 @@
     <string name="card_pin_blocked">The PIN is locked after too many wrong tries. Unlock it with the admin PIN (PGPony or GnuPG can do this).</string>
     <string name="card_lost">The key was lost before it finished. Hold it still, or check the cable, and try again.</string>
     <string name="card_not_openpgp">This isn\'t an OpenPGP key, or its OpenPGP app is turned off.</string>
+    <string name="card_nfc_openpgp_unavailable">This key didn\'t open its OpenPGP app over NFC. Some keys turn OpenPGP off over NFC, the Nitrokey 3 among them. Plug it in over USB and try again.</string>
     <string name="card_not_cv25519">This key\'s decryption key is %1$s. StegPony needs a Curve25519 (cv25519) key.</string>
     <string name="card_no_decryption_key">This key has no decryption key yet. Generate or move a cv25519 key onto it first.</string>
     <string name="card_failed">The hardware key reported a problem: %1$s</string>

@@ -96,7 +96,12 @@ private fun cardOnlyMessage(context: Context, e: Throwable): String = when (e) {
             context.getString(R.string.card_failed, e.message.orEmpty())
         }
     is OpenPgpCardException.TagLost -> context.getString(R.string.card_lost)
-    is OpenPgpCardException.NotAnOpenPgpCard -> context.getString(R.string.card_not_openpgp)
+    is OpenPgpCardException.NotAnOpenPgpCard ->
+        if (e.message == OpenPgpCardReader.NFC_OPENPGP_UNAVAILABLE) {
+            context.getString(R.string.card_nfc_openpgp_unavailable)
+        } else {
+            context.getString(R.string.card_not_openpgp)
+        }
     is NotCurve25519Exception -> context.getString(R.string.card_not_cv25519, e.algorithm)
     is NoDecryptionKeyException -> context.getString(R.string.card_no_decryption_key)
     else -> context.getString(R.string.card_failed, e.message ?: e.javaClass.simpleName)
