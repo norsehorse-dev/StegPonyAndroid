@@ -26,8 +26,8 @@ android {
         applicationId = "com.stegpony.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0-dev"
+        versionCode = 2
+        versionName = "1.0.0-rc2"
 
         ndk {
             // The core is built for these two ABIs only (scripts/build-core.sh);
