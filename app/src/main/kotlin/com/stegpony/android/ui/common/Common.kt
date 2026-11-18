@@ -66,7 +66,6 @@ import uniffi.stegpony_ffi.StegException
 fun errorMessage(context: Context, e: Throwable): String = when (e) {
     is StegException.BadCover -> context.getString(R.string.error_bad_image)
     is StegException.UnsupportedCover -> context.getString(R.string.error_unsupported_image)
-    is StegException.PreparationFailed -> context.getString(R.string.error_telegram_headroom)
     is StegException.CoverTooSmall -> context.getString(R.string.error_cover_too_small)
     is StegException.PayloadTooLarge -> context.getString(R.string.error_does_not_fit)
     is StegException.BadKey -> context.getString(R.string.error_bad_key)
