@@ -24,3 +24,7 @@ core/src/main/kotlin/uniffi/
 drafts/
 _archive/
 _to_delete/
+
+# The cover photo for tools/play-screenshots.sh. A camera photo carries its GPS
+# position and the phone model, so it stays out of the repo.
+tools/demo-cover.jpg

@@ -11,7 +11,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModelProvider
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.core.content.ContextCompat
 import com.stegpony.android.i18n.LanguageState
@@ -19,7 +24,9 @@ import com.stegpony.android.lock.AppLock
 import com.stegpony.android.lock.ScreenPrivacy
 import com.stegpony.android.ui.LocalTab
 import com.stegpony.android.ui.Tab
+import com.stegpony.android.ui.hide.HideViewModel
 import com.stegpony.android.ui.lock.LockScreen
+import com.stegpony.android.ui.reveal.RevealViewModel
 import com.stegpony.android.ui.onboarding.Onboarding
 import com.stegpony.android.ui.onboarding.OnboardingScreen
 import androidx.core.content.IntentCompat
@@ -45,6 +52,9 @@ sealed interface Incoming {
  */
 class MainActivity : AppCompatActivity() {
     private val incoming = mutableStateOf<Incoming?>(null)
+    // Store screenshots only (Demo.kt in src/debug; the release stub returns null).
+    private var demoTab by mutableStateOf<Tab?>(null)
+    private var demoTick by mutableIntStateOf(0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         ScreenPrivacy.load(this)
         LanguageState.init(this)
         Onboarding.load(this)
+        handleDemo(intent)
         // Decide before the first frame, so a locked app never shows its screens.
         AppLock.onStart(this)
         ContextCompat.registerReceiver(
@@ -67,6 +78,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             StegPonyTheme {
                 val tab = rememberSaveable { mutableStateOf(Tab.Hide) }
+                LaunchedEffect(demoTick) { demoTab?.let { tab.value = it } }
                 CompositionLocalProvider(LocalTab provides tab) {
                     if (AppLock.locked) {
                         LockScreen()
@@ -117,6 +129,15 @@ class MainActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         incomingFrom(intent)?.let { incoming.value = it }
+        handleDemo(intent)
+    }
+
+    private fun handleDemo(intent: Intent?) {
+        val vms = ViewModelProvider(this)
+        Demo.handle(this, intent, vms[HideViewModel::class.java], vms[RevealViewModel::class.java])?.let {
+            demoTab = it
+            demoTick++
+        }
     }
 
     private fun incomingFrom(intent: Intent?): Incoming? {

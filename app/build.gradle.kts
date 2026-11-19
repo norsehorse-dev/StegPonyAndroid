@@ -48,6 +48,11 @@ android {
     }
 
     buildTypes {
+        // Separate package so the debug build (and its screenshot demo) installs
+        // beside a release-signed copy. tools/play-screenshots.sh expects it.
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
+        }
         release {
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")

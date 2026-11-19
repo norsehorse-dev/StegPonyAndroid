@@ -12,6 +12,7 @@ import android.os.Looper
 import android.os.PersistableBundle
 import android.view.WindowManager
 import android.widget.Toast
+import com.stegpony.android.Demo
 import com.stegpony.android.i18n.LanguageManager
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -471,6 +472,9 @@ private val secureRequests = AtomicInteger(0)
  */
 @Composable
 fun SecureScreenEffect() {
+    // Store screenshots only: a debug-build demo run can't capture a blocked
+    // screen. Demo.capturing is a constant false in release builds.
+    if (Demo.capturing) return
     val context = LocalContext.current
     DisposableEffect(context) {
         val window = context.findActivity()?.window

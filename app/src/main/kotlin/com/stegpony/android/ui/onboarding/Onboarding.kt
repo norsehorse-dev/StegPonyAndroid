@@ -15,6 +15,9 @@ object Onboarding {
     private const val KEY_DONE = "onboarding_done"
     private var loaded = false
 
+    /** The page the tour opens on. Only the store-screenshot demo changes it. */
+    var startPage = 0
+
     /** False while the tour should cover the app. */
     var done by mutableStateOf(true)
         private set

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug builds only: replaces main's file_paths.xml, adding the screenshot
+  demo's folder to the one FileProvider the app has, so Hide and Reveal read
+  the demo's cover photo and result as ordinary content Uris. Keep the shared
+  entry the same as in src/main.
+-->
+<paths>
+    <cache-path name="shared" path="shared/" />
+    <cache-path name="demo" path="demo/" />
+</paths>

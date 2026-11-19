@@ -99,7 +99,7 @@ private val SLIDES = listOf(
  */
 @Composable
 fun OnboardingScreen(onDone: () -> Unit) {
-    val pager = rememberPagerState(pageCount = { SLIDES.size })
+    val pager = rememberPagerState(initialPage = Onboarding.startPage, pageCount = { SLIDES.size })
     val scope = rememberCoroutineScope()
     val last = pager.currentPage == SLIDES.lastIndex
     val hideVm: HideViewModel = viewModel()
