@@ -39,10 +39,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalContext
 import androidx.fragment.app.FragmentActivity
+import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.keys.CoverHistory
 import com.stegpony.android.lock.AppLock
 import com.stegpony.android.lock.ScreenPrivacy
 import com.stegpony.android.ui.common.findActivity
+import com.stegpony.android.ui.onboarding.Onboarding
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -56,21 +58,26 @@ import com.stegpony.android.ui.common.SwitchRow
 import uniffi.stegpony_ffi.coreVersion
 import uniffi.stegpony_ffi.formatVersion
 
-private enum class SettingsPage { Main, Help, Licenses }
+private enum class SettingsPage { Main, Help, Language, Licenses }
 
 @Composable
 fun SettingsScreen() {
     var page by rememberSaveable { mutableStateOf(SettingsPage.Main) }
     BackHandler(enabled = page != SettingsPage.Main) { page = SettingsPage.Main }
     when (page) {
-        SettingsPage.Main -> SettingsMain(onHelp = { page = SettingsPage.Help }, onLicenses = { page = SettingsPage.Licenses })
+        SettingsPage.Main -> SettingsMain(
+            onHelp = { page = SettingsPage.Help },
+            onLanguage = { page = SettingsPage.Language },
+            onLicenses = { page = SettingsPage.Licenses },
+        )
+        SettingsPage.Language -> LanguageScreen(onBack = { page = SettingsPage.Main })
         SettingsPage.Help -> HelpScreen(onBack = { page = SettingsPage.Main })
         SettingsPage.Licenses -> LicensesScreen(onBack = { page = SettingsPage.Main })
     }
 }
 
 @Composable
-private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
+private fun SettingsMain(onHelp: () -> Unit, onLanguage: () -> Unit, onLicenses: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var historyOn by remember { mutableStateOf(CoverHistory.isEnabled(context)) }
@@ -93,6 +100,13 @@ private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
     ) {
         Section(stringResource(R.string.help_title)) {
             LinkRow(stringResource(R.string.help_row_title), stringResource(R.string.help_row_subtitle), onClick = onHelp)
+            LinkRow(stringResource(R.string.onboarding_replay_title), stringResource(R.string.onboarding_replay_subtitle)) {
+                Onboarding.replay()
+            }
+        }
+        Section(stringResource(R.string.language_title)) {
+            // The language under its own name, so it can be found from any other.
+            LinkRow(LanguageManager.current().nativeName, stringResource(R.string.language_row_subtitle), onClick = onLanguage)
         }
         Section(stringResource(R.string.privacy_title)) {
             SettingSwitch(

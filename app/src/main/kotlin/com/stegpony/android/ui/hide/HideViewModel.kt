@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.R
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
@@ -150,7 +151,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         private set
     var errorText by mutableStateOf<String?>(null)
 
-    private val context get() = getApplication<Application>()
+    // Localized, so messages follow the in-app language before Android 13 too.
+    private val context get() = LanguageManager.localized(getApplication<Application>())
 
     fun pickCover(uri: Uri) = loadCover(fresh = false) {
         Files.describe(context, uri) to Files.readBytes(context, uri, Files.MAX_IMAGE_BYTES)
@@ -204,6 +206,18 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         result = null
         textResult = null
         errorText = null
+    }
+
+    /**
+     * The welcome tour hides a typed message in a photo under a passphrase.
+     * Puts the choices there without touching the cover or what was typed.
+     */
+    fun prepareForTour() {
+        if (busy) return
+        if (carrier != Carrier.Image) selectCarrier(Carrier.Image)
+        payloadKind = PayloadKind.Text
+        keyKind = KeyKind.Passphrase
+        decoyOn = false
     }
 
     fun selectTextMode(m: TextMode) {

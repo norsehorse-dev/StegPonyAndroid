@@ -309,7 +309,7 @@
     <string name="help_secrets_title">Passphrases and keys</string>
     <string name="help_secrets_body">A passphrase protects the message only as well as it resists guessing. Use several random words, not something about you, and share it in person or over a channel you trust.\n\nWith a public key there is no shared secret: you hide for someone\'s age1… key, and only their secret key opens it. A Curve25519 OpenPGP key from PGPony or GnuPG works the same way. StegPony keeps your secret keys encrypted on this phone; it never stores passphrases.</string>
     <string name="help_hardware_title">Hardware keys</string>
-    <string name="help_hardware_body">An OpenPGP hardware key with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. It is tested with a Token2 PIN+; other OpenPGP keys should work the same way. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
+    <string name="help_hardware_body">An OpenPGP hardware key with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. It is tested with a Token2 PIN+, and with a Nitrokey 3A NFC over USB; other OpenPGP keys should work the same way. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
     <string name="help_decoy_title">Decoy</string>
     <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
     <string name="help_phone_title">On this phone</string>
@@ -335,4 +335,40 @@
     <string name="about_source_core">Source code (core)</string>
     <string name="licenses_title">Open-source licenses</string>
     <string name="licenses_row_subtitle">The open-source parts StegPony is built from</string>
+
+    <!-- Language -->
+    <string name="language_title">Language</string>
+    <string name="language_row_subtitle">Change the language StegPony uses</string>
+    <string name="language_footer">The change applies right away.</string>
+
+    <!-- Welcome tour -->
+    <string name="onboarding_replay_title">Show the welcome tour again</string>
+    <string name="onboarding_replay_subtitle">Replay the first-run introduction</string>
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_start">Start</string>
+    <string name="onboarding_page">Page %1$d of %2$d</string>
+    <string name="onboarding_language_body">Choose the language you want to use.\n\nYou can change it later in Settings.</string>
+    <string name="onboarding_welcome_title">Welcome to StegPony</string>
+    <string name="onboarding_welcome_body">StegPony encrypts a message or file and hides it in an ordinary photo, or in text.\n\nNothing leaves this phone through the app. It has no network access, no account and no tracking.</string>
+    <string name="onboarding_cover_title">Start with a fresh photo</string>
+    <string name="onboarding_cover_body">The best cover is a photo you take just for this and never share anywhere else. Use each photo once.\n\nStegPony warns when a photo was used before, or looks like a download or a messenger copy.</string>
+    <string name="onboarding_try_button">Hide my first message now</string>
+    <string name="onboarding_try_show">Show my hidden message</string>
+    <string name="onboarding_try_hint">Or tap Next and do this later from the Hide tab.</string>
+    <string name="onboarding_try_title">Hide your first message</string>
+    <string name="onboarding_try_photo">1. Pick a photo</string>
+    <string name="onboarding_try_message">2. Write a message</string>
+    <string name="onboarding_try_passphrase">3. Set a passphrase</string>
+    <string name="onboarding_try_passphrase_about">The other person needs this passphrase to reveal the message. Share it in person or over a channel you trust.</string>
+    <string name="onboarding_try_done">Your message is hidden in this photo</string>
+    <string name="onboarding_try_reveal_hint">To read it back, open the saved image on the Reveal tab and enter the same passphrase.</string>
+    <string name="onboarding_try_continue">Continue the tour</string>
+    <string name="onboarding_lock_title">Lock it with a passphrase or a key</string>
+    <string name="onboarding_lock_body">A passphrase is something you and the other person agree on ahead of time. A public key needs no shared secret: only their secret key opens it.\n\nYou can add a decoy, a second message under a second passphrase, to give up if someone makes you open the image.</string>
+    <string name="onboarding_send_title">Send it as a file</string>
+    <string name="onboarding_send_body">Send the image as a file or document attachment. A messenger\'s photo mode recompresses the picture and destroys what\'s hidden.\n\nNever send or post the original photo as well. Anyone holding both can compare them.</string>
+    <string name="onboarding_protect_title">Protect the app</string>
+    <string name="onboarding_protect_body">These slow down a casual look at your phone. You can change them later in Settings.</string>
+    <string name="onboarding_limits_title">Know the limits</string>
+    <string name="onboarding_limits_body">Hiding lowers the odds of being noticed; it doesn\'t make them zero. StegPony hides what you send, not that you sent it.\n\nRead Help in Settings before relying on it.</string>
 </resources>

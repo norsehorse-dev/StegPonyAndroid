@@ -1,6 +1,7 @@
 package com.stegpony.android
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -13,11 +14,14 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.core.content.ContextCompat
+import com.stegpony.android.i18n.LanguageState
 import com.stegpony.android.lock.AppLock
 import com.stegpony.android.lock.ScreenPrivacy
 import com.stegpony.android.ui.LocalTab
 import com.stegpony.android.ui.Tab
 import com.stegpony.android.ui.lock.LockScreen
+import com.stegpony.android.ui.onboarding.Onboarding
+import com.stegpony.android.ui.onboarding.OnboardingScreen
 import androidx.core.content.IntentCompat
 import com.stegpony.android.io.Files
 import com.stegpony.android.ui.StegPonyRoot
@@ -50,6 +54,8 @@ class MainActivity : AppCompatActivity() {
             incoming.value = incomingFrom(intent)
         }
         ScreenPrivacy.load(this)
+        LanguageState.init(this)
+        Onboarding.load(this)
         // Decide before the first frame, so a locked app never shows its screens.
         AppLock.onStart(this)
         ContextCompat.registerReceiver(
@@ -64,6 +70,9 @@ class MainActivity : AppCompatActivity() {
                 CompositionLocalProvider(LocalTab provides tab) {
                     if (AppLock.locked) {
                         LockScreen()
+                    } else if (!Onboarding.done) {
+                        // Anything shared in waits until the tour is closed.
+                        OnboardingScreen(onDone = { Onboarding.finish(this@MainActivity) })
                     } else {
                         StegPonyRoot(
                             incoming = incoming.value,
@@ -80,6 +89,13 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             AppLock.lockNow(this@MainActivity)
         }
+    }
+
+    /** A language switch arrives here, not as a new activity (see configChanges in the manifest). */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        // Also covers a change made in the system's app-language settings.
+        LanguageState.init(this)
     }
 
     override fun onStart() {

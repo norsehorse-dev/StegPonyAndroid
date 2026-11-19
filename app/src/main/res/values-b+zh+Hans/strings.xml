@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_hide">隐藏</string>
+    <string name="tab_reveal">提取</string>
+    <string name="tab_keys">密钥</string>
+    <string name="tab_settings">设置</string>
+
+    <!-- Shared -->
+    <string name="pick_photo">照片</string>
+    <string name="pick_file">文件</string>
+    <string name="passphrase_label">口令</string>
+    <string name="show_passphrase">显示口令</string>
+    <string name="hide_passphrase">隐藏口令</string>
+    <string name="save">存储</string>
+    <string name="share">共享</string>
+    <string name="copy">复制</string>
+    <string name="copied">已复制</string>
+    <string name="close">关闭</string>
+    <string name="paste">粘贴</string>
+    <string name="clear">清除</string>
+    <string name="carrier_photo">照片</string>
+    <string name="carrier_text">文本</string>
+    <string name="rating_low_title">可检测性低</string>
+    <string name="rating_medium_title">可检测性中等</string>
+    <string name="rating_high_title">可检测性高</string>
+    <string name="reading_cover">正在读取图像…</string>
+
+    <!-- Hide -->
+    <string name="hide_step">隐藏：第 %1$d 步，共 %2$d 步</string>
+    <string name="next">下一步</string>
+    <string name="hide_in_title">隐藏到</string>
+    <string name="carrier_photo_about">隐藏在照片的细节里，照片以文件形式发送。容量最大，也最难被察觉。</string>
+    <string name="carrier_text_about">隐藏在文本里，你可以把这段文本粘贴到消息、邮件或笔记中。容量远小于照片，也更容易被察觉。</string>
+    <string name="hide_cover_title">载体照片</string>
+    <string name="hide_cover_hint">请使用你自己拍摄且从未在任何地方发布过的照片。持有原图的人可以把两者拿来对比。</string>
+    <string name="mode_jpeg">JPEG</string>
+    <string name="mode_lossless">无损（PNG）</string>
+    <string name="mode_jpeg_about">仍然是 JPEG，并保留相机自身的压缩方式，所以看起来和你手机里的其他照片一样。</string>
+    <string name="mode_lossless_about">存储为 PNG。</string>
+    <string name="mode_lossless_from_jpeg_about">存储为 PNG。相机照片存成 PNG 本身就不寻常，所以通常选 JPEG 更好。</string>
+    <string name="hide_message_title">要隐藏的内容</string>
+    <string name="payload_text">文本</string>
+    <string name="payload_file">文件</string>
+    <string name="message_label">消息</string>
+    <string name="pick_payload_file">选择文件</string>
+    <string name="capacity_summary">最多可容纳 %1$d 字节的文本。在约 %2$d 字节以内，可检测性保持在低水平。</string>
+    <string name="capacity_summary_no_low">最多可容纳 %1$d 字节的文本。在这种尺寸的图像里隐藏任何内容，都更容易被检测出来。</string>
+    <string name="meter_bytes">%1$d / %2$d 字节</string>
+    <string name="meter_too_big">%1$d 字节，但这张图像只能容纳 %2$d 字节</string>
+    <string name="hide_key_title">加锁方式</string>
+    <string name="key_passphrase">口令</string>
+    <string name="key_recipient">对方的公钥</string>
+    <string name="passphrase_again_label">再次输入口令</string>
+    <string name="recipient_label">公钥</string>
+    <string name="recipient_hint">粘贴对方的 age1… 密钥。只有对方的私钥才能打开。</string>
+    <string name="recipient_yours">%1$s（你的）</string>
+    <string name="recipient_paste">粘贴密钥</string>
+    <string name="hide_decoy_title">诱饵</string>
+    <string name="decoy_about">用第二个口令保护的第二条消息。如果有人逼你打开图像，就把这一条交给对方。没有人能判断一张图像里是否有诱饵。</string>
+    <string name="decoy_message_label">诱饵消息</string>
+    <string name="decoy_passphrase_label">诱饵口令</string>
+    <string name="keep_metadata">保留元数据</string>
+    <string name="keep_metadata_about">关闭时会移除位置、时间和设备信息。只有在照片需要这些信息才显得正常时才打开。</string>
+    <string name="hide_button">隐藏</string>
+    <string name="hiding">正在隐藏。照片较大时可能需要几秒钟。</string>
+    <string name="need_cover">请选择一张载体照片。</string>
+    <string name="need_payload">请写一条消息或选择一个文件。</string>
+    <string name="need_passphrase">请输入口令。</string>
+    <string name="passphrases_differ">两次输入的口令不一致。</string>
+    <string name="need_recipient">请粘贴公钥。</string>
+    <string name="need_decoy_text">请写下诱饵消息。</string>
+    <string name="need_decoy_passphrase">请输入诱饵口令。</string>
+    <string name="decoy_same_passphrase">诱饵需要使用不同的口令。</string>
+    <string name="hide_done_title">完成</string>
+    <string name="hide_another">再隐藏一个</string>
+    <string name="review_title">检查</string>
+    <string name="review_cover">载体</string>
+    <string name="review_cover_fresh">刚刚拍摄的照片</string>
+    <string name="review_format">存储为</string>
+    <string name="review_payload_text">你输入的消息</string>
+    <string name="review_decoy_on">已包含</string>
+    <string name="review_decoy_off">无</string>
+    <string name="decoy_add">添加诱饵</string>
+    <string name="error_decoy_does_not_fit">加上诱饵后放不下了。请缩短诱饵或消息。</string>
+    <string name="text_kind_title">文本类型</string>
+    <string name="text_mode_words">单词</string>
+    <string name="text_mode_zero_width">不可见字符</string>
+    <string name="text_mode_words_about">一串普通的单词，读起来毫无意义。它能通过自动过滤和随便扫一眼，但瞒不过读它的人。即使是很短的消息也要用掉 130 多个单词。</string>
+    <string name="text_mode_zero_width_about">弱。不可见字符被藏进你写的一条消息里，消息看起来没有变化。很多应用会移除这些字符，任何专门查找它们的工具都能立刻发现。用在笔记或文档里可以，但挡不住会去检查的人。</string>
+    <string name="cover_text_label">可见消息</string>
+    <string name="cover_text_hint">所有人都能看到的内容。写些平常的话。消息越长，隐藏的字符分布得越分散。</string>
+    <string name="need_cover_text">请写下可见消息。</string>
+    <string name="error_text_too_long">内容太长，无法隐藏在文本里。请缩短内容，或改用照片。</string>
+    <string name="text_too_long">内容太长，文本最多只能容纳 %1$d 字节。请改用照片。</string>
+    <plurals name="text_size_words">
+        <item quantity="other">约 %1$d 个单词。</item>
+    </plurals>
+    <plurals name="text_size_chars">
+        <item quantity="other">%1$d 个不可见字符。</item>
+    </plurals>
+    <plurals name="text_size_room">
+        <item quantity="other">还能再放 %1$d 字节，之后文本会变长。</item>
+    </plurals>
+    <string name="hiding_text">正在隐藏…</string>
+    <plurals name="text_done_words">
+        <item quantity="other">%1$d 个单词。</item>
+    </plurals>
+    <plurals name="text_done_chars">
+        <item quantity="other">你的消息，里面有 %1$d 个不可见字符。</item>
+    </plurals>
+    <string name="text_send_words">请原样发送这些单词。大小写、标点和换行无关紧要，但只要有一个单词被改动、遗漏或多出来，就会失效，所以要留意自动更正。剪贴板会在 %1$d 秒后清空。</string>
+    <string name="text_send_zero_width">先给自己发一条测试：很多应用会悄悄移除不可见字符，那样就什么也提取不出来了。剪贴板会在 %1$d 秒后清空。</string>
+    <string name="send_as_file">请以文件或文档的形式发送。聊天应用的照片模式会重新压缩图像，破坏隐藏的内容。不要在任何地方共享原始照片。</string>
+
+    <!-- Cover handling -->
+    <string name="take_photo">相机</string>
+    <string name="camera_title">拍摄载体照片</string>
+    <string name="camera_shutter">拍照</string>
+    <string name="camera_failed">无法拍摄照片。请重试。</string>
+    <string name="camera_refused_cover">未获得相机权限。请改选一张你之前拍摄的照片。</string>
+    <string name="cover_fresh">照片刚刚拍摄，没有存储在其他任何地方。</string>
+    <string name="cover_note_reused">你以前在这张照片里隐藏过内容。任何同时持有同一张照片两个版本的人都可以对比它们，所以请换一张新的。</string>
+    <string name="cover_note_not_camera">这张照片没有相机信息，所以它可能是下载的图片，或是从聊天应用存下来的图片。如果别处存在副本，就可以拿来和你的对比。刚拍的照片更安全。</string>
+    <string name="cover_note_downloads">这张图片来自“下载”文件夹，所以网上可能存在副本，可以拿来和你的对比。刚拍的照片更安全。</string>
+
+    <!-- Reveal -->
+    <string name="reveal_in_title">查找位置</string>
+    <string name="reveal_text_title">文本</string>
+    <string name="reveal_text_label">粘贴文本</string>
+    <string name="reveal_text_hint">把整段文本按收到时的原样粘贴进来，或从其他应用共享到 StegPony。</string>
+    <string name="nothing_found_text_body">这是 StegPony 文本，但用已尝试的方式都没能打开。它是用别的口令或密钥隐藏的，或者是为一个你没有的诱饵隐藏的。StegPony 无法判断是哪一种。</string>
+    <string name="error_not_steg_text">这段文本里没有隐藏任何内容。它不含不可见字符，而且“%1$s”不是 StegPony 的单词。如果它经过了会移除不可见字符的应用，隐藏的部分已经丢失；如果有单词被改动，请让对方重新发送这段文本。</string>
+    <string name="error_text_incomplete">隐藏文本有一部分缺失或被改动。请按收到时的原样重新复制整段文本。有些应用会移除不可见字符，自动更正也可能改动单词。</string>
+    <string name="reveal_image_title">图像</string>
+    <string name="reveal_image_hint">选择图像，或从其他应用共享到 StegPony。</string>
+    <string name="reveal_key_title">打开方式</string>
+    <string name="reveal_no_keys">输入口令，或粘贴私钥（AGE-SECRET-KEY-1…）。想在下次跳过这一步，请在“密钥”界面添加你的密钥。</string>
+    <string name="reveal_secret_label">口令或私钥</string>
+    <plurals name="reveal_tries_keys">
+        <item quantity="other">留空即可用你的 %1$d 个密钥打开。只有当内容是用口令隐藏的时才输入口令，或者粘贴另一个私钥。</item>
+    </plurals>
+    <string name="reveal_button">提取</string>
+    <string name="revealing">正在查找…</string>
+    <string name="nothing_found_title">未找到任何内容</string>
+    <string name="nothing_found_body">要么这张图像里没有隐藏任何内容，要么是用别的口令隐藏的。StegPony 无法判断是哪一种，其他任何人也无法判断。</string>
+    <string name="found_text_title">隐藏的消息</string>
+    <string name="found_file_title">隐藏的文件</string>
+    <string name="copy_clears">剪贴板会在 %1$d 秒后清空。</string>
+
+    <!-- Keys -->
+    <string name="my_keys_title">你的密钥</string>
+    <string name="my_keys_empty">还没有密钥。创建一个密钥来接收为你隐藏的图像，然后共享它的公钥。</string>
+    <string name="create_key">创建密钥</string>
+    <string name="create_key_about">新密钥与 age 兼容，所以它的公钥也能接收来自 age 和 AgePony 的文件。</string>
+    <string name="key_name_label">名称</string>
+    <string name="default_key_label">我的密钥</string>
+    <string name="create">创建</string>
+    <string name="cancel">取消</string>
+    <string name="key_created">密钥已创建。把它的公钥共享给要为你隐藏内容的人。</string>
+    <string name="import_key">导入</string>
+    <string name="import_key_about">导入 age 身份文件，或带有 Curve25519 加密密钥（cv25519 或 X25519）的 OpenPGP 私钥。</string>
+    <string name="imported_key_label">导入的密钥</string>
+    <string name="pgp_key_label">OpenPGP 密钥</string>
+    <string name="key_imported">密钥已导入。</string>
+    <string name="pgp_passphrase_title">密钥口令</string>
+    <string name="pgp_passphrase_about">这个 OpenPGP 密钥受到保护。它的口令只用一次来解锁，不会被保存。</string>
+    <string name="unlock">解锁</string>
+    <string name="source_generated">在这部手机上创建</string>
+    <string name="source_age">导入的 age 密钥</string>
+    <string name="source_pgp">OpenPGP 密钥</string>
+    <string name="share_public_key">共享公钥</string>
+    <string name="contacts_title">联系人</string>
+    <string name="contacts_empty">添加你要为其隐藏内容的人的公钥。</string>
+    <string name="add_contact">添加联系人</string>
+    <string name="contact_name_label">姓名</string>
+    <string name="contact_key_label">公钥（age1… 或 OpenPGP）</string>
+    <string name="contact_key_file">从文件载入</string>
+    <string name="contact_key_loaded">密钥已载入：</string>
+    <string name="default_contact_name">联系人</string>
+    <string name="contact_added">已添加 %1$s。</string>
+    <string name="key_duplicate">你已经有这个密钥了，名为 %1$s。</string>
+    <string name="delete">删除</string>
+    <string name="delete_key_title">删除 %1$s？</string>
+    <string name="delete_key_body">为这个密钥隐藏的任何内容都将无法再在这部手机上打开。此操作无法撤销。</string>
+    <string name="delete_contact_title">删除 %1$s？</string>
+    <string name="delete_contact_body">你可以用对方的公钥重新添加。</string>
+    <string name="keys_unavailable_title">密钥不可用</string>
+    <string name="keys_retry">重试</string>
+    <string name="keys_reset">重新开始</string>
+    <string name="keys_reset_title">删除所有密钥和联系人？</string>
+    <string name="keys_reset_body">已保存的密钥无法打开，所以无论如何它们都已丢失。重新开始会删除它们，为它们隐藏的任何内容都将无法再在这部手机上打开。此操作无法撤销。</string>
+    <string name="error_age_passphrase_identity">这个 age 身份文件受口令保护。请导出一份不带口令的副本，导入它，然后删除该副本。</string>
+    <string name="keys_unavailable_body">无法打开你的密钥（%1$s）。没有任何内容被更改。</string>
+
+    <!-- QR codes and shared keys -->
+    <string name="show_qr">显示二维码</string>
+    <string name="qr_image_description">你的公钥的二维码</string>
+    <string name="more_actions">更多</string>
+    <string name="delete_named">删除 %1$s</string>
+    <string name="qr_about">用 StegPony 或 AgePony 扫描这个二维码，即可将其添加为联系人。</string>
+    <string name="scan_qr">扫描二维码</string>
+    <string name="scan_title">扫描公钥</string>
+    <string name="scan_help">将相机对准包含 age1… 密钥的二维码，或来自 PGPony 的 OpenPGP 密钥二维码。</string>
+    <string name="scan_part">第 %1$d 部分，共 %2$d 部分。请扫描下一个二维码。</string>
+    <string name="scan_not_a_key">这个二维码不是 StegPony 可以使用的公钥。</string>
+    <string name="scan_secret_key">这是私钥。请改为扫描公钥，并妥善保管私钥，不要给别人。</string>
+    <string name="camera_refused">未获得相机权限，所以无法扫描二维码。请改为粘贴密钥或从文件载入。</string>
+    <string name="shared_not_a_key">共享过来的内容不是 StegPony 可以使用的公钥。需要 age1… 密钥或 Curve25519 OpenPGP 密钥。</string>
+
+    <!-- Hardware keys -->
+    <string name="add_card">添加硬件密钥</string>
+    <string name="card_added">已添加 %1$s。像其他密钥一样共享它的公钥即可。</string>
+    <string name="source_hardware">硬件密钥（私密部分留在密钥上）</string>
+    <string name="delete_card_body">只会移除存储在这里的公钥。硬件密钥本身不受影响，你可以重新添加它。</string>
+    <string name="reveal_with_card">使用硬件密钥</string>
+    <string name="card_pin_label">PIN</string>
+    <string name="card_pin_about">硬件密钥的用户 PIN。它只向密钥发送一次，不会被保存。</string>
+    <string name="card_continue">继续</string>
+    <string name="card_try_again">重试</string>
+    <string name="card_tap">把密钥贴在手机背面并保持不动，直到操作完成。</string>
+    <string name="card_tap_or_plug">把密钥贴在手机背面，或把它插入手机。保持不动，直到操作完成。</string>
+    <string name="card_usb_working">正在使用已插入的密钥。如果它在闪烁，请触摸它。</string>
+    <string name="card_usb_permission">Android 询问时，请允许 StegPony 使用已插入的密钥。</string>
+    <string name="card_enable_nfc">NFC 已关闭。请在 Android 设置中打开它，或把密钥插入手机。</string>
+    <string name="card_plug_in">这部手机没有 NFC。请把密钥插入手机。</string>
+    <string name="card_no_link">这部手机无法连接硬件密钥：没有 NFC，也不支持 USB 主机模式。</string>
+    <string name="card_lift">完成。可以拿开密钥了。</string>
+    <string name="card_allow_usb">允许 USB 访问</string>
+    <string name="card_nfc_settings">NFC 设置</string>
+    <plurals name="card_wrong_pin">
+        <item quantity="other">PIN 错误。还可以尝试 %1$d 次，之后 PIN 将被锁定。</item>
+    </plurals>
+    <string name="card_pin_blocked">错误尝试次数过多，PIN 已被锁定。请用管理员 PIN 解锁（PGPony 或 GnuPG 可以做到）。</string>
+    <string name="card_lost">操作完成前与密钥的连接中断了。请拿稳密钥或检查线缆，然后重试。</string>
+    <string name="card_not_openpgp">这不是 OpenPGP 密钥，或者它的 OpenPGP 应用已被关闭。</string>
+    <string name="card_nfc_openpgp_unavailable">这个密钥没有通过 NFC 打开它的 OpenPGP 应用。有些密钥会在 NFC 下关闭 OpenPGP，Nitrokey 3 就是其中之一。请通过 USB 插入后重试。</string>
+    <string name="card_not_cv25519">这个密钥上的解密密钥是 %1$s。StegPony 需要 Curve25519（cv25519）密钥。</string>
+    <string name="card_no_decryption_key">这个密钥上还没有解密密钥。请先在它上面生成一个 cv25519 密钥，或把一个 cv25519 密钥移到它上面。</string>
+    <string name="card_failed">硬件密钥报告了一个问题：%1$s</string>
+
+    <!-- Settings -->
+    <string name="privacy_title">隐私</string>
+    <string name="app_lock_switch">应用锁</string>
+    <string name="app_lock_about">打开 StegPony 时要求验证指纹、面部或屏幕锁；离开一分钟后或屏幕关闭后会再次要求。</string>
+    <string name="app_lock_no_screen_lock">请先在手机上设置屏幕锁。应用锁要用到它。</string>
+    <string name="lock_now">立即锁定</string>
+    <string name="lock_title">解锁 StegPony</string>
+    <string name="lock_unlock">解锁</string>
+    <string name="secure_hide_switch">在“隐藏”界面禁止截屏</string>
+    <string name="secure_hide_about">同时让“隐藏”界面不出现在最近使用的应用视图中。“提取”和“密钥”界面始终禁止截屏。</string>
+    <string name="disguise_title">启动器伪装</string>
+    <string name="disguise_photo_tools">照片工具</string>
+    <string name="disguise_notes">笔记</string>
+    <string name="disguise_utilities">实用工具</string>
+    <string name="disguise_about">更改启动器中的名称和图标。伪装期间，StegPony 不会出现在共享菜单里，因为 Android 会在那里显示它的真实名称；请改为在应用内打开图像和密钥。伪装并不会隐藏这个应用：真实名称仍然会显示在 Android 的应用设置和 F-Droid 中。有些启动器会在更改时移除主屏幕上的快捷方式；请从应用抽屉重新添加。</string>
+    <string name="covers_title">载体</string>
+    <string name="cover_history_switch">重复使用载体时发出警告</string>
+    <string name="cover_history_about">StegPony 会保存你用来隐藏过内容的照片的指纹，这些指纹经过加密且只存在这部手机上，用于在再次使用同一张照片前发出警告。关闭此项会清除这些记录。</string>
+    <string name="cover_history_forget">清除记录</string>
+    <plurals name="cover_history_count">
+        <item quantity="other">已记住 %1$d 个载体</item>
+    </plurals>
+    <string name="about_title">关于</string>
+    <string name="about_app_version">StegPony %1$s</string>
+    <string name="about_core_version">核心 %1$s</string>
+    <string name="about_format_version">格式版本 %1$d</string>
+
+    <!-- Errors -->
+    <string name="error_bad_image">无法读取这张图像。</string>
+    <string name="error_unsupported_image">无法使用这种图像。StegPony 支持 JPEG 和 PNG。</string>
+    <string name="error_cover_too_small">这张图像太小，无法在里面隐藏任何内容。</string>
+    <string name="error_does_not_fit">这张图像放不下。请缩短内容，或换一张更大的照片。</string>
+    <string name="error_bad_key">这个密钥无法使用。请检查是否完整粘贴。</string>
+    <string name="error_wrong_key_passphrase">这个密钥的口令不正确。</string>
+    <string name="error_secret_not_in_file">这个密钥文件里没有私钥。私钥可能在硬件密钥上。</string>
+    <string name="error_device_cancelled">已取消。</string>
+    <string name="error_key_device">硬件密钥报告了一个问题：%1$s</string>
+    <string name="error_failed">出了点问题：%1$s</string>
+    <string name="error_unexpected">出了点问题（%1$s）。请重试。</string>
+    <string name="error_file_too_large">这个文件超过了 %1$d MB。</string>
+    <string name="error_io">无法读取或写入文件。</string>
+    <string name="error_memory">内存不足，无法处理这张图像。</string>
+
+    <!-- Help, More from NorseHorse, About -->
+    <string name="help_title">帮助</string>
+    <string name="help_row_title">StegPony 的工作原理及其局限</string>
+    <string name="help_row_subtitle">依赖它之前请先阅读</string>
+    <string name="back">返回</string>
+    <string name="help_what_title">StegPony 的功能</string>
+    <string name="help_what_body">StegPony 会加密一条消息或一个文件，并把它隐藏在照片的细节里，或隐藏在文本里。照片看起来和打开时仍与其他照片一样。没有正确的口令或密钥，就什么也找不到：没有文件头，没有标记，也无法区分藏有内容的图像和没有藏内容的图像。\n\n口令通过 Argon2id 进行拉伸，密钥使用 X25519（与 age 相同的密钥），内容用 ChaCha20-Poly1305 封装。每张图像和每段文本都留有容纳两条隐藏消息的空间；第二条要么是你的诱饵，要么是随机填充，所以这两种情况看起来一样。</string>
+    <string name="help_sending_title">发送图像</string>
+    <string name="help_sending_body">请把文件按 StegPony 存储时的原样发送：作为文件或文档附件、通过电子邮件，或通过不会改动文件的服务。任何会重新编码图片的操作都会破坏隐藏的内容。这包括大多数聊天应用的照片模式、调整尺寸、编辑、滤镜，以及部分云服务和社交服务。\n\n绝不要同时发送或发布原始照片。任何同时持有两者的人都可以对比它们。</string>
+    <string name="help_covers_title">选择载体</string>
+    <string name="help_covers_body">最好的载体是你专门为此拍摄的照片，用 StegPony 的相机或你自己的相机都可以，并且从未在任何地方共享过。每张照片只用一次。当一张照片以前用过，或者看起来像是下载的图片或聊天应用里的副本时，StegPony 会发出警告。\n\nJPEG 模式让照片仍然是 JPEG，并保留你相机自身的压缩方式，手机拍出的照片通常就是这样。无损模式会存储为 PNG；请把它用在原本就是 PNG 的图像上。</string>
+    <string name="help_text_title">隐藏在文本中</string>
+    <string name="help_text_body">文本的容量远小于照片，也更容易被察觉，所以请在无法发送照片时再使用。隐藏的内容以同样的方式加密，使用同样的口令、密钥和诱饵。\n\n单词：隐藏的数据会变成一串普通的单词，读起来毫无意义。它能通过自动过滤和随便看一眼，但瞒不过读它的人。即使是很短的消息也要用掉 130 多个单词，因为每段文本都留有诱饵的空间。大小写、标点和换行在传输途中可以变化；但不能有单词被改动、遗漏或多出来。\n\n不可见字符：隐藏的数据会变成不显示的字符，藏进你写的一条消息里。这种方式很弱。很多应用、网站和键盘会移除这些字符，任何去查找它们的人都能立刻发现。在依赖它之前，请先通过同一个应用给自己发一条测试。</string>
+    <string name="help_rating_title">可检测性评级</string>
+    <string name="help_rating_body">评级说明的是结果应该有多难与未经改动的照片区分开，依据是相对于照片的尺寸和细节隐藏了多少内容。低、中、高三档来自用标准检测器对真实手机照片所做的测试，并且设定得低于这些测试显示的水平，因为存在更好的检测器。\n\n以“低”为目标比较好。消息要简短，隐藏文件时请使用尺寸大、细节丰富的照片。评级为高并不意味着内容可以被读取；它意味着寻找隐藏内容的人更有可能察觉到里面有东西。</string>
+    <string name="help_secrets_title">口令和密钥</string>
+    <string name="help_secrets_body">口令对消息的保护程度，只取决于它有多难被猜中。请使用几个随机的词，而不是与你有关的内容，并当面或通过你信任的渠道告诉对方。\n\n使用公钥时不存在共享的秘密：你为某人的 age1… 密钥隐藏内容，只有对方的私钥才能打开。来自 PGPony 或 GnuPG 的 Curve25519 OpenPGP 密钥也是同样的用法。StegPony 会把你的私钥加密保存在这部手机上；它从不保存口令。</string>
+    <string name="help_hardware_title">硬件密钥</string>
+    <string name="help_hardware_body">带有 Curve25519（cv25519）解密密钥的 OpenPGP 硬件密钥，可以通过 NFC 或 USB 打开为它隐藏的图像。已用 Token2 PIN+ 测试，也已通过 USB 用 Nitrokey 3A NFC 测试；其他 OpenPGP 硬件密钥应该也能同样使用。密钥交换由硬件密钥自己完成，所以它的私密部分永远不会离开它。你每次都要输入密钥的 PIN；StegPony 不会保存它。RSA 密钥无法使用。</string>
+    <string name="help_decoy_title">诱饵</string>
+    <string name="help_decoy_body">诱饵是用第二个口令保护的第二条消息。如果有人强迫你打开一张图像或一段文本，就把诱饵交给对方。没有人能从中判断是否存在诱饵，而且对于错误的口令和里面什么都没有的图像，StegPony 给出的回答是一样的。\n\n局限在于：了解 StegPony 的人知道它隐藏的所有内容都留有两条消息的空间，因此可能不相信只有一条。请把诱饵做得可信；在你自己的手机上，请输入诱饵的口令，而不要把输入框留空，留空会尝试你自己的密钥。</string>
+    <string name="help_phone_title">在这部手机上</string>
+    <string name="help_phone_body">StegPony 没有网络访问权限。你的密钥和联系人用保存在 Android 安全硬件中的密钥加密，并且不会包含在备份和换机传输中。“提取”和“密钥”界面禁止截屏，复制的消息会在一分钟后从剪贴板清除。\n\n应用锁和启动器伪装能拖慢别人对你手机的随意翻看。它们并不能隐藏 StegPony 已安装这件事：它的真实名称仍然会显示在 Android 的应用设置中。</string>
+    <string name="help_limits_title">StegPony 无法防范的情况</string>
+    <string name="help_limits_body">隐藏会降低被察觉的概率，但不会让它变成零。StegPony 无法保护你免受以下情况的影响：\n\n• 有人持有你用来隐藏内容的原始照片；\n• 用你自己相机拍的照片训练出来的检测器，尤其是在隐藏的内容很多时；\n• 有人知道你安装了 StegPony，并坚持要你交出第二个口令；\n• 对你已解锁的手机进行取证检查；\n• 任何能看到你把图像发给谁、何时发送的人。StegPony 隐藏的是你发送的内容，而不是你发送过这件事。</string>
+    <string name="more_title">NorseHorse 的更多应用</string>
+    <string name="more_footer">同一开发者的其他应用。</string>
+    <string name="more_all_apps">NorseHorse 的全部 Pony 应用</string>
+    <string name="more_pgpony">OpenPGP 消息、文件和密钥</string>
+    <string name="more_agepony">简单、现代的文件加密（age）</string>
+    <string name="more_passpony">适用于 pass 和 passage 的密码管理器</string>
+    <string name="more_vaultpony">兼容 VeraCrypt 的加密保险库</string>
+    <string name="more_scrubpony">移除照片中的位置和其他元数据</string>
+    <string name="more_tappony">轻触 NFC 标签即可触发 webhook</string>
+    <string name="more_quorumpony">基于法定人数的密钥备份与恢复</string>
+    <string name="more_carrierpony">PGP 聊天和加密文件</string>
+    <string name="more_burnpony">阅后即焚的加密消息</string>
+    <string name="more_relaypony">加密文件传输</string>
+    <string name="more_hashpony">计算文件哈希，并用校验和核对下载的文件</string>
+    <string name="about_source_app">源代码（应用）</string>
+    <string name="about_source_core">源代码（核心）</string>
+    <string name="licenses_title">开源许可证</string>
+    <string name="licenses_row_subtitle">构成 StegPony 的开源组件</string>
+
+    <!-- Language -->
+    <string name="language_title">语言</string>
+    <string name="language_row_subtitle">更改 StegPony 使用的语言</string>
+    <string name="language_footer">更改会立即生效。</string>
+
+    <!-- Welcome tour -->
+    <string name="onboarding_replay_title">再次显示欢迎导览</string>
+    <string name="onboarding_replay_subtitle">重看首次启动时的介绍</string>
+    <string name="onboarding_skip">跳过</string>
+    <string name="onboarding_start">开始</string>
+    <string name="onboarding_page">第 %1$d 页，共 %2$d 页</string>
+    <string name="onboarding_language_body">选择你想使用的语言。\n\n以后可以在“设置”中更改。</string>
+    <string name="onboarding_welcome_title">欢迎使用 StegPony</string>
+    <string name="onboarding_welcome_body">StegPony 会加密一条消息或一个文件，并把它隐藏在一张普通的照片里，或隐藏在文本里。\n\n任何内容都不会通过这个应用离开这部手机。它没有网络访问权限，没有账户，也没有跟踪。</string>
+    <string name="onboarding_cover_title">从一张新拍的照片开始</string>
+    <string name="onboarding_cover_body">最好的载体是你专门为此拍摄、并且绝不在其他任何地方共享的照片。每张照片只用一次。\n\n当一张照片以前用过，或者看起来像是下载的图片或聊天应用里的副本时，StegPony 会发出警告。</string>
+    <string name="onboarding_try_button">现在隐藏我的第一条消息</string>
+    <string name="onboarding_try_show">显示我隐藏的消息</string>
+    <string name="onboarding_try_hint">也可以轻触“下一步”，以后再在“隐藏”界面进行。</string>
+    <string name="onboarding_try_title">隐藏你的第一条消息</string>
+    <string name="onboarding_try_photo">1. 选择照片</string>
+    <string name="onboarding_try_message">2. 写一条消息</string>
+    <string name="onboarding_try_passphrase">3. 设置口令</string>
+    <string name="onboarding_try_passphrase_about">对方需要这个口令才能提取消息。请当面或通过你信任的渠道告诉对方。</string>
+    <string name="onboarding_try_done">你的消息已隐藏在这张照片里</string>
+    <string name="onboarding_try_reveal_hint">要重新读取它，请在“提取”界面打开保存的图像，并输入同一个口令。</string>
+    <string name="onboarding_try_continue">继续导览</string>
+    <string name="onboarding_lock_title">用口令或密钥加锁</string>
+    <string name="onboarding_lock_body">口令是你和对方事先约定好的。公钥不需要共享的秘密：只有对方的私钥才能打开。\n\n你可以添加诱饵，也就是用第二个口令保护的第二条消息，在有人逼你打开图像时交给对方。</string>
+    <string name="onboarding_send_title">以文件形式发送</string>
+    <string name="onboarding_send_body">请把图像作为文件或文档附件发送。聊天应用的照片模式会重新压缩图像，破坏隐藏的内容。\n\n绝不要同时发送或发布原始照片。任何同时持有两者的人都可以对比它们。</string>
+    <string name="onboarding_protect_title">保护应用</string>
+    <string name="onboarding_protect_body">这些设置能拖慢别人对你手机的随意翻看。以后可以在“设置”中更改。</string>
+    <string name="onboarding_limits_title">了解局限</string>
+    <string name="onboarding_limits_body">隐藏会降低被察觉的概率，但不会让它变成零。StegPony 隐藏的是你发送的内容，而不是你发送过这件事。\n\n依赖它之前，请先阅读“设置”中的“帮助”。</string>
+</resources>

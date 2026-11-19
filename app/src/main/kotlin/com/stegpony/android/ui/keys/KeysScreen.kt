@@ -1,6 +1,7 @@
 package com.stegpony.android.ui.keys
 
 import android.content.ClipData
+import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.ui.common.ControlShape
 import android.content.ClipboardManager
 import android.content.Context
@@ -452,7 +453,7 @@ private fun copyRecipient(context: Context, recipient: String) {
         ?.setPrimaryClip(ClipData.newPlainText("age recipient", recipient))
     // Android 13 and later confirm a copy themselves.
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        Toast.makeText(context.applicationContext, R.string.copied, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context.applicationContext, LanguageManager.localized(context).getString(R.string.copied), Toast.LENGTH_SHORT).show()
     }
 }
 

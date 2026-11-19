@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.R
 import com.stegpony.android.card.CardKey
 import com.stegpony.android.io.Files
@@ -49,7 +50,8 @@ sealed interface PendingDelete {
 }
 
 class KeysViewModel(app: Application) : AndroidViewModel(app) {
-    private val context get() = getApplication<Application>()
+    // Localized, so messages follow the in-app language before Android 13 too.
+    private val context get() = LanguageManager.localized(getApplication<Application>())
 
     var busy by mutableStateOf(false)
         private set

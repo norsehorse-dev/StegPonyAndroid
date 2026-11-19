@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.card.HardwareKey
 import com.stegpony.android.card.OpenPgpCardSession
 import com.stegpony.android.io.Files
@@ -58,7 +59,8 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
         private set
     var errorText by mutableStateOf<String?>(null)
 
-    private val context get() = getApplication<Application>()
+    // Localized, so messages follow the in-app language before Android 13 too.
+    private val context get() = LanguageManager.localized(getApplication<Application>())
 
     fun selectSource(s: RevealSource) {
         if (blocked || s == source) return

@@ -293,7 +293,7 @@ private fun modeAbout(mode: ImageMode, format: ImageFormat): Int = when {
 }
 
 @Composable
-private fun SourceButton(icon: ImageVector, label: String, enabled: Boolean, onClick: () -> Unit) {
+internal fun SourceButton(icon: ImageVector, label: String, enabled: Boolean, onClick: () -> Unit) {
     OutlinedButton(shape = ControlShape, onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth()) {
         Icon(icon, contentDescription = null)
         Text(label, Modifier.padding(start = 8.dp))
@@ -302,7 +302,7 @@ private fun SourceButton(icon: ImageVector, label: String, enabled: Boolean, onC
 
 /** The cover or the result, shown small. Decoration for screen readers: the name beside it says what it is. */
 @Composable
-private fun Preview(image: ImageBitmap) {
+internal fun Preview(image: ImageBitmap) {
     Image(
         bitmap = image,
         contentDescription = null,
@@ -316,7 +316,7 @@ private fun Preview(image: ImageBitmap) {
 
 /** A small spinner beside what is being done. */
 @Composable
-private fun Working(label: String) {
+internal fun Working(label: String) {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
         Text(label, style = MaterialTheme.typography.bodySmall)

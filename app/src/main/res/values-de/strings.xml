@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="tab_hide">Verstecken</string>
+    <string name="tab_reveal">Aufdecken</string>
+    <string name="tab_keys">Schlüssel</string>
+    <string name="tab_settings">Einstellungen</string>
+
+    <!-- Shared -->
+    <string name="pick_photo">Fotos</string>
+    <string name="pick_file">Dateien</string>
+    <string name="passphrase_label">Passphrase</string>
+    <string name="show_passphrase">Passphrase anzeigen</string>
+    <string name="hide_passphrase">Passphrase ausblenden</string>
+    <string name="save">Speichern</string>
+    <string name="share">Teilen</string>
+    <string name="copy">Kopieren</string>
+    <string name="copied">Kopiert</string>
+    <string name="close">Schließen</string>
+    <string name="paste">Einfügen</string>
+    <string name="clear">Leeren</string>
+    <string name="carrier_photo">Foto</string>
+    <string name="carrier_text">Text</string>
+    <string name="rating_low_title">Geringe Erkennbarkeit</string>
+    <string name="rating_medium_title">Mittlere Erkennbarkeit</string>
+    <string name="rating_high_title">Hohe Erkennbarkeit</string>
+    <string name="reading_cover">Bild wird gelesen…</string>
+
+    <!-- Hide -->
+    <string name="hide_step">Verstecken: Schritt %1$d von %2$d</string>
+    <string name="next">Weiter</string>
+    <string name="hide_in_title">Verstecken in</string>
+    <string name="carrier_photo_about">Im feinen Detail eines Fotos versteckt und als Datei gesendet. Fasst am meisten und ist am schwersten zu bemerken.</string>
+    <string name="carrier_text_about">In Text versteckt, den du in eine Nachricht, eine E-Mail oder eine Notiz einfügst. Fasst weit weniger als ein Foto und ist leichter zu bemerken.</string>
+    <string name="hide_cover_title">Trägerfoto</string>
+    <string name="hide_cover_hint">Nimm ein Foto, das du selbst aufgenommen und nirgends veröffentlicht hast. Wer das Original hat, kann beide vergleichen.</string>
+    <string name="mode_jpeg">JPEG</string>
+    <string name="mode_lossless">Verlustfrei (PNG)</string>
+    <string name="mode_jpeg_about">Bleibt ein JPEG mit der eigenen Komprimierung der Kamera und sieht damit aus wie jedes andere Foto von deinem Smartphone.</string>
+    <string name="mode_lossless_about">Wird als PNG gespeichert.</string>
+    <string name="mode_lossless_from_jpeg_about">Wird als PNG gespeichert. Ein als PNG gespeichertes Kamerafoto ist schon für sich ungewöhnlich, daher ist JPEG meist die bessere Wahl.</string>
+    <string name="hide_message_title">Was verstecken</string>
+    <string name="payload_text">Text</string>
+    <string name="payload_file">Datei</string>
+    <string name="message_label">Nachricht</string>
+    <string name="pick_payload_file">Datei auswählen</string>
+    <string name="capacity_summary">Platz für bis zu %1$d Byte Text. Bis etwa %2$d bleibt die Erkennbarkeit gering.</string>
+    <string name="capacity_summary_no_low">Platz für bis zu %1$d Byte Text. Alles, was in einem Bild dieser Größe versteckt wird, ist leichter zu erkennen.</string>
+    <string name="meter_bytes">%1$d von %2$d Byte</string>
+    <string name="meter_too_big">%1$d Byte, aber dieses Bild fasst %2$d</string>
+    <string name="hide_key_title">Sichern mit</string>
+    <string name="key_passphrase">Passphrase</string>
+    <string name="key_recipient">Öffentlicher Schlüssel einer Person</string>
+    <string name="passphrase_again_label">Passphrase wiederholen</string>
+    <string name="recipient_label">Öffentlicher Schlüssel</string>
+    <string name="recipient_hint">Füge den age1…-Schlüssel der Person ein. Nur ihr geheimer Schlüssel öffnet es.</string>
+    <string name="recipient_yours">%1$s (deiner)</string>
+    <string name="recipient_paste">Schlüssel einfügen</string>
+    <string name="hide_decoy_title">Köder</string>
+    <string name="decoy_about">Eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand dazu bringt, das Bild zu öffnen, gib diese heraus. Niemand kann erkennen, ob ein Bild einen Köder enthält.</string>
+    <string name="decoy_message_label">Ködernachricht</string>
+    <string name="decoy_passphrase_label">Köder-Passphrase</string>
+    <string name="keep_metadata">Metadaten behalten</string>
+    <string name="keep_metadata_about">Aus entfernt Standort, Zeit und Gerätedetails. Schalte es nur ein, wenn das Foto sie braucht, um normal auszusehen.</string>
+    <string name="hide_button">Verstecken</string>
+    <string name="hiding">Wird versteckt. Bei einem großen Foto kann das mehrere Sekunden dauern.</string>
+    <string name="need_cover">Wähle ein Trägerfoto.</string>
+    <string name="need_payload">Schreibe eine Nachricht oder wähle eine Datei.</string>
+    <string name="need_passphrase">Gib eine Passphrase ein.</string>
+    <string name="passphrases_differ">Die beiden Passphrasen stimmen nicht überein.</string>
+    <string name="need_recipient">Füge einen öffentlichen Schlüssel ein.</string>
+    <string name="need_decoy_text">Schreibe die Ködernachricht.</string>
+    <string name="need_decoy_passphrase">Gib eine Köder-Passphrase ein.</string>
+    <string name="decoy_same_passphrase">Der Köder braucht eine andere Passphrase.</string>
+    <string name="hide_done_title">Fertig</string>
+    <string name="hide_another">Weiteres verstecken</string>
+    <string name="review_title">Überprüfen</string>
+    <string name="review_cover">Trägerfoto</string>
+    <string name="review_cover_fresh">Ein gerade aufgenommenes Foto</string>
+    <string name="review_format">Gespeichert als</string>
+    <string name="review_payload_text">Eine von dir getippte Nachricht</string>
+    <string name="review_decoy_on">Enthalten</string>
+    <string name="review_decoy_off">Keiner</string>
+    <string name="decoy_add">Köder hinzufügen</string>
+    <string name="error_decoy_does_not_fit">Mit dem Köder passt es nicht mehr. Kürze den Köder oder die Nachricht.</string>
+    <string name="text_kind_title">Art des Textes</string>
+    <string name="text_mode_words">Wörter</string>
+    <string name="text_mode_zero_width">Unsichtbare Zeichen</string>
+    <string name="text_mode_words_about">Eine Folge gewöhnlicher Wörter, die sich wie Unsinn liest. Sie kommt an automatischen Filtern und einem flüchtigen Blick vorbei, nicht an jemandem, der sie liest. Schon eine kurze Nachricht braucht über 130 Wörter.</string>
+    <string name="text_mode_zero_width_about">Schwach. Unsichtbare Zeichen, eingefügt in eine Nachricht, die du schreibst und die unverändert aussieht. Viele Apps entfernen diese Zeichen, und jedes Werkzeug, das nach ihnen sucht, findet sie sofort. In Ordnung für eine Notiz oder ein Dokument, nicht gegen jemanden, der nachprüft.</string>
+    <string name="cover_text_label">Sichtbare Nachricht</string>
+    <string name="cover_text_hint">Das, was alle sehen. Schreibe etwas Gewöhnliches. Längere Nachrichten verteilen die versteckten Zeichen stärker.</string>
+    <string name="need_cover_text">Schreibe die sichtbare Nachricht.</string>
+    <string name="error_text_too_long">Zu lang, um es in Text zu verstecken. Kürze es oder nimm ein Foto.</string>
+    <string name="text_too_long">Zu lang für Text, der bis zu %1$d Byte fasst. Nimm stattdessen ein Foto.</string>
+    <plurals name="text_size_words">
+        <item quantity="one">Etwa %1$d Wort.</item>
+        <item quantity="other">Etwa %1$d Wörter.</item>
+    </plurals>
+    <plurals name="text_size_chars">
+        <item quantity="one">%1$d unsichtbares Zeichen.</item>
+        <item quantity="other">%1$d unsichtbare Zeichen.</item>
+    </plurals>
+    <plurals name="text_size_room">
+        <item quantity="one">%1$d weiteres Byte passt hinein, bevor es länger wird.</item>
+        <item quantity="other">%1$d weitere Byte passen hinein, bevor es länger wird.</item>
+    </plurals>
+    <string name="hiding_text">Wird versteckt…</string>
+    <plurals name="text_done_words">
+        <item quantity="one">%1$d Wort.</item>
+        <item quantity="other">%1$d Wörter.</item>
+    </plurals>
+    <plurals name="text_done_chars">
+        <item quantity="one">Deine Nachricht, mit %1$d unsichtbarem Zeichen darin.</item>
+        <item quantity="other">Deine Nachricht, mit %1$d unsichtbaren Zeichen darin.</item>
+    </plurals>
+    <string name="text_send_words">Sende die Wörter genau so, wie sie sind. Großschreibung, Satzzeichen und Zeilenumbrüche spielen keine Rolle, aber ein geändertes, fehlendes oder hinzugefügtes Wort macht es unbrauchbar, achte also auf die Autokorrektur. Die Zwischenablage wird nach %1$d Sekunden geleert.</string>
+    <string name="text_send_zero_width">Sende zuerst einen Test an dich selbst: Viele Apps entfernen unsichtbare Zeichen stillschweigend, und dann lässt sich nichts mehr aufdecken. Die Zwischenablage wird nach %1$d Sekunden geleert.</string>
+    <string name="send_as_file">Sende es als Datei oder Dokument. Der Fotomodus eines Messengers komprimiert das Bild neu und zerstört, was versteckt ist. Teile das Originalfoto nirgends.</string>
+
+    <!-- Cover handling -->
+    <string name="take_photo">Kamera</string>
+    <string name="camera_title">Trägerfoto aufnehmen</string>
+    <string name="camera_shutter">Foto aufnehmen</string>
+    <string name="camera_failed">Das Foto konnte nicht aufgenommen werden. Versuche es erneut.</string>
+    <string name="camera_refused_cover">Die Kamera wurde nicht erlaubt. Wähle stattdessen ein Foto, das du früher aufgenommen hast.</string>
+    <string name="cover_fresh">Gerade aufgenommenes Foto. Es ist nirgendwo sonst gespeichert.</string>
+    <string name="cover_note_reused">Du hast in diesem Foto schon einmal etwas versteckt. Wer zwei Versionen desselben Fotos hat, kann sie vergleichen, nimm also ein neues.</string>
+    <string name="cover_note_not_camera">Dieses Foto hat keine Kameradetails, es könnte also ein Download oder ein gespeichertes Messenger-Bild sein. Wenn anderswo eine Kopie existiert, kann sie mit deiner verglichen werden. Ein gerade aufgenommenes Foto ist sicherer.</string>
+    <string name="cover_note_downloads">Das stammt aus Downloads, es könnte also online eine Kopie geben, die mit deiner verglichen werden könnte. Ein gerade aufgenommenes Foto ist sicherer.</string>
+
+    <!-- Reveal -->
+    <string name="reveal_in_title">Suchen in</string>
+    <string name="reveal_text_title">Text</string>
+    <string name="reveal_text_label">Text einfügen</string>
+    <string name="reveal_text_hint">Füge den ganzen Text genau so ein, wie du ihn erhalten hast, oder teile ihn aus einer anderen App mit StegPony.</string>
+    <string name="nothing_found_text_body">Das ist StegPony-Text, aber mit dem, was versucht wurde, ließ sich nichts öffnen. Er wurde mit einer anderen Passphrase oder einem anderen Schlüssel versteckt, oder für einen Köder, den du nicht hast. StegPony kann nicht erkennen, was davon zutrifft.</string>
+    <string name="error_not_steg_text">In diesem Text ist nichts versteckt. Er enthält keine unsichtbaren Zeichen, und „%1$s“ gehört nicht zu den Wörtern von StegPony. Wenn er durch eine App gegangen ist, die unsichtbare Zeichen entfernt, ist der versteckte Teil weg; wenn ein Wort geändert wurde, bitte noch einmal um den Text.</string>
+    <string name="error_text_incomplete">Ein Teil des versteckten Textes fehlt oder wurde geändert. Kopiere den ganzen Text noch einmal, genau so, wie du ihn erhalten hast. Manche Apps entfernen unsichtbare Zeichen, und die Autokorrektur kann Wörter ändern.</string>
+    <string name="reveal_image_title">Bild</string>
+    <string name="reveal_image_hint">Wähle das Bild oder teile es aus einer anderen App mit StegPony.</string>
+    <string name="reveal_key_title">Öffnen mit</string>
+    <string name="reveal_no_keys">Gib die Passphrase ein oder füge einen geheimen Schlüssel ein (AGE-SECRET-KEY-1…). Um das beim nächsten Mal zu überspringen, füge deinen Schlüssel auf dem Bildschirm „Schlüssel“ hinzu.</string>
+    <string name="reveal_secret_label">Passphrase oder geheimer Schlüssel</string>
+    <plurals name="reveal_tries_keys">
+        <item quantity="one">Lass das leer, um es mit deinem Schlüssel zu öffnen. Gib eine Passphrase nur für etwas ein, das mit einer Passphrase versteckt wurde, oder füge einen anderen geheimen Schlüssel ein.</item>
+        <item quantity="other">Lass das leer, um es mit deinen %1$d Schlüsseln zu öffnen. Gib eine Passphrase nur für etwas ein, das mit einer Passphrase versteckt wurde, oder füge einen anderen geheimen Schlüssel ein.</item>
+    </plurals>
+    <string name="reveal_button">Aufdecken</string>
+    <string name="revealing">Suche läuft…</string>
+    <string name="nothing_found_title">Nichts gefunden</string>
+    <string name="nothing_found_body">Entweder ist in diesem Bild nichts versteckt, oder es wurde mit einer anderen Passphrase versteckt. StegPony kann nicht erkennen, was davon zutrifft, und auch sonst niemand.</string>
+    <string name="found_text_title">Versteckte Nachricht</string>
+    <string name="found_file_title">Versteckte Datei</string>
+    <string name="copy_clears">Die Zwischenablage wird nach %1$d Sekunden geleert.</string>
+
+    <!-- Keys -->
+    <string name="my_keys_title">Deine Schlüssel</string>
+    <string name="my_keys_empty">Noch keine Schlüssel. Erstelle einen, um Bilder zu empfangen, in denen etwas für dich versteckt wurde, und teile dann seinen öffentlichen Schlüssel.</string>
+    <string name="create_key">Schlüssel erstellen</string>
+    <string name="create_key_about">Ein neuer Schlüssel funktioniert mit age, der öffentliche Schlüssel kann also auch Dateien von age und AgePony empfangen.</string>
+    <string name="key_name_label">Name</string>
+    <string name="default_key_label">Mein Schlüssel</string>
+    <string name="create">Erstellen</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="key_created">Schlüssel erstellt. Teile seinen öffentlichen Schlüssel mit allen, die etwas für dich verstecken werden.</string>
+    <string name="import_key">Importieren</string>
+    <string name="import_key_about">Importiere eine age-Identitätsdatei oder einen geheimen OpenPGP-Schlüssel mit einem Curve25519-Verschlüsselungsschlüssel (cv25519 oder X25519).</string>
+    <string name="imported_key_label">Importierter Schlüssel</string>
+    <string name="pgp_key_label">OpenPGP-Schlüssel</string>
+    <string name="key_imported">Schlüssel importiert.</string>
+    <string name="pgp_passphrase_title">Schlüssel-Passphrase</string>
+    <string name="pgp_passphrase_about">Dieser OpenPGP-Schlüssel ist geschützt. Seine Passphrase wird einmal zum Entsperren verwendet und nicht gespeichert.</string>
+    <string name="unlock">Entsperren</string>
+    <string name="source_generated">Auf diesem Smartphone erstellt</string>
+    <string name="source_age">Importierter age-Schlüssel</string>
+    <string name="source_pgp">OpenPGP-Schlüssel</string>
+    <string name="share_public_key">Öffentlichen Schlüssel teilen</string>
+    <string name="contacts_title">Kontakte</string>
+    <string name="contacts_empty">Füge die öffentlichen Schlüssel der Personen hinzu, für die du etwas versteckst.</string>
+    <string name="add_contact">Kontakt hinzufügen</string>
+    <string name="contact_name_label">Name</string>
+    <string name="contact_key_label">Öffentlicher Schlüssel (age1… oder OpenPGP)</string>
+    <string name="contact_key_file">Aus Datei laden</string>
+    <string name="contact_key_loaded">Schlüssel geladen:</string>
+    <string name="default_contact_name">Kontakt</string>
+    <string name="contact_added">%1$s hinzugefügt.</string>
+    <string name="key_duplicate">Du hast diesen Schlüssel schon, als %1$s.</string>
+    <string name="delete">Löschen</string>
+    <string name="delete_key_title">%1$s löschen?</string>
+    <string name="delete_key_body">Alles, was für diesen Schlüssel versteckt wurde, lässt sich auf diesem Smartphone nicht mehr öffnen. Das lässt sich nicht rückgängig machen.</string>
+    <string name="delete_contact_title">%1$s löschen?</string>
+    <string name="delete_contact_body">Du kannst den Kontakt über seinen öffentlichen Schlüssel wieder hinzufügen.</string>
+    <string name="keys_unavailable_title">Schlüssel nicht verfügbar</string>
+    <string name="keys_retry">Erneut versuchen</string>
+    <string name="keys_reset">Neu beginnen</string>
+    <string name="keys_reset_title">Alle Schlüssel und Kontakte löschen?</string>
+    <string name="keys_reset_body">Die gespeicherten Schlüssel lassen sich nicht öffnen, sie sind also so oder so verloren. Ein Neubeginn löscht sie, und alles, was für sie versteckt wurde, lässt sich auf diesem Smartphone nicht mehr öffnen. Das lässt sich nicht rückgängig machen.</string>
+    <string name="error_age_passphrase_identity">Diese age-Identitätsdatei ist mit einer Passphrase geschützt. Exportiere sie ohne Passphrase, importiere sie und lösche dann die Kopie.</string>
+    <string name="keys_unavailable_body">Deine Schlüssel konnten nicht geöffnet werden (%1$s). Es wurde nichts geändert.</string>
+
+    <!-- QR codes and shared keys -->
+    <string name="show_qr">QR-Code anzeigen</string>
+    <string name="qr_image_description">QR-Code deines öffentlichen Schlüssels</string>
+    <string name="more_actions">Mehr</string>
+    <string name="delete_named">%1$s löschen</string>
+    <string name="qr_about">Scanne das mit StegPony oder AgePony, um es als Kontakt hinzuzufügen.</string>
+    <string name="scan_qr">QR-Code scannen</string>
+    <string name="scan_title">Öffentlichen Schlüssel scannen</string>
+    <string name="scan_help">Richte die Kamera auf einen QR-Code mit einem age1…-Schlüssel oder einem OpenPGP-Schlüssel aus PGPony.</string>
+    <string name="scan_part">Teil %1$d von %2$d. Scanne den nächsten Code.</string>
+    <string name="scan_not_a_key">Dieser QR-Code ist kein öffentlicher Schlüssel, den StegPony verwenden kann.</string>
+    <string name="scan_secret_key">Das ist ein geheimer Schlüssel. Scanne stattdessen den öffentlichen Schlüssel und halte den geheimen privat.</string>
+    <string name="camera_refused">Die Kamera wurde nicht erlaubt, der QR-Code kann also nicht gescannt werden. Füge den Schlüssel stattdessen ein oder lade ihn aus einer Datei.</string>
+    <string name="shared_not_a_key">Was geteilt wurde, ist kein öffentlicher Schlüssel, den StegPony verwenden kann. Nötig ist ein age1…-Schlüssel oder ein Curve25519-OpenPGP-Schlüssel.</string>
+
+    <!-- Hardware keys -->
+    <string name="add_card">Hardware-Schlüssel hinzufügen</string>
+    <string name="card_added">%1$s hinzugefügt. Teile seinen öffentlichen Schlüssel wie jeden anderen.</string>
+    <string name="source_hardware">Hardware-Schlüssel (das Geheimnis bleibt auf dem Schlüssel)</string>
+    <string name="delete_card_body">Nur der hier gespeicherte öffentliche Schlüssel wird entfernt. Der Hardware-Schlüssel selbst wird nicht angetastet, und du kannst ihn wieder hinzufügen.</string>
+    <string name="reveal_with_card">Hardware-Schlüssel verwenden</string>
+    <string name="card_pin_label">PIN</string>
+    <string name="card_pin_about">Die Benutzer-PIN des Schlüssels. Sie geht einmal an den Schlüssel und wird nicht gespeichert.</string>
+    <string name="card_continue">Fortfahren</string>
+    <string name="card_try_again">Erneut versuchen</string>
+    <string name="card_tap">Halte deinen Schlüssel an die Rückseite des Smartphones und lass ihn dort, bis das abgeschlossen ist.</string>
+    <string name="card_tap_or_plug">Halte deinen Schlüssel an die Rückseite des Smartphones oder stecke ihn ein. Lass ihn dort, bis das abgeschlossen ist.</string>
+    <string name="card_usb_working">Der eingesteckte Schlüssel wird verwendet. Wenn er blinkt, berühre ihn.</string>
+    <string name="card_usb_permission">Erlaube StegPony, den eingesteckten Schlüssel zu verwenden, wenn Android fragt.</string>
+    <string name="card_enable_nfc">NFC ist aus. Schalte es in den Android-Einstellungen ein oder stecke den Schlüssel ein.</string>
+    <string name="card_plug_in">Dieses Smartphone hat kein NFC. Stecke den Schlüssel ein.</string>
+    <string name="card_no_link">Dieses Smartphone kann keinen Hardware-Schlüssel erreichen: kein NFC und keine USB-Host-Unterstützung.</string>
+    <string name="card_lift">Fertig. Du kannst den Schlüssel wegnehmen.</string>
+    <string name="card_allow_usb">USB-Zugriff erlauben</string>
+    <string name="card_nfc_settings">NFC-Einstellungen</string>
+    <plurals name="card_wrong_pin">
+        <item quantity="one">Falsche PIN. Noch %1$d Versuch, bevor die PIN gesperrt wird.</item>
+        <item quantity="other">Falsche PIN. Noch %1$d Versuche, bevor die PIN gesperrt wird.</item>
+    </plurals>
+    <string name="card_pin_blocked">Die PIN ist nach zu vielen falschen Versuchen gesperrt. Entsperre sie mit der Admin-PIN (PGPony oder GnuPG können das).</string>
+    <string name="card_lost">Die Verbindung zum Schlüssel ging verloren, bevor er fertig war. Halte ihn still oder prüfe das Kabel und versuche es erneut.</string>
+    <string name="card_not_openpgp">Das ist kein OpenPGP-Schlüssel, oder seine OpenPGP-Anwendung ist ausgeschaltet.</string>
+    <string name="card_nfc_openpgp_unavailable">Dieser Schlüssel hat seine OpenPGP-Anwendung über NFC nicht geöffnet. Manche Schlüssel schalten OpenPGP über NFC aus, darunter der Nitrokey 3. Stecke ihn per USB ein und versuche es erneut.</string>
+    <string name="card_not_cv25519">Der Entschlüsselungsschlüssel dieses Schlüssels ist %1$s. StegPony braucht einen Curve25519-Schlüssel (cv25519).</string>
+    <string name="card_no_decryption_key">Dieser Schlüssel hat noch keinen Entschlüsselungsschlüssel. Erzeuge zuerst einen cv25519-Schlüssel darauf oder verschiebe einen dorthin.</string>
+    <string name="card_failed">Der Hardware-Schlüssel hat ein Problem gemeldet: %1$s</string>
+
+    <!-- Settings -->
+    <string name="privacy_title">Privatsphäre</string>
+    <string name="app_lock_switch">App-Sperre</string>
+    <string name="app_lock_about">Verlangt deinen Fingerabdruck, dein Gesicht oder deine Displaysperre, um StegPony zu öffnen, und erneut nach einer Minute Abwesenheit oder wenn der Bildschirm ausgeht.</string>
+    <string name="app_lock_no_screen_lock">Richte zuerst eine Displaysperre auf dem Smartphone ein. Die App-Sperre verwendet sie.</string>
+    <string name="lock_now">Jetzt sperren</string>
+    <string name="lock_title">StegPony entsperren</string>
+    <string name="lock_unlock">Entsperren</string>
+    <string name="secure_hide_switch">Screenshots bei „Verstecken“ blockieren</string>
+    <string name="secure_hide_about">Hält „Verstecken“ auch aus der Ansicht der zuletzt verwendeten Apps heraus. „Aufdecken“ und „Schlüssel“ blockieren Screenshots immer.</string>
+    <string name="disguise_title">Launcher-Tarnung</string>
+    <string name="disguise_photo_tools">Fotowerkzeuge</string>
+    <string name="disguise_notes">Notizen</string>
+    <string name="disguise_utilities">Dienstprogramme</string>
+    <string name="disguise_about">Ändert Name und Symbol im Launcher. Solange die Tarnung aktiv ist, wird StegPony nicht in Teilen-Menüs angeboten, weil Android dort den echten Namen zeigt; öffne Bilder und Schlüssel stattdessen aus der App heraus. Die App wird dadurch nicht versteckt: Der echte Name erscheint weiterhin in den App-Einstellungen von Android und in F-Droid. Manche Launcher entfernen die Verknüpfung auf dem Startbildschirm, wenn sich das ändert; füge sie aus der App-Übersicht wieder hinzu.</string>
+    <string name="covers_title">Trägerfotos</string>
+    <string name="cover_history_switch">Warnen, wenn ein Trägerfoto wiederverwendet wird</string>
+    <string name="cover_history_about">StegPony speichert Fingerabdrücke der Fotos, in denen du etwas versteckt hast, verschlüsselt und nur auf diesem Smartphone, um zu warnen, bevor eines erneut verwendet wird. Beim Ausschalten werden sie vergessen.</string>
+    <string name="cover_history_forget">Vergessen</string>
+    <plurals name="cover_history_count">
+        <item quantity="one">%1$d Trägerfoto gemerkt</item>
+        <item quantity="other">%1$d Trägerfotos gemerkt</item>
+    </plurals>
+    <string name="about_title">Über</string>
+    <string name="about_app_version">StegPony %1$s</string>
+    <string name="about_core_version">Kern %1$s</string>
+    <string name="about_format_version">Formatversion %1$d</string>
+
+    <!-- Errors -->
+    <string name="error_bad_image">Dieses Bild konnte nicht gelesen werden.</string>
+    <string name="error_unsupported_image">Diese Art von Bild kann nicht verwendet werden. StegPony arbeitet mit JPEG und PNG.</string>
+    <string name="error_cover_too_small">Dieses Bild ist zu klein, um etwas darin zu verstecken.</string>
+    <string name="error_does_not_fit">Es passt nicht in dieses Bild. Kürze es oder nimm ein größeres Foto.</string>
+    <string name="error_bad_key">Dieser Schlüssel kann nicht verwendet werden. Prüfe, ob er vollständig eingefügt wurde.</string>
+    <string name="error_wrong_key_passphrase">Falsche Passphrase für diesen Schlüssel.</string>
+    <string name="error_secret_not_in_file">Diese Schlüsseldatei enthält den geheimen Schlüssel nicht. Er liegt möglicherweise auf einem Hardware-Schlüssel.</string>
+    <string name="error_device_cancelled">Abgebrochen.</string>
+    <string name="error_key_device">Der Hardware-Schlüssel hat ein Problem gemeldet: %1$s</string>
+    <string name="error_failed">Etwas ist schiefgegangen: %1$s</string>
+    <string name="error_unexpected">Etwas ist schiefgegangen (%1$s). Versuche es erneut.</string>
+    <string name="error_file_too_large">Diese Datei ist größer als %1$d MB.</string>
+    <string name="error_io">Die Datei konnte nicht gelesen oder geschrieben werden.</string>
+    <string name="error_memory">Nicht genug Arbeitsspeicher für dieses Bild.</string>
+
+    <!-- Help, More from NorseHorse, About -->
+    <string name="help_title">Hilfe</string>
+    <string name="help_row_title">Wie StegPony funktioniert und wo seine Grenzen liegen</string>
+    <string name="help_row_subtitle">Lies das, bevor du dich darauf verlässt</string>
+    <string name="back">Zurück</string>
+    <string name="help_what_title">Was StegPony tut</string>
+    <string name="help_what_body">StegPony verschlüsselt eine Nachricht oder Datei und versteckt sie im feinen Detail eines Fotos oder in Text. Das Foto sieht weiterhin aus wie jedes andere und lässt sich genauso öffnen. Ohne die richtige Passphrase oder den richtigen Schlüssel gibt es nichts zu finden: keinen Header, keine Markierung und keine Möglichkeit, ein Bild mit etwas Verstecktem von einem ohne zu unterscheiden.\n\nPassphrasen werden mit Argon2id gestreckt, Schlüssel verwenden X25519 (dieselben Schlüssel wie age), und der Inhalt wird mit ChaCha20-Poly1305 versiegelt. Jedes Bild und jeder Text hat Platz für zwei versteckte Nachrichten; die zweite ist entweder dein Köder oder zufälliges Füllmaterial, sodass beide Fälle gleich aussehen.</string>
+    <string name="help_sending_title">Das Bild senden</string>
+    <string name="help_sending_body">Sende die Datei genau so, wie StegPony sie gespeichert hat: als Datei- oder Dokumentanhang, per E-Mail oder über einen Dienst, der Dateien unverändert lässt. Alles, was das Bild neu kodiert, zerstört, was versteckt ist. Dazu gehören der Fotomodus der meisten Messenger, Größenänderung, Bearbeitung, Filter und manche Cloud- und Social-Media-Dienste.\n\nSende oder veröffentliche niemals zusätzlich das Originalfoto. Wer beide hat, kann sie vergleichen.</string>
+    <string name="help_covers_title">Ein Trägerfoto wählen</string>
+    <string name="help_covers_body">Das beste Trägerfoto ist ein Foto, das du nur dafür aufnimmst, mit der Kamera von StegPony oder deiner eigenen, und das noch nie irgendwo geteilt wurde. Verwende jedes Foto nur einmal. StegPony warnt, wenn ein Foto schon einmal verwendet wurde oder wie ein Download oder eine Messenger-Kopie aussieht.\n\nIm JPEG-Modus bleibt das Foto ein JPEG mit der eigenen Komprimierung deiner Kamera, und das sind Fotos von einem Smartphone normalerweise. Der verlustfreie Modus speichert ein PNG; verwende ihn für Bilder, die von Anfang an PNGs waren.</string>
+    <string name="help_text_title">In Text verstecken</string>
+    <string name="help_text_body">Text fasst weit weniger als ein Foto und ist leichter zu bemerken, verwende ihn also, wenn kein Foto gesendet werden kann. Was versteckt ist, wird auf dieselbe Weise verschlüsselt, mit denselben Passphrasen, Schlüsseln und demselben Köder.\n\nWörter: Die versteckten Daten werden zu einer Folge gewöhnlicher Wörter, die sich wie Unsinn liest. Sie kommt an automatischen Filtern und einem flüchtigen Blick vorbei, nicht an einer Person, die sie liest. Schon eine kurze Nachricht braucht über 130 Wörter, weil jeder Text Platz für einen Köder hat. Großschreibung, Satzzeichen und Zeilenumbrüche können sich unterwegs ändern; ein Wort darf weder geändert werden noch fehlen oder hinzukommen.\n\nUnsichtbare Zeichen: Die versteckten Daten werden zu Zeichen, die nicht zu sehen sind, eingefügt in eine Nachricht, die du schreibst. Das ist schwach. Viele Apps, Websites und Tastaturen entfernen diese Zeichen, und wer nach ihnen sucht, findet sie sofort. Sende einen Test an dich selbst über dieselbe App, bevor du dich darauf verlässt.</string>
+    <string name="help_rating_title">Bewertung der Erkennbarkeit</string>
+    <string name="help_rating_body">Die Bewertung sagt, wie schwer das Ergebnis von einem unberührten Foto zu unterscheiden sein sollte, ausgehend davon, wie viel im Verhältnis zu Größe und Detailreichtum des Fotos versteckt ist. Gering, Mittel und Hoch stammen aus Tests mit einem Standarddetektor an echten Smartphone-Fotos und sind niedriger angesetzt, als diese Tests ergeben haben, weil es bessere Detektoren gibt.\n\nGering ist ein gutes Ziel. Halte Nachrichten kurz und verwende für Dateien ein großes, detailreiches Foto. Eine hohe Bewertung bedeutet nicht, dass der Inhalt gelesen werden kann; sie bedeutet, dass jemand, der nach verstecktem Inhalt sucht, eine bessere Chance hat zu bemerken, dass etwas da ist.</string>
+    <string name="help_secrets_title">Passphrasen und Schlüssel</string>
+    <string name="help_secrets_body">Eine Passphrase schützt die Nachricht nur so gut, wie sie dem Erraten standhält. Verwende mehrere zufällige Wörter, nichts über dich, und gib sie persönlich weiter oder über einen Kanal, dem du vertraust.\n\nMit einem öffentlichen Schlüssel gibt es kein gemeinsames Geheimnis: Du versteckst für den age1…-Schlüssel einer Person, und nur ihr geheimer Schlüssel öffnet es. Ein Curve25519-OpenPGP-Schlüssel aus PGPony oder GnuPG funktioniert genauso. StegPony bewahrt deine geheimen Schlüssel verschlüsselt auf diesem Smartphone auf; Passphrasen speichert es nie.</string>
+    <string name="help_hardware_title">Hardware-Schlüssel</string>
+    <string name="help_hardware_body">Ein OpenPGP-Hardware-Schlüssel mit einem Curve25519-Entschlüsselungsschlüssel (cv25519) kann Bilder öffnen, in denen etwas für ihn versteckt wurde, über NFC oder USB. Getestet ist das mit einem Token2 PIN+ und, über USB, mit einem Nitrokey 3A NFC; andere OpenPGP-Schlüssel sollten genauso funktionieren. Der Schlüssel führt den Schlüsselaustausch selbst durch, sein Geheimnis verlässt ihn also nie. Du gibst die PIN des Schlüssels jedes Mal ein; StegPony speichert sie nicht. RSA-Schlüssel können nicht verwendet werden.</string>
+    <string name="help_decoy_title">Köder</string>
+    <string name="help_decoy_body">Ein Köder ist eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand zwingt, ein Bild oder einen Text zu öffnen, gib den Köder heraus. Niemand kann daran erkennen, ob es einen Köder gibt, und StegPony gibt bei einer falschen Passphrase dieselbe Antwort wie bei einem Bild, in dem nichts ist.\n\nDie Grenze: Wer StegPony kennt, weiß, dass alles, was es versteckt, Platz für zwei Nachrichten hat, und glaubt möglicherweise nicht, dass es nur eine gibt. Mach den Köder glaubwürdig, und tippe auf deinem eigenen Smartphone seine Passphrase ein, statt das Feld leer zu lassen, denn das würde deine eigenen Schlüssel ausprobieren.</string>
+    <string name="help_phone_title">Auf diesem Smartphone</string>
+    <string name="help_phone_body">StegPony hat keinen Netzwerkzugriff. Deine Schlüssel und Kontakte sind mit einem Schlüssel verschlüsselt, der in der sicheren Hardware von Android liegt, und werden von Backups und Smartphone-Übertragungen ausgenommen. Screenshots sind bei „Aufdecken“ und „Schlüssel“ blockiert, und kopierte Nachrichten verschwinden nach einer Minute aus der Zwischenablage.\n\nDie App-Sperre und die Launcher-Tarnung bremsen einen beiläufigen Blick auf dein Smartphone. Sie verbergen nicht, dass StegPony installiert ist: Der echte Name erscheint weiterhin in den App-Einstellungen von Android.</string>
+    <string name="help_limits_title">Wovor StegPony nicht schützen kann</string>
+    <string name="help_limits_body">Verstecken senkt die Wahrscheinlichkeit, bemerkt zu werden; auf null bringt es sie nicht. StegPony kann dich nicht schützen vor:\n\n• jemandem, der das Originalfoto hat, in dem du etwas versteckt hast;\n• einem Detektor, der mit Fotos deiner eigenen Kamera trainiert wurde, besonders wenn viel versteckt ist;\n• jemandem, der weiß, dass StegPony installiert ist, und auf einer zweiten Passphrase besteht;\n• einer forensischen Untersuchung deines entsperrten Smartphones;\n• allen, die sehen, wem du Bilder sendest und wann. StegPony versteckt, was du sendest, nicht, dass du es gesendet hast.</string>
+    <string name="more_title">Mehr von NorseHorse</string>
+    <string name="more_footer">Weitere Apps desselben Entwicklers.</string>
+    <string name="more_all_apps">Alle Pony-Apps von NorseHorse</string>
+    <string name="more_pgpony">OpenPGP-Nachrichten, -Dateien und -Schlüssel</string>
+    <string name="more_agepony">Einfache, moderne Dateiverschlüsselung (age)</string>
+    <string name="more_passpony">Passwortmanager für pass und passage</string>
+    <string name="more_vaultpony">VeraCrypt-kompatible verschlüsselte Tresore</string>
+    <string name="more_scrubpony">Standort und andere Metadaten aus Fotos entfernen</string>
+    <string name="more_tappony">NFC-Tag antippen, um einen Webhook auszulösen</string>
+    <string name="more_quorumpony">Schlüssel-Backup und Wiederherstellung per Quorum</string>
+    <string name="more_carrierpony">PGP-Chat und verschlüsselte Dateien</string>
+    <string name="more_burnpony">Selbstzerstörende verschlüsselte Nachrichten</string>
+    <string name="more_relaypony">Verschlüsselte Dateiübertragung</string>
+    <string name="more_hashpony">Dateien hashen und Downloads mit Prüfsummen abgleichen</string>
+    <string name="about_source_app">Quellcode (App)</string>
+    <string name="about_source_core">Quellcode (Kern)</string>
+    <string name="licenses_title">Open-Source-Lizenzen</string>
+    <string name="licenses_row_subtitle">Die Open-Source-Bestandteile, aus denen StegPony gebaut ist</string>
+
+    <!-- Language -->
+    <string name="language_title">Sprache</string>
+    <string name="language_row_subtitle">Die Sprache ändern, die StegPony verwendet</string>
+    <string name="language_footer">Die Änderung gilt sofort.</string>
+
+    <!-- Welcome tour -->
+    <string name="onboarding_replay_title">Willkommenstour erneut anzeigen</string>
+    <string name="onboarding_replay_subtitle">Die Einführung vom ersten Start wiederholen</string>
+    <string name="onboarding_skip">Überspringen</string>
+    <string name="onboarding_start">Starten</string>
+    <string name="onboarding_page">Seite %1$d von %2$d</string>
+    <string name="onboarding_language_body">Wähle die Sprache, die du verwenden möchtest.\n\nDu kannst sie später in den Einstellungen ändern.</string>
+    <string name="onboarding_welcome_title">Willkommen bei StegPony</string>
+    <string name="onboarding_welcome_body">StegPony verschlüsselt eine Nachricht oder Datei und versteckt sie in einem gewöhnlichen Foto oder in Text.\n\nÜber die App verlässt nichts dieses Smartphone. Sie hat keinen Netzwerkzugriff, kein Konto und kein Tracking.</string>
+    <string name="onboarding_cover_title">Mit einem neuen Foto beginnen</string>
+    <string name="onboarding_cover_body">Das beste Trägerfoto ist ein Foto, das du nur dafür aufnimmst und nirgendwo sonst teilst. Verwende jedes Foto nur einmal.\n\nStegPony warnt, wenn ein Foto schon einmal verwendet wurde oder wie ein Download oder eine Messenger-Kopie aussieht.</string>
+    <string name="onboarding_try_button">Jetzt meine erste Nachricht verstecken</string>
+    <string name="onboarding_try_show">Meine versteckte Nachricht anzeigen</string>
+    <string name="onboarding_try_hint">Oder tippe auf „Weiter“ und mach das später im Tab „Verstecken“.</string>
+    <string name="onboarding_try_title">Deine erste Nachricht verstecken</string>
+    <string name="onboarding_try_photo">1. Foto auswählen</string>
+    <string name="onboarding_try_message">2. Nachricht schreiben</string>
+    <string name="onboarding_try_passphrase">3. Passphrase festlegen</string>
+    <string name="onboarding_try_passphrase_about">Die andere Person braucht diese Passphrase, um die Nachricht aufzudecken. Gib sie persönlich weiter oder über einen Kanal, dem du vertraust.</string>
+    <string name="onboarding_try_done">Deine Nachricht ist in diesem Foto versteckt</string>
+    <string name="onboarding_try_reveal_hint">Um sie wieder zu lesen, öffne das gespeicherte Bild im Tab „Aufdecken“ und gib dieselbe Passphrase ein.</string>
+    <string name="onboarding_try_continue">Tour fortsetzen</string>
+    <string name="onboarding_lock_title">Mit Passphrase oder Schlüssel sichern</string>
+    <string name="onboarding_lock_body">Eine Passphrase vereinbarst du vorab mit der anderen Person. Ein öffentlicher Schlüssel braucht kein gemeinsames Geheimnis: Nur ihr geheimer Schlüssel öffnet es.\n\nDu kannst einen Köder hinzufügen, eine zweite Nachricht unter einer zweiten Passphrase, die du herausgibst, wenn dich jemand dazu bringt, das Bild zu öffnen.</string>
+    <string name="onboarding_send_title">Als Datei senden</string>
+    <string name="onboarding_send_body">Sende das Bild als Datei- oder Dokumentanhang. Der Fotomodus eines Messengers komprimiert das Bild neu und zerstört, was versteckt ist.\n\nSende oder veröffentliche niemals zusätzlich das Originalfoto. Wer beide hat, kann sie vergleichen.</string>
+    <string name="onboarding_protect_title">Die App schützen</string>
+    <string name="onboarding_protect_body">Diese Optionen bremsen einen beiläufigen Blick auf dein Smartphone. Du kannst sie später in den Einstellungen ändern.</string>
+    <string name="onboarding_limits_title">Die Grenzen kennen</string>
+    <string name="onboarding_limits_body">Verstecken senkt die Wahrscheinlichkeit, bemerkt zu werden; auf null bringt es sie nicht. StegPony versteckt, was du sendest, nicht, dass du es gesendet hast.\n\nLies die Hilfe in den Einstellungen, bevor du dich darauf verlässt.</string>
+</resources>

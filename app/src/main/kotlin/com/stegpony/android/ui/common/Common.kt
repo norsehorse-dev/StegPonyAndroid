@@ -12,6 +12,7 @@ import android.os.Looper
 import android.os.PersistableBundle
 import android.view.WindowManager
 import android.widget.Toast
+import com.stegpony.android.i18n.LanguageManager
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -515,7 +516,7 @@ object Clipboard {
         manager.setPrimaryClip(clip)
         // Android 13 and later confirm a copy themselves.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            Toast.makeText(context.applicationContext, R.string.copied, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context.applicationContext, LanguageManager.localized(context).getString(R.string.copied), Toast.LENGTH_SHORT).show()
         }
         handler.postDelayed({
             val current = runCatching { manager.primaryClipDescription?.label?.toString() }.getOrNull()
