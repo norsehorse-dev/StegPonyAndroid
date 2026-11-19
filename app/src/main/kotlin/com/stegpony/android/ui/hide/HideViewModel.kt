@@ -15,6 +15,8 @@ import android.media.ExifInterface
 import com.stegpony.android.keys.CoverHistory
 import com.stegpony.android.keys.Keyring
 import java.io.ByteArrayInputStream
+import androidx.compose.ui.graphics.ImageBitmap
+import com.stegpony.android.ui.common.Previews
 import com.stegpony.android.ui.common.errorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +38,9 @@ import uniffi.stegpony_ffi.hideText
 import uniffi.stegpony_ffi.parseRecipient
 import uniffi.stegpony_ffi.textFit
 import uniffi.stegpony_ffi.textPayloadLen
+
+/** The steps of hiding, in order. [Done] shows the result. */
+enum class HideStep { Cover, Payload, Key, Review, Done }
 
 /** What the payload is hidden in: a photo, or text to paste somewhere. */
 enum class Carrier { Image, Text }
@@ -65,6 +70,8 @@ class LoadedCover(
     val notes: List<CoverNote>,
     /** Taken just now with the in-app camera. */
     val fresh: Boolean,
+    /** A small picture of it for the screen; the core works from the file bytes. */
+    val preview: ImageBitmap?,
 ) {
     /** Modes this cover can use, best first. */
     val modes: List<ImageMode> =
@@ -76,6 +83,8 @@ class HideResult(
     val format: ImageFormat,
     val detectability: Detectability,
     val name: String,
+    /** A small picture of the result for the screen. */
+    val preview: ImageBitmap?,
 ) {
     val mime: String get() = if (format == ImageFormat.JPEG) "image/jpeg" else "image/png"
 }
@@ -84,6 +93,10 @@ class HideResult(
 class TextResult(val text: String, val mode: TextMode, val size: Long, val name: String)
 
 class HideViewModel(app: Application) : AndroidViewModel(app) {
+    /** Where the user is in the flow. Kept here so it survives switching tabs. */
+    var step by mutableStateOf(HideStep.Cover)
+        private set
+
     var carrier by mutableStateOf(Carrier.Image)
         private set
     var textMode by mutableStateOf(TextMode.WORDS)
@@ -165,7 +178,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                         if (!fresh && isDownload(picked.uri)) add(CoverNote.FromDownloads)
                         if (!fresh && format == ImageFormat.JPEG && !hasCameraDetails(bytes)) add(CoverNote.NoCameraDetails)
                     }
-                    LoadedCover(picked, c, format, fingerprint, notes, fresh)
+                    LoadedCover(picked, c, format, fingerprint, notes, fresh, Previews.decode(bytes))
                 }
                 cover?.cover?.destroy()
                 cover = loaded
@@ -222,6 +235,10 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                     c.cover.destroy()
                     cover = null
                     capacities.clear()
+                } else if (cover === c) {
+                    // The other mode can't be read: go back to the one that works,
+                    // so the step isn't left waiting on a capacity that never comes.
+                    mode = c.modes.first()
                 }
             } finally {
                 loading = false
@@ -352,11 +369,13 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                         loaded.cover.hide(targetMode, payload, secret, decoy, keep)
                     }
                     val ext = if (out.format == ImageFormat.JPEG) "jpg" else "png"
-                    result = HideResult(out.image, out.format, out.detectability, Files.outputName(ext))
+                    val preview = withContext(Dispatchers.Default) { Previews.decode(out.image) }
+                    result = HideResult(out.image, out.format, out.detectability, Files.outputName(ext), preview)
                     // Remember the cover, and the output, so neither is used as a
                     // cover again without a warning. Best effort.
                     runCatching { CoverHistory.add(context, loaded.fingerprint, CoverHistory.fingerprint(out.image)) }
                 }
+                step = HideStep.Done
                 // Secrets are not kept around once used.
                 passphrase = ""
                 passphraseAgain = ""
@@ -387,11 +406,90 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Starts over with a new cover; the payload and keys stay. */
-    fun clearResult() {
+    /**
+     * Back to the first step with a clean slate. The cover goes, because a
+     * photo that has been hidden in once must not be used again, and so do the
+     * message, the decoy and the passphrases, so nothing secret is kept.
+     */
+    fun startOver() {
+        if (busy) return
         result = null
         textResult = null
+        errorText = null
+        cover?.cover?.destroy()
+        cover = null
+        capacities.clear()
+        coverText = ""
+        text = ""
+        file = null
+        passphrase = ""
+        passphraseAgain = ""
+        decoyOn = false
+        decoyText = ""
+        decoyPassphrase = ""
+        step = HideStep.Cover
     }
+
+    fun next() {
+        if (busy || loading || stepBlocker(step) != null) return
+        errorText = null
+        step = when (step) {
+            HideStep.Cover -> HideStep.Payload
+            HideStep.Payload -> HideStep.Key
+            HideStep.Key -> HideStep.Review
+            else -> step
+        }
+    }
+
+    fun back() {
+        if (busy) return
+        errorText = null
+        step = when (step) {
+            HideStep.Payload -> HideStep.Cover
+            HideStep.Key -> HideStep.Payload
+            HideStep.Review -> HideStep.Key
+            else -> step
+        }
+    }
+
+    /** What keeps [s] from being finished, or null when it can be left. */
+    fun stepBlocker(s: HideStep): Int? = when (s) {
+        HideStep.Cover -> when {
+            carrier == Carrier.Image && cover == null -> R.string.need_cover
+            carrier == Carrier.Image && capacity == null -> R.string.reading_cover
+            carrier == Carrier.Text && textMode == TextMode.ZERO_WIDTH && coverText.isBlank() -> R.string.need_cover_text
+            else -> null
+        }
+        HideStep.Payload -> when {
+            payloadLen == null -> R.string.need_payload
+            carrier == Carrier.Image && fit?.fits != true -> R.string.error_does_not_fit
+            carrier == Carrier.Text && textFit?.fits != true -> R.string.error_text_too_long
+            else -> null
+        }
+        HideStep.Key -> when {
+            keyKind == KeyKind.Passphrase && passphrase.isEmpty() -> R.string.need_passphrase
+            keyKind == KeyKind.Passphrase && passphrase != passphraseAgain -> R.string.passphrases_differ
+            keyKind == KeyKind.Recipient && effectiveRecipient.isEmpty() -> R.string.need_recipient
+            decoyOn && decoyText.isEmpty() -> R.string.need_decoy_text
+            decoyOn && decoyPassphrase.isEmpty() -> R.string.need_decoy_passphrase
+            decoyOn && keyKind == KeyKind.Passphrase && decoyPassphrase == passphrase -> R.string.decoy_same_passphrase
+            // The decoy takes room too, so adding one can push the payload out.
+            decoyOn && carrier == Carrier.Image && fit?.fits != true -> R.string.error_decoy_does_not_fit
+            decoyOn && carrier == Carrier.Text && textFit?.fits != true -> R.string.error_decoy_does_not_fit
+            else -> null
+        }
+        HideStep.Review, HideStep.Done -> blocker
+    }
+
+    /** Who it is locked for, as Review names them: a saved name, or the pasted key shortened. */
+    val recipientSummary: String
+        get() {
+            val r = effectiveRecipient
+            val keys = Keyring.current
+            return keys.contacts.firstOrNull { it.recipient == r }?.name
+                ?: keys.mine.firstOrNull { it.recipient == r }?.label
+                ?: if (r.length > 24) r.take(12) + "…" + r.takeLast(6) else r
+        }
 
     override fun onCleared() {
         cover?.cover?.destroy()

@@ -19,6 +19,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
@@ -27,7 +28,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.material3.Switch
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -50,7 +50,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.stegpony.android.BuildConfig
 import com.stegpony.android.R
+import com.stegpony.android.ui.common.ScreenTitle
 import com.stegpony.android.ui.common.Section
+import com.stegpony.android.ui.common.SwitchRow
 import uniffi.stegpony_ffi.coreVersion
 import uniffi.stegpony_ffi.formatVersion
 
@@ -76,16 +78,18 @@ private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
     var disguise by remember { mutableStateOf(Disguise.current(context)) }
     var lockError by remember { mutableStateOf<String?>(null) }
     val lockTitle = stringResource(R.string.lock_title)
-    var remembered by remember { mutableIntStateOf(0) }
+    // -1 until counted, so the row never shows a wrong zero.
+    var remembered by remember { mutableIntStateOf(-1) }
     LaunchedEffect(Unit) { remembered = CoverHistory.count(context) }
     val core = remember { coreVersion() }
     val format = remember { formatVersion() }
+    ScreenTitle(stringResource(R.string.tab_settings))
     Column(
         Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         Section(stringResource(R.string.help_title)) {
             LinkRow(stringResource(R.string.help_row_title), stringResource(R.string.help_row_subtitle), onClick = onHelp)
@@ -159,7 +163,7 @@ private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
                             modifier = Modifier.size(40.dp),
                         )
                     }
-                    Text(stringResource(d.label), style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(d.label), style = MaterialTheme.typography.bodyLarge)
                 }
             }
             Text(
@@ -169,27 +173,19 @@ private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
             )
         }
         Section(stringResource(R.string.covers_title)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(stringResource(R.string.cover_history_switch), style = MaterialTheme.typography.bodyMedium)
-                    Text(
-                        stringResource(R.string.cover_history_about),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Switch(
-                    checked = historyOn,
-                    onCheckedChange = { on ->
-                        historyOn = on
-                        scope.launch {
-                            CoverHistory.setEnabled(context, on)
-                            remembered = CoverHistory.count(context)
-                        }
-                    },
-                )
-            }
-            if (historyOn) {
+            SwitchRow(
+                title = stringResource(R.string.cover_history_switch),
+                about = stringResource(R.string.cover_history_about),
+                checked = historyOn,
+                onChange = { on ->
+                    historyOn = on
+                    scope.launch {
+                        CoverHistory.setEnabled(context, on)
+                        remembered = CoverHistory.count(context)
+                    }
+                },
+            )
+            if (historyOn && remembered >= 0) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         pluralStringCount(context, remembered),
@@ -210,7 +206,7 @@ private fun SettingsMain(onHelp: () -> Unit, onLicenses: () -> Unit) {
         }
         Section(stringResource(R.string.more_title)) {
             OTHER_APPS.forEach { app ->
-                LinkRow(app.name, stringResource(app.tagline)) { openUrl(context, app.url) }
+                LinkRow(app.nameRes?.let { stringResource(it) } ?: app.name, stringResource(app.tagline)) { openUrl(context, app.url) }
             }
             Text(
                 stringResource(R.string.more_footer),
@@ -234,13 +230,7 @@ private fun pluralStringCount(context: android.content.Context, n: Int): String 
 
 @Composable
 private fun SettingSwitch(title: String, about: String, checked: Boolean, onChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f)) {
-            Text(title, style = MaterialTheme.typography.bodyMedium)
-            Text(about, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-        }
-        Switch(checked = checked, onCheckedChange = onChange)
-    }
+    SwitchRow(title = title, about = about, checked = checked, onChange = onChange)
 }
 
 @Composable
@@ -249,9 +239,11 @@ private fun LinkRow(title: String, subtitle: String, onClick: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
-            .padding(vertical = 6.dp),
+            .heightIn(min = 48.dp)
+            .padding(vertical = 8.dp),
+        verticalArrangement = Arrangement.Center,
     ) {
-        Text(title, style = MaterialTheme.typography.bodyMedium)
+        Text(title, style = MaterialTheme.typography.bodyLarge)
         Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
@@ -263,10 +255,11 @@ fun openUrl(context: android.content.Context, url: String) {
     }
 }
 
-private data class OtherApp(val name: String, @StringRes val tagline: Int, val url: String)
+/** [nameRes] is for the one entry that isn't a product name. */
+private data class OtherApp(val name: String, @StringRes val tagline: Int, val url: String, @StringRes val nameRes: Int? = null)
 
 private val OTHER_APPS = listOf(
-    OtherApp("All NorseHorse Pony apps", R.string.more_family, "https://pony.norsehor.se"),
+    OtherApp("", R.string.more_family, "https://pony.norsehor.se", nameRes = R.string.more_all_apps),
     OtherApp("PGPony", R.string.more_pgpony, "https://pgpony.app"),
     OtherApp("AgePony", R.string.more_agepony, "https://agepony.com"),
     OtherApp("PassPony", R.string.more_passpony, "https://passpony.app"),
@@ -277,6 +270,7 @@ private val OTHER_APPS = listOf(
     OtherApp("CarrierPony", R.string.more_carrierpony, "https://carrierpony.com"),
     OtherApp("BurnPony", R.string.more_burnpony, "https://burnpony.app"),
     OtherApp("RelayPony", R.string.more_relaypony, "https://relaypony.app"),
+    OtherApp("HashPony", R.string.more_hashpony, "https://hashpony.app"),
 )
 
 private const val APP_REPO_URL = "https://github.com/norsehorse-dev/StegPonyAndroid"

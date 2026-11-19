@@ -1,12 +1,17 @@
 package com.stegpony.android.ui.keys
 
 import android.content.ClipData
+import com.stegpony.android.ui.common.ControlShape
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,11 +35,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import com.stegpony.android.qr.QrBitmap
 import com.stegpony.android.ui.scan.QrScannerDialog
 import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,10 +56,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
+import com.stegpony.android.ui.theme.KeyMono
 import androidx.compose.ui.unit.dp
 import com.stegpony.android.R
 import com.stegpony.android.card.HardwareKey
@@ -63,6 +73,7 @@ import com.stegpony.android.keys.KeySource
 import com.stegpony.android.keys.Keyring
 import com.stegpony.android.keys.KeyringState
 import com.stegpony.android.keys.MyKey
+import com.stegpony.android.ui.common.ListDivider
 import com.stegpony.android.ui.common.PassphraseField
 import com.stegpony.android.ui.common.SecureScreenEffect
 import com.stegpony.android.ui.common.Section
@@ -89,15 +100,15 @@ fun KeysScreen(vm: KeysViewModel) {
             .fillMaxSize()
             .imePadding()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         when (val s = state) {
             KeyringState.Loading -> CircularProgressIndicator()
             is KeyringState.Failed -> Section(stringResource(R.string.keys_unavailable_title)) {
                 Text(stringResource(R.string.keys_unavailable_body, s.reason), style = MaterialTheme.typography.bodyMedium)
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = vm::retryLoad, enabled = !vm.busy) {
+                    OutlinedButton(shape = ControlShape, onClick = vm::retryLoad, enabled = !vm.busy) {
                         Text(stringResource(R.string.keys_retry))
                     }
                     TextButton(onClick = { vm.confirmReset = true }, enabled = !vm.busy) {
@@ -115,7 +126,7 @@ fun KeysScreen(vm: KeysViewModel) {
                         )
                     }
                     s.keys.mine.forEachIndexed { i, k ->
-                        if (i > 0) HorizontalDivider()
+                        if (i > 0) ListDivider()
                         MyKeyRow(
                             k,
                             onShare = { shareRecipient(context, k.recipient) },
@@ -123,20 +134,21 @@ fun KeysScreen(vm: KeysViewModel) {
                             onDelete = { vm.pendingDelete = PendingDelete.Mine(k) },
                         )
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = vm::startCreate, enabled = !vm.busy) {
+                    // Stacked, so long translated labels have the full width.
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        OutlinedButton(shape = ControlShape, onClick = vm::startCreate, enabled = !vm.busy, modifier = Modifier.fillMaxWidth()) {
                             Icon(Icons.Outlined.Add, contentDescription = null)
                             Text(stringResource(R.string.create_key), Modifier.padding(start = 8.dp))
                         }
-                        OutlinedButton(onClick = { importMine.launch(arrayOf("*/*")) }, enabled = !vm.busy) {
+                        OutlinedButton(shape = ControlShape, onClick = { importMine.launch(arrayOf("*/*")) }, enabled = !vm.busy, modifier = Modifier.fillMaxWidth()) {
                             Icon(Icons.Outlined.FileOpen, contentDescription = null)
                             Text(stringResource(R.string.import_key), Modifier.padding(start = 8.dp))
                         }
-                    }
-                    if (hardwareKeysUsable) {
-                        OutlinedButton(onClick = { vm.addingCard = true }, enabled = !vm.busy) {
-                            Icon(Icons.Outlined.Key, contentDescription = null)
-                            Text(stringResource(R.string.add_card), Modifier.padding(start = 8.dp))
+                        if (hardwareKeysUsable) {
+                            OutlinedButton(shape = ControlShape, onClick = { vm.addingCard = true }, enabled = !vm.busy, modifier = Modifier.fillMaxWidth()) {
+                                Icon(Icons.Outlined.Key, contentDescription = null)
+                                Text(stringResource(R.string.add_card), Modifier.padding(start = 8.dp))
+                            }
                         }
                     }
                     Text(
@@ -155,10 +167,10 @@ fun KeysScreen(vm: KeysViewModel) {
                         )
                     }
                     s.keys.contacts.forEachIndexed { i, c ->
-                        if (i > 0) HorizontalDivider()
+                        if (i > 0) ListDivider()
                         ContactRow(c, onDelete = { vm.pendingDelete = PendingDelete.Other(c) })
                     }
-                    OutlinedButton(onClick = vm::startContact, enabled = !vm.busy) {
+                    OutlinedButton(shape = ControlShape, onClick = vm::startContact, enabled = !vm.busy, modifier = Modifier.fillMaxWidth()) {
                         Icon(Icons.Outlined.PersonAdd, contentDescription = null)
                         Text(stringResource(R.string.add_contact), Modifier.padding(start = 8.dp))
                     }
@@ -284,11 +296,31 @@ fun KeysScreen(vm: KeysViewModel) {
     }
 }
 
+/** The first letter of a key's name in a circle: filled with the accent for your own keys, quiet for contacts. */
+@Composable
+private fun Avatar(name: String, mine: Boolean) {
+    Box(
+        Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(if (mine) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            name.trim().take(1).uppercase(),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = if (mine) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer,
+        )
+    }
+}
+
 @Composable
 private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onQr: () -> Unit, onDelete: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(k.label, style = MaterialTheme.typography.titleSmall)
+    Row(Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Avatar(k.label, mine = true)
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(k.label, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
             Text(
                 when (k.source) {
                     KeySource.Generated -> stringResource(R.string.source_generated)
@@ -299,28 +331,53 @@ private fun MyKeyRow(k: MyKey, onShare: () -> Unit, onQr: () -> Unit, onDelete: 
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
-            Text(shortKey(k.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+            Text(shortKey(k.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
             k.fingerprint?.let {
-                Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
             }
         }
-        IconButton(onClick = onQr) { Icon(Icons.Outlined.QrCode2, stringResource(R.string.show_qr)) }
-        IconButton(onClick = onShare) { Icon(Icons.Outlined.Share, stringResource(R.string.share_public_key)) }
-        IconButton(onClick = onDelete) { Icon(Icons.Outlined.Delete, stringResource(R.string.delete)) }
+        // Kept together, so the row's spacing doesn't spread them out.
+        Row {
+            IconButton(onClick = onQr) { Icon(Icons.Outlined.QrCode2, stringResource(R.string.show_qr)) }
+            // Share and delete sit in a menu, which leaves the key text room on a narrow phone.
+            var menuOpen by remember { mutableStateOf(false) }
+            Box {
+                IconButton(onClick = { menuOpen = true }) {
+                    Icon(Icons.Outlined.MoreVert, stringResource(R.string.more_actions))
+                }
+                DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.share_public_key)) },
+                        onClick = {
+                            menuOpen = false
+                            onShare()
+                        },
+                    )
+                    DropdownMenuItem(
+                        text = { Text(stringResource(R.string.delete)) },
+                        onClick = {
+                            menuOpen = false
+                            onDelete()
+                        },
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
 private fun ContactRow(c: Contact, onDelete: () -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-            Text(c.name, style = MaterialTheme.typography.titleSmall)
-            Text(shortKey(c.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+    Row(Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Avatar(c.name, mine = false)
+        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(c.name, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.SemiBold)
+            Text(shortKey(c.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
             c.fingerprint?.let {
-                Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
             }
         }
-        IconButton(onClick = onDelete) { Icon(Icons.Outlined.Delete, stringResource(R.string.delete)) }
+        IconButton(onClick = onDelete) { Icon(Icons.Outlined.Delete, stringResource(R.string.delete_named, c.name)) }
     }
 }
 
@@ -344,9 +401,9 @@ private fun ContactDialog(vm: KeysViewModel, draft: ContactDraft) {
                 val loaded = draft.loaded
                 if (loaded != null) {
                     Text(stringResource(R.string.contact_key_loaded), style = MaterialTheme.typography.bodySmall)
-                    Text(shortKey(loaded.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                    Text(shortKey(loaded.recipient), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
                     loaded.fingerprint?.let {
-                        Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                        Text(groupFingerprint(it), style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
                     }
                 } else {
                     OutlinedTextField(
@@ -393,6 +450,10 @@ private fun shareRecipient(context: Context, recipient: String) {
 private fun copyRecipient(context: Context, recipient: String) {
     context.getSystemService(ClipboardManager::class.java)
         ?.setPrimaryClip(ClipData.newPlainText("age recipient", recipient))
+    // Android 13 and later confirm a copy themselves.
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+        Toast.makeText(context.applicationContext, R.string.copied, Toast.LENGTH_SHORT).show()
+    }
 }
 
 /** Your public key as a QR code, with the text to copy or share. */
@@ -407,14 +468,14 @@ private fun QrDialog(key: MyKey, onDismiss: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
                     bitmap = image,
-                    contentDescription = stringResource(R.string.show_qr),
+                    contentDescription = stringResource(R.string.qr_image_description),
                     filterQuality = FilterQuality.None,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f),
                 )
                 SelectionContainer {
-                    Text(key.recipient, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                    Text(key.recipient, style = MaterialTheme.typography.bodySmall, fontFamily = KeyMono)
                 }
                 Text(
                     stringResource(R.string.qr_about),

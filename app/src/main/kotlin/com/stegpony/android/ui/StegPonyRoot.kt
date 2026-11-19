@@ -35,6 +35,10 @@ import com.stegpony.android.R
 import com.stegpony.android.ui.common.FullScreenHost
 import com.stegpony.android.ui.common.FullScreenLayer
 import com.stegpony.android.ui.common.LocalFullScreenHost
+import com.stegpony.android.ui.common.LocalTopBar
+import com.stegpony.android.ui.common.ScreenTitle
+import com.stegpony.android.ui.common.StegTopBar
+import com.stegpony.android.ui.common.TopBarState
 import com.stegpony.android.ui.hide.HideScreen
 import com.stegpony.android.ui.hide.HideViewModel
 import com.stegpony.android.keys.Keyring
@@ -91,11 +95,13 @@ fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
 
     // The camera is drawn here, over everything, rather than in a dialog window.
     val fullScreen = remember { FullScreenHost() }
-    CompositionLocalProvider(LocalFullScreenHost provides fullScreen) {
+    val topBar = remember { TopBarState() }
+    CompositionLocalProvider(LocalFullScreenHost provides fullScreen, LocalTopBar provides topBar) {
         Box(Modifier.fillMaxSize()) {
             Scaffold(
                 // Hidden from TalkBack while the camera covers it.
                 modifier = if (fullScreen.content != null) Modifier.clearAndSetSemantics {} else Modifier,
+                topBar = { StegTopBar(topBar) },
                 bottomBar = {
                     NavigationBar {
                         Tab.entries.forEach { t ->
@@ -115,9 +121,14 @@ fun StegPonyRoot(incoming: Incoming?, onIncomingHandled: () -> Unit) {
                         .consumeWindowInsets(padding),
                 ) {
                     when (tab) {
+                        // Hide and Settings name their own pages.
                         Tab.Hide -> HideScreen(hideVm)
+                        // Reveal names its own pages too.
                         Tab.Reveal -> RevealScreen(revealVm)
-                        Tab.Keys -> KeysScreen(keysVm)
+                        Tab.Keys -> {
+                            ScreenTitle(stringResource(R.string.tab_keys))
+                            KeysScreen(keysVm)
+                        }
                         Tab.Settings -> SettingsScreen()
                     }
                 }

@@ -27,4 +27,5 @@ private val LICENSES = listOf(
     "Kotlin and kotlinx.coroutines" to "Apache-2.0",
     "JNA" to "Apache-2.0 or LGPL-2.1",
     "ZXing core" to "Apache-2.0",
+    "IBM Plex Mono" to "SIL Open Font License 1.1, © IBM Corp.",
 )

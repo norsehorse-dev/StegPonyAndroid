@@ -104,7 +104,8 @@ private fun cardOnlyMessage(context: Context, e: Throwable): String = when (e) {
         }
     is NotCurve25519Exception -> context.getString(R.string.card_not_cv25519, e.algorithm)
     is NoDecryptionKeyException -> context.getString(R.string.card_no_decryption_key)
-    else -> context.getString(R.string.card_failed, e.message ?: e.javaClass.simpleName)
+    // Never the raw exception text: the class name is enough to report a bug with.
+    else -> context.getString(R.string.card_failed, e.javaClass.simpleName)
 }
 
 /**

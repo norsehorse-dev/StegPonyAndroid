@@ -13,6 +13,8 @@ import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
 import com.stegpony.android.keys.Keyring
 import com.stegpony.android.ui.common.errorMessage
+import androidx.compose.ui.graphics.ImageBitmap
+import com.stegpony.android.ui.common.Previews
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,6 +44,9 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
     // can't track would leave the Reveal button stuck until something else
     // recomposed the screen.
     private var imageBytes by mutableStateOf<ByteArray?>(null)
+    /** A small picture of the chosen image, for the screen only. */
+    var preview by mutableStateOf<ImageBitmap?>(null)
+        private set
     var loading by mutableStateOf(false)
         private set
 
@@ -84,11 +89,14 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
                 val (picked, bytes) = withContext(Dispatchers.IO) {
                     Files.describe(context, uri) to Files.readBytes(context, uri, Files.MAX_IMAGE_BYTES)
                 }
+                val small = withContext(Dispatchers.Default) { Previews.decode(bytes) }
                 image = picked
                 imageBytes = bytes
+                preview = small
             } catch (e: Throwable) {
                 image = null
                 imageBytes = null
+                preview = null
                 errorText = errorMessage(context, e)
             } finally {
                 loading = false
@@ -215,6 +223,7 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
     /** Forgets what was revealed. */
     fun close() {
         outcome = null
+        errorText = null
         if (source == RevealSource.Text) pastedText = ""
         Files.clearShared(context, Files.AREA_REVEAL)
     }

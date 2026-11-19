@@ -1,6 +1,7 @@
 package com.stegpony.android.ui.lock
 
 import androidx.compose.foundation.background
+import com.stegpony.android.ui.common.ControlShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,6 +41,7 @@ import com.stegpony.android.R
 import com.stegpony.android.lock.AppLock
 import com.stegpony.android.ui.common.SecureScreenEffect
 import com.stegpony.android.ui.common.findActivity
+import com.stegpony.android.ui.settings.Disguise
 
 /**
  * Covers the app while [AppLock.locked]. Asks for the system check on every
@@ -52,7 +55,11 @@ fun LockScreen() {
     val activity = remember(context) { context.findActivity() as? FragmentActivity }
     var error by remember { mutableStateOf<String?>(null) }
     var asking by remember { mutableStateOf(false) }
-    val title = stringResource(R.string.lock_title)
+    // With a launcher disguise on, the lock screen keeps to it: the disguise's
+    // name, a plain lock, and a system prompt that doesn't name the app.
+    val disguise = remember(context) { Disguise.current(context) }
+    val disguised = disguise != Disguise.None
+    val title = stringResource(if (disguised) R.string.lock_unlock else R.string.lock_title)
 
     fun ask() {
         val a = activity ?: return
@@ -96,16 +103,25 @@ fun LockScreen() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Icon(
-                Icons.Outlined.Lock,
-                contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(64.dp),
-            )
+            if (disguised) {
+                Icon(
+                    Icons.Outlined.Lock,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(64.dp),
+                )
+            } else {
+                Icon(
+                    painterResource(R.drawable.ic_brand_mark),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(72.dp),
+                )
+            }
             Spacer(Modifier.height(24.dp))
-            Text(stringResource(R.string.app_name), style = MaterialTheme.typography.headlineMedium)
+            Text(stringResource(disguise.label), style = MaterialTheme.typography.headlineMedium)
             Spacer(Modifier.height(32.dp))
-            Button(onClick = { ask() }, enabled = !asking && activity != null, modifier = Modifier.fillMaxWidth()) {
+            Button(shape = ControlShape, onClick = { ask() }, enabled = !asking && activity != null, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.lock_unlock))
             }
             error?.let {

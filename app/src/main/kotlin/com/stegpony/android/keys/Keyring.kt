@@ -170,7 +170,7 @@ object Keyring {
                     val plain = Vault.decrypt(f.readFully())
                     KeyringState.Ready(KeyringJson.decode(plain.toString(Charsets.UTF_8)))
                 } catch (e: Exception) {
-                    KeyringState.Failed(e.message ?: e.javaClass.simpleName)
+                    KeyringState.Failed(e.javaClass.simpleName)
                 }
             }
         }

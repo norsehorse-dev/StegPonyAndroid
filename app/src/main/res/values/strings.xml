@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">StegPony</string>
+    <string name="app_name" translatable="false">StegPony</string>
 
     <string name="tab_hide">Hide</string>
     <string name="tab_reveal">Reveal</string>
@@ -16,21 +16,24 @@
     <string name="save">Save</string>
     <string name="share">Share</string>
     <string name="copy">Copy</string>
+    <string name="copied">Copied</string>
     <string name="close">Close</string>
     <string name="paste">Paste</string>
     <string name="clear">Clear</string>
     <string name="carrier_photo">Photo</string>
     <string name="carrier_text">Text</string>
-    <string name="rating_low">low detectability</string>
-    <string name="rating_medium">medium detectability</string>
-    <string name="rating_high">high detectability</string>
+    <string name="rating_low_title">Low detectability</string>
+    <string name="rating_medium_title">Medium detectability</string>
+    <string name="rating_high_title">High detectability</string>
     <string name="reading_cover">Reading the image…</string>
 
     <!-- Hide -->
+    <string name="hide_step">Hide: step %1$d of %2$d</string>
+    <string name="next">Next</string>
     <string name="hide_in_title">Hide in</string>
     <string name="carrier_photo_about">Hidden in the fine detail of a photo, sent as a file. Holds the most and is the hardest to notice.</string>
     <string name="carrier_text_about">Hidden in text you paste into a message, an email or a note. Holds far less than a photo, and is easier to notice.</string>
-    <string name="hide_cover_title">Cover image</string>
+    <string name="hide_cover_title">Cover photo</string>
     <string name="hide_cover_hint">Use a photo you took yourself and haven\'t posted anywhere. Someone holding the original can compare the two.</string>
     <string name="mode_jpeg">JPEG</string>
     <string name="mode_lossless">Lossless (PNG)</string>
@@ -44,7 +47,7 @@
     <string name="pick_payload_file">Choose a file</string>
     <string name="capacity_summary">Room for up to %1$d bytes of text. Detectability stays low up to about %2$d.</string>
     <string name="capacity_summary_no_low">Room for up to %1$d bytes of text. Anything hidden in an image this size is easier to detect.</string>
-    <string name="meter_fits">%1$d of %2$d bytes, %3$s</string>
+    <string name="meter_bytes">%1$d of %2$d bytes</string>
     <string name="meter_too_big">%1$d bytes, but this image holds %2$d</string>
     <string name="hide_key_title">Lock it with</string>
     <string name="key_passphrase">Passphrase</string>
@@ -62,7 +65,7 @@
     <string name="keep_metadata_about">Off removes location, time and device details. Turn on only if the photo needs them to look normal.</string>
     <string name="hide_button">Hide</string>
     <string name="hiding">Hiding. This can take several seconds on a large photo.</string>
-    <string name="need_cover">Choose a cover image.</string>
+    <string name="need_cover">Choose a cover photo.</string>
     <string name="need_payload">Write a message or choose a file.</string>
     <string name="need_passphrase">Enter a passphrase.</string>
     <string name="passphrases_differ">The two passphrases don\'t match.</string>
@@ -71,7 +74,16 @@
     <string name="need_decoy_passphrase">Enter a decoy passphrase.</string>
     <string name="decoy_same_passphrase">The decoy needs a different passphrase.</string>
     <string name="hide_done_title">Done</string>
-    <string name="hide_done_rating">Hidden, %1$s.</string>
+    <string name="hide_another">Hide another</string>
+    <string name="review_title">Review</string>
+    <string name="review_cover">Cover</string>
+    <string name="review_cover_fresh">A photo taken just now</string>
+    <string name="review_format">Saved as</string>
+    <string name="review_payload_text">A message you typed</string>
+    <string name="review_decoy_on">Included</string>
+    <string name="review_decoy_off">None</string>
+    <string name="decoy_add">Add a decoy</string>
+    <string name="error_decoy_does_not_fit">With the decoy it no longer fits. Shorten the decoy or the message.</string>
     <string name="text_kind_title">Kind of text</string>
     <string name="text_mode_words">Words</string>
     <string name="text_mode_zero_width">Invisible characters</string>
@@ -90,7 +102,10 @@
         <item quantity="one">%1$d invisible character.</item>
         <item quantity="other">%1$d invisible characters.</item>
     </plurals>
-    <string name="text_size_room">%1$d more bytes fit before it gets longer.</string>
+    <plurals name="text_size_room">
+        <item quantity="one">%1$d more byte fits before it gets longer.</item>
+        <item quantity="other">%1$d more bytes fit before it gets longer.</item>
+    </plurals>
     <string name="hiding_text">Hiding…</string>
     <plurals name="text_done_words">
         <item quantity="one">%1$d word.</item>
@@ -102,7 +117,7 @@
     </plurals>
     <string name="text_send_words">Send the words exactly as they are. Capitals, punctuation and line breaks don\'t matter, but a changed, missing or added word breaks it, so watch for autocorrect. The clipboard clears after %1$d seconds.</string>
     <string name="text_send_zero_width">Send a test to yourself first: many apps quietly remove invisible characters, and then nothing can be revealed. The clipboard clears after %1$d seconds.</string>
-    <string name="send_as_file">Send it as a file or document. A messenger\'s photo mode recompresses the picture and destroys what\'s hidden. Don\'t share the original photo anywhere.</string>
+    <string name="send_as_file">Send it as a file or document. A messenger\'s photo mode recompresses the image and destroys what\'s hidden. Don\'t share the original photo anywhere.</string>
 
     <!-- Cover handling -->
     <string name="take_photo">Camera</string>
@@ -187,8 +202,11 @@
 
     <!-- QR codes and shared keys -->
     <string name="show_qr">Show QR code</string>
+    <string name="qr_image_description">QR code of your public key</string>
+    <string name="more_actions">More</string>
+    <string name="delete_named">Delete %1$s</string>
     <string name="qr_about">Scan this with StegPony or AgePony to add it as a contact.</string>
-    <string name="scan_qr">Scan QR</string>
+    <string name="scan_qr">Scan QR code</string>
     <string name="scan_title">Scan a public key</string>
     <string name="scan_help">Point the camera at a QR code with an age1… key, or an OpenPGP key from PGPony.</string>
     <string name="scan_part">Part %1$d of %2$d. Scan the next code.</string>
@@ -218,7 +236,7 @@
     <string name="card_allow_usb">Allow USB access</string>
     <string name="card_nfc_settings">NFC settings</string>
     <plurals name="card_wrong_pin">
-        <item quantity="one">Wrong PIN. 1 try left before the PIN locks.</item>
+        <item quantity="one">Wrong PIN. %1$d try left before the PIN locks.</item>
         <item quantity="other">Wrong PIN. %1$d tries left before the PIN locks.</item>
     </plurals>
     <string name="card_pin_blocked">The PIN is locked after too many wrong tries. Unlock it with the admin PIN (PGPony or GnuPG can do this).</string>
@@ -249,7 +267,7 @@
     <string name="cover_history_about">StegPony keeps fingerprints of the photos you\'ve hidden in, encrypted and on this phone only, to warn before one is used again. Turning this off forgets them.</string>
     <string name="cover_history_forget">Forget</string>
     <plurals name="cover_history_count">
-        <item quantity="one">1 cover remembered</item>
+        <item quantity="one">%1$d cover remembered</item>
         <item quantity="other">%1$d covers remembered</item>
     </plurals>
     <string name="about_title">About</string>
@@ -268,6 +286,7 @@
     <string name="error_device_cancelled">Cancelled.</string>
     <string name="error_key_device">The hardware key reported a problem: %1$s</string>
     <string name="error_failed">Something went wrong: %1$s</string>
+    <string name="error_unexpected">Something went wrong (%1$s). Try again.</string>
     <string name="error_file_too_large">That file is over %1$d MB.</string>
     <string name="error_io">The file couldn\'t be read or written.</string>
     <string name="error_memory">Not enough memory for this image.</string>
@@ -290,7 +309,7 @@
     <string name="help_secrets_title">Passphrases and keys</string>
     <string name="help_secrets_body">A passphrase protects the message only as well as it resists guessing. Use several random words, not something about you, and share it in person or over a channel you trust.\n\nWith a public key there is no shared secret: you hide for someone\'s age1… key, and only their secret key opens it. A Curve25519 OpenPGP key from PGPony or GnuPG works the same way. StegPony keeps your secret keys encrypted on this phone; it never stores passphrases.</string>
     <string name="help_hardware_title">Hardware keys</string>
-    <string name="help_hardware_body">An OpenPGP hardware key (YubiKey, Nitrokey, Token2) with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
+    <string name="help_hardware_body">An OpenPGP hardware key with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. It is tested with a Token2 PIN+; other OpenPGP keys should work the same way. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
     <string name="help_decoy_title">Decoy</string>
     <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
     <string name="help_phone_title">On this phone</string>
@@ -299,17 +318,19 @@
     <string name="help_limits_body">Hiding lowers the odds of being noticed; it doesn\'t make them zero. StegPony can\'t protect you from:\n\n• someone who has the original photo you hid in;\n• a detector trained on photos from your own camera, especially with a lot hidden;\n• someone who knows StegPony is installed and insists on a second passphrase;\n• a forensic examination of your unlocked phone;\n• anyone who sees whom you send images to, and when. StegPony hides what you send, not that you sent it.</string>
     <string name="more_title">More from NorseHorse</string>
     <string name="more_footer">Other apps from the same developer.</string>
-    <string name="more_family">pony.norsehor.se</string>
-    <string name="more_pgpony">OpenPGP messages, files, and keys</string>
+    <string name="more_all_apps">All NorseHorse Pony apps</string>
+    <string name="more_family" translatable="false">pony.norsehor.se</string>
+    <string name="more_pgpony">OpenPGP messages, files and keys</string>
     <string name="more_agepony">Simple, modern file encryption (age)</string>
     <string name="more_passpony">Password manager for pass and passage</string>
-    <string name="more_vaultpony">VeraCrypt compatible encrypted vaults</string>
+    <string name="more_vaultpony">VeraCrypt-compatible encrypted vaults</string>
     <string name="more_scrubpony">Remove location and other metadata from photos</string>
     <string name="more_tappony">Tap an NFC tag to trigger a webhook</string>
     <string name="more_quorumpony">Quorum key backup and recovery</string>
     <string name="more_carrierpony">PGP chat and encrypted files</string>
     <string name="more_burnpony">Self-destructing encrypted messages</string>
     <string name="more_relaypony">Encrypted file transfer</string>
+    <string name="more_hashpony">Hash files and check downloads against checksums</string>
     <string name="about_source_app">Source code (app)</string>
     <string name="about_source_core">Source code (core)</string>
     <string name="licenses_title">Open-source licenses</string>
