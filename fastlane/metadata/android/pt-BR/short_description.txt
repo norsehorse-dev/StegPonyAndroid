@@ -1,0 +1,1 @@
+Oculte uma mensagem ou arquivo cifrado em foto ou em texto. Totalmente offline.

@@ -1,0 +1,24 @@
+StegPony verschlüsselt eine Nachricht oder Datei und versteckt sie in einem gewöhnlichen Foto oder in Text. Das Foto sieht weiterhin aus wie jedes andere und lässt sich genauso öffnen. Ohne die richtige Passphrase oder den richtigen Schlüssel gibt es nichts zu finden: keinen Header, keine Markierung und keine Möglichkeit, ein Foto mit etwas Verstecktem von einem ohne zu unterscheiden.
+
+Keine Netzwerkberechtigung. StegPony kann nichts irgendwohin senden, und das lässt sich im Manifest nachprüfen. Es gibt kein Konto, kein Tracking und keine Werbung.
+
+Funktionen:
+
+* Text oder eine Datei in einem JPEG verstecken, das ein JPEG mit der eigenen Komprimierung der Kamera bleibt, oder in einem PNG
+* Mit einer Passphrase sichern oder mit dem öffentlichen Schlüssel einer Person, sodass nur ihr geheimer Schlüssel es öffnet
+* Einen Köder hinzufügen: eine zweite Nachricht unter einer zweiten Passphrase, die du herausgibst, wenn dich jemand dazu bringt, das Bild zu öffnen. Niemand kann erkennen, ob ein Bild einen Köder enthält
+* Vor dem Verstecken eine Bewertung der Erkennbarkeit sehen (gering, mittel, hoch), gestützt auf Tests mit einem Standarddetektor an echten Smartphone-Fotos
+* Das Trägerfoto mit der Kamera in der App aufnehmen, sodass es nie irgendwo sonst gespeichert wird. StegPony warnt, wenn ein Foto schon einmal verwendet wurde oder wie ein Download oder eine Messenger-Kopie aussieht
+* In Text verstecken, wenn kein Foto gesendet werden kann, als Folge gewöhnlicher Wörter oder als unsichtbare Zeichen in einer Nachricht, die du schreibst
+* Aufdecken mit einer Passphrase, deinen gespeicherten Schlüsseln oder einem OpenPGP-Hardware-Schlüssel über NFC oder USB, bei dem das Geheimnis den Schlüssel nie verlässt. Getestet mit einem Token2 PIN+ und, über USB, mit einem Nitrokey 3A NFC
+* Schlüssel sind mit age kompatibel. Curve25519-OpenPGP-Schlüssel aus PGPony oder GnuPG und age-Identitäten importieren und Kontakte per QR-Code, Datei, Einfügen oder Teilen hinzufügen
+* App-Sperre, blockierte Screenshots auf sensiblen Bildschirmen, eine Zwischenablage, die nach einer Minute geleert wird, und eine optionale Launcher-Tarnung
+* Englisch, Deutsch, Spanisch, Französisch, brasilianisches Portugiesisch, Russisch und vereinfachtes Chinesisch, in der App umschaltbar
+
+So sendest du, was du versteckst: als Datei- oder Dokumentanhang. Der Fotomodus eines Messengers komprimiert das Bild neu und zerstört, was versteckt ist.
+
+Wovor StegPony nicht schützen kann: Verstecken senkt die Wahrscheinlichkeit, bemerkt zu werden, auf null bringt es sie nicht. Es kann dich nicht schützen vor jemandem, der das Originalfoto hat, vor einer forensischen Untersuchung deines entsperrten Smartphones oder vor allen, die sehen, wem du Bilder sendest und wann. StegPony versteckt, was du sendest, nicht, dass du es gesendet hast. Die Hilfe in der App behandelt die Grenzen vollständig, und es lohnt sich, sie zu lesen, bevor du dich darauf verlässt.
+
+Passphrasen werden mit Argon2id gestreckt, Schlüssel verwenden X25519, und der Inhalt wird mit ChaCha20-Poly1305 versiegelt. Das Format und die gesamte Bild- und Kryptografiearbeit stecken in StegPonyCore, einer eigenständigen Open-Source-Bibliothek in Rust.
+
+Lizenziert unter Apache-2.0. Kostenlos, ohne In-App-Käufe. Fragen oder Meldungen: NorseHorse@norsehor.se

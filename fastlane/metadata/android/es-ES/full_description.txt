@@ -1,0 +1,24 @@
+StegPony cifra un mensaje o un archivo y lo oculta en una foto corriente, o en un texto. La foto sigue viéndose y abriéndose como cualquier otra. Sin la frase de contraseña o la clave correcta no hay nada que encontrar: ni cabecera, ni marca, ni forma de distinguir una foto con algo oculto de una que no lo tiene.
+
+Sin permiso de red. StegPony no puede enviar nada a ningún sitio, y eso se puede comprobar en el manifiesto. No hay cuenta, ni rastreo, ni anuncios.
+
+Funciones:
+
+* Oculta texto o un archivo en un JPEG, que sigue siendo un JPEG con la compresión propia de la cámara, o en un PNG
+* Protégelo con una frase de contraseña, o con la clave pública de alguien para que solo su clave secreta lo abra
+* Añade un señuelo: un segundo mensaje con una segunda frase de contraseña, para entregarlo si alguien te obliga a abrir la imagen. Nadie puede saber si una imagen tiene uno
+* Consulta un nivel de detectabilidad (baja, media, alta) antes de ocultar, basado en pruebas con un detector estándar sobre fotos reales de teléfono
+* Toma la foto portadora con la cámara de la aplicación, de modo que nunca se guarda en ningún otro sitio. StegPony avisa cuando una foto ya se usó antes, o cuando parece una descarga o una copia de una aplicación de mensajería
+* Oculta en texto cuando no se pueda enviar una foto, como una serie de palabras corrientes o como caracteres invisibles dentro de un mensaje que escribes tú
+* Revela con una frase de contraseña, con tus claves guardadas o con una llave de hardware OpenPGP por NFC o USB, cuyo secreto nunca sale de la llave. Probado con una Token2 PIN+, y con una Nitrokey 3A NFC conectada por USB
+* Las claves son compatibles con age. Importa identidades de age y claves OpenPGP Curve25519 de PGPony o GnuPG, y añade contactos por código QR, desde un archivo, pegando o compartiendo
+* Bloqueo de la aplicación, capturas de pantalla bloqueadas en las pantallas sensibles, un portapapeles que se borra al cabo de un minuto y un disfraz opcional en el lanzador
+* Inglés, alemán, español, francés, portugués de Brasil, ruso y chino simplificado, con cambio de idioma dentro de la aplicación
+
+Cómo enviar lo que ocultas: como archivo o documento adjunto. El modo de foto de las aplicaciones de mensajería vuelve a comprimir la imagen y destruye lo que está oculto.
+
+De qué no puede protegerte StegPony: ocultar reduce las probabilidades de que se note; no las reduce a cero. No puede protegerte de alguien que tiene la foto original, de un examen forense de tu teléfono desbloqueado, ni de cualquiera que vea a quién envías imágenes, y cuándo. StegPony oculta lo que envías, no que lo enviaste. La página de Ayuda de la aplicación explica los límites al completo, y merece la pena leerla antes de confiar en la aplicación.
+
+Las frases de contraseña se refuerzan con Argon2id, las claves usan X25519 y el contenido se sella con ChaCha20-Poly1305. El formato y todo el trabajo de imagen y de criptografía están en StegPonyCore, una biblioteca de Rust independiente y de código abierto.
+
+Con licencia Apache-2.0. Gratis, sin compras dentro de la aplicación. Preguntas o informes de errores: NorseHorse@norsehor.se

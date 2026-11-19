@@ -1,0 +1,24 @@
+StegPony chiffre un message ou un fichier et le cache dans une photo ordinaire, ou dans du texte. La photo garde le même aspect et s'ouvre comme n'importe quelle autre. Sans la bonne phrase secrète ou la bonne clé, il n'y a rien à trouver : pas d'en-tête, pas de marqueur, et aucun moyen de distinguer une photo où quelque chose est caché d'une photo sans rien.
+
+Aucune autorisation réseau. StegPony ne peut rien envoyer nulle part, et cela se vérifie dans le manifeste. Il n'y a aucun compte, aucun suivi et aucune publicité.
+
+Fonctionnalités :
+
+* Cachez du texte ou un fichier dans un JPEG, qui reste un JPEG avec la compression propre à l'appareil photo, ou dans un PNG
+* Verrouillez avec une phrase secrète, ou avec la clé publique de quelqu'un pour que seule sa clé secrète l'ouvre
+* Ajoutez un leurre : un second message sous une seconde phrase secrète, à donner si quelqu'un vous fait ouvrir l'image. Personne ne peut savoir si une image contient un leurre
+* Consultez une évaluation de la détectabilité (faible, moyenne, élevée) avant de cacher, fondée sur des tests réalisés avec un détecteur standard sur de vraies photos de téléphone
+* Prenez la photo de couverture avec l'appareil photo intégré à l'application, pour qu'elle ne soit jamais enregistrée ailleurs. StegPony avertit quand une photo a déjà été utilisée, ou ressemble à un téléchargement ou à une copie venant d'une messagerie
+* Cachez dans du texte quand une photo ne peut pas être envoyée, sous la forme d'une suite de mots ordinaires ou de caractères invisibles dans un message que vous écrivez
+* Révélez avec une phrase secrète, vos clés enregistrées, ou une clé matérielle OpenPGP en NFC ou en USB, dont le secret ne quitte jamais la clé. Testé avec une Token2 PIN+ et, en USB, avec une Nitrokey 3A NFC
+* Les clés sont compatibles avec age. Importez des identités age et des clés OpenPGP Curve25519 venant de PGPony ou de GnuPG, et ajoutez des contacts par code QR, fichier, collage ou partage
+* Verrouillage de l'application, captures d'écran bloquées sur les écrans sensibles, un presse-papiers vidé au bout d'une minute, et un camouflage dans le lanceur en option
+* Anglais, allemand, espagnol, français, portugais du Brésil, russe et chinois simplifié, avec changement de langue dans l'application
+
+Comment envoyer ce que vous cachez : en pièce jointe de type fichier ou document. Le mode photo d'une messagerie recompresse l'image et détruit ce qui est caché.
+
+Ce contre quoi StegPony ne peut pas vous protéger : cacher réduit le risque d'être remarqué, cela ne le ramène pas à zéro. Il ne peut pas vous protéger contre quelqu'un qui possède la photo d'origine, contre une analyse forensique de votre téléphone déverrouillé, ni contre toute personne qui voit à qui vous envoyez des images, et quand. StegPony cache ce que vous envoyez, pas le fait que vous l'avez envoyé. La page Aide de l'application détaille toutes les limites, et mérite d'être lue avant de vous y fier.
+
+Les phrases secrètes sont étirées avec Argon2id, les clés utilisent X25519, et le contenu est scellé avec ChaCha20-Poly1305. Le format et tout le traitement des images et de la cryptographie se trouvent dans StegPonyCore, une bibliothèque Rust open source distincte.
+
+Sous licence Apache-2.0. Gratuit, sans achats intégrés. Questions ou signalements : NorseHorse@norsehor.se
