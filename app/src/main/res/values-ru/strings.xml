@@ -360,6 +360,7 @@
     <string name="onboarding_skip">Пропустить</string>
     <string name="onboarding_start">Начать</string>
     <string name="onboarding_page">Страница %1$d из %2$d</string>
+    <string name="onboarding_scroll_more">Больше параметров ниже</string>
     <string name="onboarding_language_body">Выберите язык, которым хотите пользоваться.\n\nПозже его можно изменить на вкладке «Настройки».</string>
     <string name="onboarding_welcome_title">Добро пожаловать в StegPony</string>
     <string name="onboarding_welcome_body">StegPony шифрует сообщение или файл и скрывает его в обычном фото или в тексте.\n\nЧерез приложение ничто не покидает этот телефон. У него нет ни доступа к сети, ни учётной записи, ни отслеживания.</string>

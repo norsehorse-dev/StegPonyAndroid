@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug builds only. The debug build installs beside the released app (its
+  package ends in .debug), so it gets its own name in the launcher. Without
+  this there are two icons called StegPony and no way to tell which is which.
+-->
+<resources>
+    <string name="app_name" translatable="false">StegPony debug</string>
+</resources>

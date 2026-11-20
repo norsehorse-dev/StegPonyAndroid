@@ -336,6 +336,7 @@
     <string name="onboarding_skip">跳过</string>
     <string name="onboarding_start">开始</string>
     <string name="onboarding_page">第 %1$d 页，共 %2$d 页</string>
+    <string name="onboarding_scroll_more">下方还有更多选项</string>
     <string name="onboarding_language_body">选择你想使用的语言。\n\n以后可以在“设置”中更改。</string>
     <string name="onboarding_welcome_title">欢迎使用 StegPony</string>
     <string name="onboarding_welcome_body">StegPony 会加密一条消息或一个文件，并把它隐藏在一张普通的照片里，或隐藏在文本里。\n\n任何内容都不会通过这个应用离开这部手机。它没有网络访问权限，没有账户，也没有跟踪。</string>

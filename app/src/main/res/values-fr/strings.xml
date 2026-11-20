@@ -353,6 +353,7 @@
     <string name="onboarding_skip">Passer</string>
     <string name="onboarding_start">Commencer</string>
     <string name="onboarding_page">Page %1$d sur %2$d</string>
+    <string name="onboarding_scroll_more">Plus d\'options ci-dessous</string>
     <string name="onboarding_language_body">Choisissez la langue que vous voulez utiliser.\n\nVous pourrez la changer plus tard dans les Réglages.</string>
     <string name="onboarding_welcome_title">Bienvenue dans StegPony</string>
     <string name="onboarding_welcome_body">StegPony chiffre un message ou un fichier et le cache dans une photo ordinaire, ou dans du texte.\n\nRien ne quitte ce téléphone par l\'application. Elle n\'a aucun accès au réseau, aucun compte et aucun suivi.</string>

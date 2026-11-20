@@ -353,6 +353,7 @@
     <string name="onboarding_skip">Pular</string>
     <string name="onboarding_start">Começar</string>
     <string name="onboarding_page">Página %1$d de %2$d</string>
+    <string name="onboarding_scroll_more">Mais opções abaixo</string>
     <string name="onboarding_language_body">Escolha o idioma que você quer usar.\n\nVocê pode mudar depois em Ajustes.</string>
     <string name="onboarding_welcome_title">Boas-vindas ao StegPony</string>
     <string name="onboarding_welcome_body">O StegPony cifra uma mensagem ou um arquivo e oculta o resultado em uma foto comum, ou em um texto.\n\nNada sai deste celular pelo app. Ele não tem acesso à rede, nem conta, nem rastreamento.</string>

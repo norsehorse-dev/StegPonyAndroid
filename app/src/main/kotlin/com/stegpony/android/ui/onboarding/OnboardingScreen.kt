@@ -2,6 +2,7 @@ package com.stegpony.android.ui.onboarding
 
 import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +27,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Key
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PhotoCamera
@@ -45,6 +47,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -195,10 +199,38 @@ private fun ColumnScope.TourPages(pager: PagerState, last: Boolean, hidden: Bool
 
 @Composable
 private fun SlidePage(slide: Slide, hidden: Boolean, onTry: () -> Unit) {
+    val scroll = rememberScrollState()
+    Box(Modifier.fillMaxSize()) {
+        SlideContent(slide, hidden, onTry, scroll)
+        // More below, as in PGPony's tour: on a short phone or in a long
+        // language a page's button can start under the fold, so a fade and an
+        // arrow show until the page is scrolled to its end.
+        if (scroll.maxValue > 0 && scroll.value < scroll.maxValue) {
+            Box(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .background(Brush.verticalGradient(listOf(Color.Transparent, MaterialTheme.colorScheme.background))),
+                contentAlignment = Alignment.BottomCenter,
+            ) {
+                Icon(
+                    Icons.Outlined.KeyboardArrowDown,
+                    contentDescription = stringResource(R.string.onboarding_scroll_more),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun SlideContent(slide: Slide, hidden: Boolean, onTry: () -> Unit, scroll: ScrollState) {
     Column(
         Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scroll)
             .padding(horizontal = 32.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

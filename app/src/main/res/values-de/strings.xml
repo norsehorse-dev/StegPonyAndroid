@@ -345,6 +345,7 @@
     <string name="onboarding_skip">Überspringen</string>
     <string name="onboarding_start">Starten</string>
     <string name="onboarding_page">Seite %1$d von %2$d</string>
+    <string name="onboarding_scroll_more">Weitere Optionen unten</string>
     <string name="onboarding_language_body">Wähle die Sprache, die du verwenden möchtest.\n\nDu kannst sie später in den Einstellungen ändern.</string>
     <string name="onboarding_welcome_title">Willkommen bei StegPony</string>
     <string name="onboarding_welcome_body">StegPony verschlüsselt eine Nachricht oder Datei und versteckt sie in einem gewöhnlichen Foto oder in Text.\n\nÜber die App verlässt nichts dieses Smartphone. Sie hat keinen Netzwerkzugriff, kein Konto und kein Tracking.</string>
