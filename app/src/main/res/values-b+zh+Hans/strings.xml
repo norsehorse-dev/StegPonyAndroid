@@ -51,6 +51,8 @@
     <string name="key_passphrase">口令</string>
     <string name="key_recipient">对方的公钥</string>
     <string name="passphrase_again_label">再次输入口令</string>
+    <string name="passphrase_generate">生成口令</string>
+    <string name="passphrase_generated_about">六个随机英文单词，已填入上方。对方需要这个口令才能提取消息。请当面或通过你信任的渠道告诉对方。</string>
     <string name="recipient_label">公钥</string>
     <string name="recipient_hint">粘贴对方的 age1… 密钥。只有对方的私钥才能打开。</string>
     <string name="recipient_yours">%1$s（你的）</string>

@@ -52,6 +52,8 @@
     <string name="key_passphrase">Passphrase</string>
     <string name="key_recipient">Öffentlicher Schlüssel einer Person</string>
     <string name="passphrase_again_label">Passphrase wiederholen</string>
+    <string name="passphrase_generate">Passphrase erzeugen</string>
+    <string name="passphrase_generated_about">Sechs zufällige englische Wörter, oben schon eingetragen. Die andere Person braucht diese Passphrase, um die Nachricht aufzudecken. Gib sie persönlich weiter oder über einen Kanal, dem du vertraust.</string>
     <string name="recipient_label">Öffentlicher Schlüssel</string>
     <string name="recipient_hint">Füge den age1…-Schlüssel der Person ein. Nur ihr geheimer Schlüssel öffnet es.</string>
     <string name="recipient_yours">%1$s (deiner)</string>

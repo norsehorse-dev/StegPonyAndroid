@@ -1,0 +1,1 @@
+Nouveau : un générateur de phrase secrète. Dans l'onglet Cacher, un appui saisit une phrase secrète de six mots au hasard, avec un bouton de copie qui vide ensuite le presse-papiers.

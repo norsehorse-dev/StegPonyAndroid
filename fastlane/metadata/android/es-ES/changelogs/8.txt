@@ -1,0 +1,1 @@
+Novedad: un generador de frases de contraseña. En la pestaña Ocultar, un toque escribe una frase de contraseña de seis palabras al azar, con un botón de copiar que después borra el portapapeles.

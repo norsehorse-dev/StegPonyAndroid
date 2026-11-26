@@ -1,0 +1,1 @@
+New: a passphrase generator. On the Hide tab, one tap fills in a passphrase of six random words, with a copy button that clears the clipboard afterwards.

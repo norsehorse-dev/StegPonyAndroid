@@ -463,6 +463,7 @@ private fun TextSizeNote(vm: HideViewModel) {
 
 @Composable
 private fun KeyStep(vm: HideViewModel) {
+    val context = LocalContext.current
     val keyring = Keyring.state.collectAsState().value
     val keys = (keyring as? KeyringState.Ready)?.keys ?: Keys()
     Section(stringResource(R.string.hide_key_title)) {
@@ -487,6 +488,35 @@ private fun KeyStep(vm: HideViewModel) {
                     stringResource(R.string.passphrase_again_label),
                     isError = vm.passphraseAgain.isNotEmpty() && vm.passphraseAgain != vm.passphrase,
                 )
+                // A generated passphrase is shown in the clear, so it can be read
+                // and passed on, until the field is edited or the hide is done.
+                val generated = vm.generatedPassphrase
+                if (generated != null && generated == vm.passphrase) {
+                    SelectionContainer {
+                        Text(generated, style = MaterialTheme.typography.bodyLarge)
+                    }
+                    Text(
+                        stringResource(R.string.passphrase_generated_about),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    OutlinedButton(
+                        shape = ControlShape,
+                        onClick = { Clipboard.copySensitive(context, generated) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Icon(Icons.Outlined.ContentCopy, contentDescription = null)
+                        Text(stringResource(R.string.copy), Modifier.padding(start = 8.dp))
+                    }
+                    Text(
+                        stringResource(R.string.copy_clears, Clipboard.CLEAR_AFTER_SECONDS),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                TextButton(onClick = vm::generatePassphrase) {
+                    Text(stringResource(R.string.passphrase_generate))
+                }
             }
             KeyKind.Recipient -> {
                 val saved = (

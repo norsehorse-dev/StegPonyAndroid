@@ -51,6 +51,8 @@
     <string name="key_passphrase">Парольная фраза</string>
     <string name="key_recipient">Чужой открытый ключ</string>
     <string name="passphrase_again_label">Парольная фраза ещё раз</string>
+    <string name="passphrase_generate">Сгенерировать парольную фразу</string>
+    <string name="passphrase_generated_about">Шесть случайных английских слов, уже введены выше. Эта парольная фраза нужна другому человеку, чтобы извлечь сообщение. Передайте её лично или по каналу, которому доверяете.</string>
     <string name="recipient_label">Открытый ключ</string>
     <string name="recipient_hint">Вставьте ключ получателя (age1…). Открыть сможет только его секретный ключ.</string>
     <string name="recipient_yours">%1$s (ваш)</string>

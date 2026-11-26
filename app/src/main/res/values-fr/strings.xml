@@ -52,6 +52,8 @@
     <string name="key_passphrase">Phrase secrète</string>
     <string name="key_recipient">La clé publique de quelqu\'un</string>
     <string name="passphrase_again_label">Phrase secrète, à nouveau</string>
+    <string name="passphrase_generate">Générer une phrase secrète</string>
+    <string name="passphrase_generated_about">Six mots anglais au hasard, déjà saisis ci-dessus. L\'autre personne a besoin de cette phrase secrète pour révéler le message. Transmettez-la en personne ou par un canal auquel vous faites confiance.</string>
     <string name="recipient_label">Clé publique</string>
     <string name="recipient_hint">Collez sa clé (age1…). Seule sa clé secrète pourra l\'ouvrir.</string>
     <string name="recipient_yours">%1$s (la vôtre)</string>

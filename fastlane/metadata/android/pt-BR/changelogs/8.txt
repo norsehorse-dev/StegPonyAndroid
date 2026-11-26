@@ -1,0 +1,1 @@
+Novidade: um gerador de frase-senha. Na aba Ocultar, um toque preenche uma frase-senha de seis palavras aleatórias, com um botão de copiar que depois limpa a área de transferência.

@@ -1,0 +1,1 @@
+Neu: ein Passphrasen-Generator. Im Tab „Verstecken“ trägt ein Tipp eine Passphrase aus sechs zufälligen Wörtern ein, mit einer Kopieren-Schaltfläche, nach der die Zwischenablage wieder geleert wird.

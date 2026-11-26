@@ -52,6 +52,8 @@
     <string name="key_passphrase">Frase-senha</string>
     <string name="key_recipient">Chave pública de alguém</string>
     <string name="passphrase_again_label">Frase-senha de novo</string>
+    <string name="passphrase_generate">Gerar uma frase-senha</string>
+    <string name="passphrase_generated_about">Seis palavras aleatórias em inglês, já preenchidas acima. A outra pessoa precisa desta frase-senha para revelar a mensagem. Compartilhe pessoalmente ou por um canal em que você confia.</string>
     <string name="recipient_label">Chave pública</string>
     <string name="recipient_hint">Cole a chave age1… da pessoa. Só a chave secreta dela vai abrir.</string>
     <string name="recipient_yours">%1$s (sua)</string>

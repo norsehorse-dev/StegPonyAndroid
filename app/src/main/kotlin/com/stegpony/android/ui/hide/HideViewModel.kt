@@ -15,6 +15,7 @@ import com.stegpony.android.io.PickedFile
 import android.media.ExifInterface
 import com.stegpony.android.keys.CoverHistory
 import com.stegpony.android.keys.Keyring
+import com.stegpony.android.keys.PassphraseGenerator
 import java.io.ByteArrayInputStream
 import androidx.compose.ui.graphics.ImageBitmap
 import com.stegpony.android.ui.common.Previews
@@ -122,6 +123,9 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     var keyKind by mutableStateOf(KeyKind.Passphrase)
     var passphrase by mutableStateOf("")
     var passphraseAgain by mutableStateOf("")
+    /** A passphrase the app made, shown in the clear on the key step while it is still the one in the fields. */
+    var generatedPassphrase by mutableStateOf<String?>(null)
+        private set
     /** A pasted age1… key, used when no saved key is picked. */
     var recipient by mutableStateOf("")
     /** The recipient of a contact or one of your own keys, picked from the keyring. */
@@ -393,6 +397,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                 // Secrets are not kept around once used.
                 passphrase = ""
                 passphraseAgain = ""
+                generatedPassphrase = null
                 decoyPassphrase = ""
             } catch (e: Throwable) {
                 errorText = if (carrier == Carrier.Text && e is StegException.PayloadTooLarge) {
@@ -404,6 +409,15 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                 busy = false
             }
         }
+    }
+
+    /** Fills both passphrase fields with six random words. */
+    fun generatePassphrase() {
+        if (busy) return
+        val made = PassphraseGenerator.generate(PassphraseGenerator.list(context))
+        passphrase = made
+        passphraseAgain = made
+        generatedPassphrase = made
     }
 
     fun save(uri: Uri) {
@@ -438,6 +452,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         file = null
         passphrase = ""
         passphraseAgain = ""
+        generatedPassphrase = null
         decoyOn = false
         decoyText = ""
         decoyPassphrase = ""

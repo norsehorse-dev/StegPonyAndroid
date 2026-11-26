@@ -53,6 +53,8 @@
     <string name="key_passphrase">Passphrase</string>
     <string name="key_recipient">Someone\'s public key</string>
     <string name="passphrase_again_label">Passphrase again</string>
+    <string name="passphrase_generate">Generate a passphrase</string>
+    <string name="passphrase_generated_about">Six random words, filled in above. The other person needs this passphrase to reveal the message. Share it in person or over a channel you trust.</string>
     <string name="recipient_label">Public key</string>
     <string name="recipient_hint">Paste their age1… key. Only their secret key will open it.</string>
     <string name="recipient_yours">%1$s (yours)</string>
