@@ -59,6 +59,15 @@
     <string name="recipient_hint">Paste their age1… key. Only their secret key will open it.</string>
     <string name="recipient_yours">%1$s (yours)</string>
     <string name="recipient_paste">Paste a key</string>
+    <string name="hide_pick_from_pgpony">Pick from PGPony</string>
+    <string name="recipient_from_pgpony">%1$s (from PGPony)</string>
+    <string name="pgpony_save_contact">Save as a contact</string>
+    <string name="pgpony_pick_about">Opens PGPony\'s list of public keys. The key you pick is used for this message and isn\'t saved here unless you save it as a contact.</string>
+    <string name="pgpony_pick_one">StegPony hides for one key at a time. Pick a single key in PGPony.</string>
+    <string name="pgpony_pick_none">No key was picked.</string>
+    <string name="pgpony_pick_unusable">StegPony can\'t hide for that key. It needs a Curve25519 encryption key; RSA and other kinds can\'t be used.</string>
+    <string name="pgpony_key_not_given">PGPony couldn\'t hand over that key. Check the key in PGPony, then try again.</string>
+    <string name="pgpony_too_old_pick">This PGPony is too old for this. Update PGPony to 4.8.1 or newer.</string>
     <string name="hide_decoy_title">Decoy</string>
     <string name="decoy_about">A second message under a second passphrase. If someone makes you open the image, give them this one. Nobody can tell whether an image has a decoy.</string>
     <string name="decoy_message_label">Decoy message</string>
@@ -333,7 +342,7 @@
     <string name="help_hardware_title">Hardware keys</string>
     <string name="help_hardware_body">An OpenPGP hardware key with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. It is tested with a Token2 PIN+, and with a Nitrokey 3A NFC over USB; other OpenPGP keys should work the same way. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
     <string name="help_pgpony_title">Keys in PGPony</string>
-    <string name="help_pgpony_body">If your Curve25519 key lives in PGPony (4.8.2 or newer), StegPony can open images hidden for it without importing the key: on Reveal, choose \"Use a key in PGPony\". PGPony asks you to confirm each time, with the key\'s passphrase, or with the hardware key\'s PIN and the key held to the phone or plugged in. The secret key stays in PGPony, or on the hardware key. PGPony learns which key was used, never the image or what was found.</string>
+    <string name="help_pgpony_body">If your Curve25519 key lives in PGPony (4.8.2 or newer), StegPony can open images hidden for it without importing the key: on Reveal, choose \"Use a key in PGPony\". PGPony asks you to confirm each time, with the key\'s passphrase, or with the hardware key\'s PIN and the key held to the phone or plugged in. The secret key stays in PGPony, or on the hardware key. PGPony learns which key was used, never the image or what was found. When hiding, \"Pick from PGPony\" on the key step lets you choose the recipient from PGPony\'s public keys (PGPony 4.8.1 or newer).</string>
     <string name="help_decoy_title">Decoy</string>
     <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
     <string name="help_phone_title">On this phone</string>

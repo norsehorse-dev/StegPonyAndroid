@@ -58,6 +58,15 @@
     <string name="recipient_hint">Collez sa clé (age1…). Seule sa clé secrète pourra l\'ouvrir.</string>
     <string name="recipient_yours">%1$s (la vôtre)</string>
     <string name="recipient_paste">Coller une clé</string>
+    <string name="hide_pick_from_pgpony">Choisir dans PGPony</string>
+    <string name="recipient_from_pgpony">%1$s (de PGPony)</string>
+    <string name="pgpony_save_contact">Enregistrer comme contact</string>
+    <string name="pgpony_pick_about">Ouvre la liste des clés publiques de PGPony. La clé choisie sert pour ce message et n\'est pas enregistrée ici, sauf si vous l\'enregistrez comme contact.</string>
+    <string name="pgpony_pick_one">StegPony cache pour une seule clé à la fois. Choisissez une seule clé dans PGPony.</string>
+    <string name="pgpony_pick_none">Aucune clé n\'a été choisie.</string>
+    <string name="pgpony_pick_unusable">StegPony ne peut pas cacher pour cette clé. Il faut une clé de chiffrement Curve25519 ; les clés RSA et d\'autres types ne peuvent pas être utilisées.</string>
+    <string name="pgpony_key_not_given">PGPony n\'a pas pu transmettre cette clé. Vérifiez la clé dans PGPony, puis réessayez.</string>
+    <string name="pgpony_too_old_pick">Cette version de PGPony est trop ancienne pour cela. Mettez PGPony à jour vers la version 4.8.1 ou une version plus récente.</string>
     <string name="hide_decoy_title">Leurre</string>
     <string name="decoy_about">Un second message sous une seconde phrase secrète. Si quelqu\'un vous fait ouvrir l\'image, donnez-lui celui-ci. Personne ne peut savoir si une image contient un leurre.</string>
     <string name="decoy_message_label">Message leurre</string>
@@ -340,7 +349,7 @@
     <string name="help_hardware_title">Clés matérielles</string>
     <string name="help_hardware_body">Une clé matérielle OpenPGP dotée d\'une clé de déchiffrement Curve25519 (cv25519) peut ouvrir les images dans lesquelles quelque chose est caché pour elle, en NFC ou en USB. Elle est testée avec une Token2 PIN+ et, en USB, avec une Nitrokey 3A NFC ; les autres clés OpenPGP devraient fonctionner de la même façon. La clé effectue elle-même l\'échange de clés, son secret ne la quitte donc jamais. Vous saisissez le PIN de la clé à chaque fois ; StegPony ne le conserve pas. Les clés RSA ne peuvent pas être utilisées.</string>
     <string name="help_pgpony_title">Clés dans PGPony</string>
-    <string name="help_pgpony_body">Si votre clé Curve25519 se trouve dans PGPony (4.8.2 ou version plus récente), StegPony peut ouvrir les images dans lesquelles quelque chose est caché pour elle sans importer la clé : dans « Révéler », choisissez « Utiliser une clé de PGPony ». PGPony vous demande de confirmer à chaque fois, avec la phrase secrète de la clé, ou avec le PIN de la clé matérielle, que vous tenez ensuite contre le téléphone. La clé secrète reste dans PGPony, ou sur la clé matérielle. PGPony sait quelle clé a été utilisée, jamais l\'image ni ce qui a été trouvé.</string>
+    <string name="help_pgpony_body">Si votre clé Curve25519 se trouve dans PGPony (4.8.2 ou version plus récente), StegPony peut ouvrir les images dans lesquelles quelque chose est caché pour elle sans importer la clé : dans « Révéler », choisissez « Utiliser une clé de PGPony ». PGPony vous demande de confirmer à chaque fois, avec la phrase secrète de la clé, ou avec le PIN de la clé matérielle, que vous tenez ensuite contre le téléphone. La clé secrète reste dans PGPony, ou sur la clé matérielle. PGPony sait quelle clé a été utilisée, jamais l\'image ni ce qui a été trouvé. Pour cacher, « Choisir dans PGPony », à l\'étape de la clé, permet de choisir le destinataire parmi les clés publiques de PGPony (PGPony 4.8.1 ou version plus récente).</string>
     <string name="help_decoy_title">Leurre</string>
     <string name="help_decoy_body">Un leurre est un second message sous une seconde phrase secrète. Si quelqu\'un vous force à ouvrir une image ou un texte, donnez-lui le leurre. Personne ne peut en déduire si un leurre existe, et StegPony donne la même réponse pour une phrase secrète incorrecte que pour une image qui ne contient rien.\n\nLa limite : une personne qui connaît StegPony sait que tout ce qu\'il cache a de la place pour deux messages, et peut ne pas croire qu\'il n\'y en a qu\'un. Rendez le leurre crédible, et sur votre propre téléphone, saisissez sa phrase secrète plutôt que de laisser le champ vide, ce qui essaierait vos propres clés.</string>
     <string name="help_phone_title">Sur ce téléphone</string>

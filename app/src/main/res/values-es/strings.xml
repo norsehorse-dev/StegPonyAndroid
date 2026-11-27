@@ -58,6 +58,15 @@
     <string name="recipient_hint">Pega su clave age1…: solo su clave secreta lo abrirá.</string>
     <string name="recipient_yours">%1$s (tuya)</string>
     <string name="recipient_paste">Pegar una clave</string>
+    <string name="hide_pick_from_pgpony">Elegir en PGPony</string>
+    <string name="recipient_from_pgpony">%1$s (de PGPony)</string>
+    <string name="pgpony_save_contact">Guardar como contacto</string>
+    <string name="pgpony_pick_about">Abre la lista de claves públicas de PGPony. La clave que elijas se usa para este mensaje y no se guarda aquí, salvo que la guardes como contacto.</string>
+    <string name="pgpony_pick_one">StegPony oculta para una sola clave cada vez. Elige una única clave en PGPony.</string>
+    <string name="pgpony_pick_none">No se eligió ninguna clave.</string>
+    <string name="pgpony_pick_unusable">StegPony no puede ocultar para esa clave. Hace falta una clave de cifrado Curve25519; las claves RSA y de otros tipos no se pueden usar.</string>
+    <string name="pgpony_key_not_given">PGPony no pudo entregar esa clave. Revisa la clave en PGPony e inténtalo de nuevo.</string>
+    <string name="pgpony_too_old_pick">Este PGPony es demasiado antiguo para esto. Actualiza PGPony a la versión 4.8.1 o posterior.</string>
     <string name="hide_decoy_title">Señuelo</string>
     <string name="decoy_about">Un segundo mensaje con una segunda frase de contraseña. Si alguien te obliga a abrir la imagen, entrégale este. Nadie puede saber si una imagen tiene un señuelo.</string>
     <string name="decoy_message_label">Mensaje señuelo</string>
@@ -340,7 +349,7 @@
     <string name="help_hardware_title">Llaves de hardware</string>
     <string name="help_hardware_body">Una llave de hardware OpenPGP con una clave de descifrado Curve25519 (cv25519) puede abrir imágenes ocultas para ella, por NFC o USB. Está probado con una Token2 PIN+, y con una Nitrokey 3A NFC conectada por USB; otras llaves OpenPGP deberían funcionar de la misma manera. La llave hace ella misma el intercambio de claves, así que su secreto nunca sale de ella. Introduces el PIN de la llave cada vez; StegPony no lo guarda. Las claves RSA no se pueden usar.</string>
     <string name="help_pgpony_title">Claves en PGPony</string>
-    <string name="help_pgpony_body">Si tu clave Curve25519 está en PGPony (4.8.2 o posterior), StegPony puede abrir imágenes ocultas para ella sin importar la clave: en Revelar, elige «Usar una clave de PGPony». PGPony te pide que confirmes cada vez, con la frase de contraseña de la clave, o con el PIN de la llave de hardware, acercándola después al teléfono. La clave secreta se queda en PGPony, o en la llave de hardware. PGPony sabe qué clave se usó, pero nunca la imagen ni lo que se encontró.</string>
+    <string name="help_pgpony_body">Si tu clave Curve25519 está en PGPony (4.8.2 o posterior), StegPony puede abrir imágenes ocultas para ella sin importar la clave: en Revelar, elige «Usar una clave de PGPony». PGPony te pide que confirmes cada vez, con la frase de contraseña de la clave, o con el PIN de la llave de hardware, acercándola después al teléfono. La clave secreta se queda en PGPony, o en la llave de hardware. PGPony sabe qué clave se usó, pero nunca la imagen ni lo que se encontró. Al ocultar, «Elegir en PGPony», en el paso de la clave, te permite elegir al destinatario entre las claves públicas de PGPony (PGPony 4.8.1 o posterior).</string>
     <string name="help_decoy_title">Señuelo</string>
     <string name="help_decoy_body">Un señuelo es un segundo mensaje con una segunda frase de contraseña. Si alguien te obliga a abrir una imagen o un texto, entrégale el señuelo. Nadie puede saber a partir de él si existe un señuelo, y StegPony da la misma respuesta para una frase de contraseña incorrecta que para una imagen sin nada dentro.\n\nEl límite: quien conoce StegPony sabe que todo lo que oculta tiene espacio para dos mensajes, y puede no creer que solo haya uno. Haz que el señuelo sea creíble y, en tu propio teléfono, escribe su frase de contraseña en lugar de dejar el campo vacío, lo que probaría tus propias claves.</string>
     <string name="help_phone_title">En este teléfono</string>

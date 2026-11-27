@@ -57,6 +57,15 @@
     <string name="recipient_hint">粘贴对方的 age1… 密钥。只有对方的私钥才能打开。</string>
     <string name="recipient_yours">%1$s（你的）</string>
     <string name="recipient_paste">粘贴密钥</string>
+    <string name="hide_pick_from_pgpony">从 PGPony 选择</string>
+    <string name="recipient_from_pgpony">%1$s（来自 PGPony）</string>
+    <string name="pgpony_save_contact">保存为联系人</string>
+    <string name="pgpony_pick_about">打开 PGPony 的公钥列表。你选的密钥只用于这条消息，不会保存在这里，除非你把它保存为联系人。</string>
+    <string name="pgpony_pick_one">StegPony 每次只能为一个密钥隐藏。请在 PGPony 中只选一个密钥。</string>
+    <string name="pgpony_pick_none">没有选择密钥。</string>
+    <string name="pgpony_pick_unusable">StegPony 无法为这个密钥隐藏。需要 Curve25519 加密密钥；RSA 和其他类型的密钥无法使用。</string>
+    <string name="pgpony_key_not_given">PGPony 无法提供这个密钥。请在 PGPony 中检查这个密钥，然后重试。</string>
+    <string name="pgpony_too_old_pick">这个版本的 PGPony 太旧。请把 PGPony 更新到 4.8.1 或更高版本。</string>
     <string name="hide_decoy_title">诱饵</string>
     <string name="decoy_about">用第二个口令保护的第二条消息。如果有人逼你打开图像，就把这一条交给对方。没有人能判断一张图像里是否有诱饵。</string>
     <string name="decoy_message_label">诱饵消息</string>
@@ -323,7 +332,7 @@
     <string name="help_hardware_title">硬件密钥</string>
     <string name="help_hardware_body">带有 Curve25519（cv25519）解密密钥的 OpenPGP 硬件密钥，可以通过 NFC 或 USB 打开为它隐藏的图像。已用 Token2 PIN+ 测试，也已通过 USB 用 Nitrokey 3A NFC 测试；其他 OpenPGP 硬件密钥应该也能同样使用。密钥交换由硬件密钥自己完成，所以它的私密部分永远不会离开它。你每次都要输入密钥的 PIN；StegPony 不会保存它。RSA 密钥无法使用。</string>
     <string name="help_pgpony_title">PGPony 中的密钥</string>
-    <string name="help_pgpony_body">如果你的 Curve25519 密钥保存在 PGPony（4.8.2 或更高版本）里，StegPony 不用导入密钥就能打开为它隐藏的图像：在“提取”中选择“使用 PGPony 中的密钥”。PGPony 每次都会请你确认：输入密钥的口令，或者输入硬件密钥的 PIN 并触碰一下。私钥留在 PGPony 里或硬件密钥上。PGPony 会知道用了哪个密钥，但不会知道图像和找到的内容。</string>
+    <string name="help_pgpony_body">如果你的 Curve25519 密钥保存在 PGPony（4.8.2 或更高版本）里，StegPony 不用导入密钥就能打开为它隐藏的图像：在“提取”中选择“使用 PGPony 中的密钥”。PGPony 每次都会请你确认：输入密钥的口令，或者输入硬件密钥的 PIN 并触碰一下。私钥留在 PGPony 里或硬件密钥上。PGPony 会知道用了哪个密钥，但不会知道图像和找到的内容。隐藏时，在选择密钥的步骤中点“从 PGPony 选择”，可以从 PGPony 的公钥中选择对方的公钥（需要 PGPony 4.8.1 或更高版本）。</string>
     <string name="help_decoy_title">诱饵</string>
     <string name="help_decoy_body">诱饵是用第二个口令保护的第二条消息。如果有人强迫你打开一张图像或一段文本，就把诱饵交给对方。没有人能从中判断是否存在诱饵，而且对于错误的口令和里面什么都没有的图像，StegPony 给出的回答是一样的。\n\n局限在于：了解 StegPony 的人知道它隐藏的所有内容都留有两条消息的空间，因此可能不相信只有一条。请把诱饵做得可信；在你自己的手机上，请输入诱饵的口令，而不要把输入框留空，留空会尝试你自己的密钥。</string>
     <string name="help_phone_title">在这部手机上</string>

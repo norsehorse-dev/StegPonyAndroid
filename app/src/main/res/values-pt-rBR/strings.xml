@@ -58,6 +58,15 @@
     <string name="recipient_hint">Cole a chave age1… da pessoa. Só a chave secreta dela vai abrir.</string>
     <string name="recipient_yours">%1$s (sua)</string>
     <string name="recipient_paste">Colar uma chave</string>
+    <string name="hide_pick_from_pgpony">Escolher no PGPony</string>
+    <string name="recipient_from_pgpony">%1$s (do PGPony)</string>
+    <string name="pgpony_save_contact">Salvar como contato</string>
+    <string name="pgpony_pick_about">Abre a lista de chaves públicas do PGPony. A chave que você escolher é usada para esta mensagem e não fica salva aqui, a menos que você a salve como contato.</string>
+    <string name="pgpony_pick_one">O StegPony oculta para uma chave de cada vez. Escolha uma única chave no PGPony.</string>
+    <string name="pgpony_pick_none">Nenhuma chave foi escolhida.</string>
+    <string name="pgpony_pick_unusable">O StegPony não consegue ocultar para essa chave. É preciso uma chave de cifragem Curve25519; chaves RSA e de outros tipos não podem ser usadas.</string>
+    <string name="pgpony_key_not_given">O PGPony não conseguiu entregar essa chave. Confira a chave no PGPony e tente novamente.</string>
+    <string name="pgpony_too_old_pick">Este PGPony é antigo demais para isso. Atualize o PGPony para a versão 4.8.1 ou mais recente.</string>
     <string name="hide_decoy_title">Isca</string>
     <string name="decoy_about">Uma segunda mensagem com uma segunda frase-senha. Se alguém obrigar você a abrir a imagem, entregue esta. Ninguém consegue saber se uma imagem tem uma isca.</string>
     <string name="decoy_message_label">Mensagem de isca</string>
@@ -340,7 +349,7 @@
     <string name="help_hardware_title">Chaves de hardware</string>
     <string name="help_hardware_body">Uma chave de hardware OpenPGP com uma chave de decifragem Curve25519 (cv25519) consegue abrir imagens ocultadas para ela, por NFC ou USB. Foi testado com uma Token2 PIN+, e com uma Nitrokey 3A NFC conectada por USB; outras chaves de hardware OpenPGP devem funcionar do mesmo jeito. A própria chave de hardware faz a troca de chaves, então o segredo nunca sai dela. Você digita o PIN da chave de hardware todas as vezes; o StegPony não guarda o PIN. Chaves RSA não podem ser usadas.</string>
     <string name="help_pgpony_title">Chaves no PGPony</string>
-    <string name="help_pgpony_body">Se a sua chave Curve25519 está no PGPony (4.8.2 ou mais recente), o StegPony consegue abrir imagens ocultadas para ela sem importar a chave: em Revelar, escolha “Usar uma chave do PGPony”. O PGPony pede sua confirmação todas as vezes, com a frase-senha da chave, ou com o PIN da chave de hardware, encostando a chave no celular em seguida. A chave secreta fica no PGPony, ou na chave de hardware. O PGPony fica sabendo qual chave foi usada, mas nunca a imagem nem o que foi encontrado.</string>
+    <string name="help_pgpony_body">Se a sua chave Curve25519 está no PGPony (4.8.2 ou mais recente), o StegPony consegue abrir imagens ocultadas para ela sem importar a chave: em Revelar, escolha “Usar uma chave do PGPony”. O PGPony pede sua confirmação todas as vezes, com a frase-senha da chave, ou com o PIN da chave de hardware, encostando a chave no celular em seguida. A chave secreta fica no PGPony, ou na chave de hardware. O PGPony fica sabendo qual chave foi usada, mas nunca a imagem nem o que foi encontrado. Ao ocultar, “Escolher no PGPony”, na etapa da chave, permite escolher o destinatário entre as chaves públicas do PGPony (PGPony 4.8.1 ou mais recente).</string>
     <string name="help_decoy_title">Isca</string>
     <string name="help_decoy_body">Uma isca é uma segunda mensagem com uma segunda frase-senha. Se alguém forçar você a abrir uma imagem ou um texto, entregue a isca. Ninguém consegue saber por ela se existe uma isca, e o StegPony dá a mesma resposta para uma frase-senha errada e para uma imagem sem nada dentro.\n\nO limite: quem conhece o StegPony sabe que tudo o que ele oculta tem espaço para duas mensagens, e pode não acreditar que só existe uma. Faça uma isca convincente e, no seu próprio celular, digite a frase-senha dela em vez de deixar o campo vazio, o que tentaria as suas próprias chaves.</string>
     <string name="help_phone_title">Neste celular</string>

@@ -26,6 +26,7 @@ import com.stegpony.android.pgpony.PgponyException
 import com.stegpony.android.pgpony.PgponyKey
 import com.stegpony.android.pgpony.PgponyKeys
 import com.stegpony.android.pgpony.PgponyReply
+import com.stegpony.android.pgpony.pgponyErrorMessage
 import com.stegpony.android.pgpony.RecordingKeyDevice
 import com.stegpony.android.ui.common.errorMessage
 import androidx.compose.ui.graphics.ImageBitmap
@@ -292,7 +293,7 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
             try {
                 step()
             } catch (e: PgponyException) {
-                endPgpony(pgponyErrorMessage(e))
+                endPgpony(pgponyErrorMessage(context, e))
             } catch (e: kotlinx.coroutines.CancellationException) {
                 throw e
             } catch (e: Throwable) {
@@ -479,24 +480,6 @@ class RevealViewModel(app: Application) : AndroidViewModel(app) {
     fun cancelPgpony() {
         pgponyJob?.cancel()
         endPgpony()
-    }
-
-    private fun pgponyErrorMessage(e: PgponyException): String = when (e) {
-        is PgponyException.NotInstalled -> context.getString(R.string.pgpony_not_installed)
-        is PgponyException.TooOld -> context.getString(R.string.pgpony_too_old)
-        is PgponyException.Unreachable -> context.getString(R.string.pgpony_unreachable)
-        is PgponyException.BadReply -> context.getString(R.string.pgpony_bad_reply)
-        is PgponyException.Refused -> when (e.reason) {
-            PgponyContract.REASON_UNKNOWN_KEY,
-            PgponyContract.REASON_UNSUPPORTED_KEY,
-            PgponyContract.REASON_KEY_UNAVAILABLE -> context.getString(R.string.pgpony_key_unavailable)
-            PgponyContract.REASON_AGREEMENT_FAILED -> context.getString(R.string.pgpony_agreement_failed)
-            // No reason: PGPony turned StegPony itself away, as it does when the
-            // app's signature is not the one it allowed.
-            null -> context.getString(R.string.pgpony_refused_app)
-            // invalid_request, too_many_points, low_order_point, or a reason newer than this build.
-            else -> context.getString(R.string.pgpony_refused, e.reason)
-        }
     }
 
     val hasImage: Boolean get() = imageBytes != null && !loading

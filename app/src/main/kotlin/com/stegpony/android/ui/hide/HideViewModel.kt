@@ -1,6 +1,10 @@
 package com.stegpony.android.ui.hide
 
+import android.app.Activity
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
@@ -14,13 +18,24 @@ import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
 import android.media.ExifInterface
 import com.stegpony.android.keys.CoverHistory
+import com.stegpony.android.keys.DuplicateKeyException
 import com.stegpony.android.keys.Keyring
 import com.stegpony.android.keys.PassphraseGenerator
+import com.stegpony.android.pgpony.PgponyClient
+import com.stegpony.android.pgpony.PgponyContract
+import com.stegpony.android.pgpony.PgponyException
+import com.stegpony.android.pgpony.PgponyPick
+import com.stegpony.android.pgpony.PgponyReply
+import com.stegpony.android.pgpony.PickAnswer
+import com.stegpony.android.pgpony.pgponyErrorMessage
+import com.stegpony.android.ui.keys.KeysViewModel
 import java.io.ByteArrayInputStream
 import androidx.compose.ui.graphics.ImageBitmap
 import com.stegpony.android.ui.common.Previews
 import com.stegpony.android.ui.common.errorMessage
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.stegpony_ffi.Cover
@@ -38,6 +53,7 @@ import uniffi.stegpony_ffi.TextMode
 import uniffi.stegpony_ffi.filePayloadLen
 import uniffi.stegpony_ffi.hideText
 import uniffi.stegpony_ffi.parseRecipient
+import uniffi.stegpony_ffi.pgpPublicKey
 import uniffi.stegpony_ffi.textFit
 import uniffi.stegpony_ffi.textPayloadLen
 
@@ -49,6 +65,9 @@ enum class Carrier { Image, Text }
 
 enum class PayloadKind { Text, File }
 enum class KeyKind { Passphrase, Recipient }
+
+/** A public key picked in PGPony for this hide. It is not in the keyring unless the user saves it. */
+data class PgponyRecipient(val name: String, val recipient: String, val fingerprint: String?)
 
 /** Something worth knowing about a cover before hiding in it. */
 enum class CoverNote {
@@ -131,15 +150,187 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     /** The recipient of a contact or one of your own keys, picked from the keyring. */
     var pickedRecipient by mutableStateOf<String?>(null)
 
-    /** A picked key counts only while it is still in the keyring. */
+    /** A picked key counts only while it is still in the keyring, or is the key picked in PGPony. */
     private val effectiveRecipient: String
         get() {
             val keys = Keyring.current
             val picked = pickedRecipient?.takeIf { r ->
-                keys.contacts.any { it.recipient == r } || keys.mine.any { it.recipient == r }
+                keys.contacts.any { it.recipient == r } || keys.mine.any { it.recipient == r } ||
+                    pgponyRecipient?.recipient == r
             }
             return picked ?: recipient.trim()
         }
+
+    // ── A recipient picked in PGPony ─────────────────────────────────────
+    //
+    // PGPony's OpenPGP provider shows its own public key picker and hands the
+    // picked key over. Public keys only: nothing here asks for a passphrase or
+    // touches a secret key.
+
+    /** The key last picked in PGPony, offered in the list beside the saved keys. */
+    var pgponyRecipient by mutableStateOf<PgponyRecipient?>(null)
+        private set
+
+    /** PGPony is being asked, or one of its screens is up. */
+    var pgponyBusy by mutableStateOf(false)
+        private set
+
+    /** A PGPony screen for the page to start. Cleared by [pgponyLaunched]. */
+    var pgponyLaunch by mutableStateOf<PendingIntent?>(null)
+        private set
+
+    /** What to do when the PGPony screen now showing returns OK; null when none is expected. */
+    private var afterPgpony: (suspend (Intent?) -> Unit)? = null
+    private var pgponyJob: Job? = null
+
+    fun pgponyInstalled(context: Context): Boolean = PgponyClient.isInstalled(context)
+
+    fun pickFromPgpony() {
+        if (busy || pgponyBusy) return
+        errorText = null
+        runPgpony { askForKey(PgponyClient.request(PgponyContract.ACTION_GET_KEY_IDS), pickerShown = false, round = 0) }
+    }
+
+    /** One step with PGPony. Any failure ends the pick with a message. */
+    private fun runPgpony(step: suspend () -> Unit) {
+        pgponyBusy = true
+        pgponyJob = viewModelScope.launch {
+            try {
+                step()
+            } catch (e: PgponyException) {
+                endPgpony(pgponyErrorMessage(context, e))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Throwable) {
+                endPgpony(errorMessage(context, e))
+            }
+        }
+    }
+
+    private fun endPgpony(message: String? = null) {
+        pgponyBusy = false
+        pgponyLaunch = null
+        afterPgpony = null
+        if (message != null) errorText = message
+    }
+
+    /**
+     * Asks PGPony for the picked key ids. PGPony may answer with a screen
+     * first, twice at most: its Connected apps consent on first use, which
+     * returns no intent and is followed by the same request again, and then
+     * its key picker, which returns the request with the picks in it.
+     */
+    private suspend fun askForKey(request: Intent, pickerShown: Boolean, round: Int) {
+        val app = getApplication<Application>()
+        when (val reply = PgponyClient.call(app, request)) {
+            is PgponyReply.NeedsUser -> {
+                // Consent, then the picker. A third screen is not in the contract.
+                if (round >= MAX_PGPONY_SCREENS) throw PgponyException.BadReply()
+                afterPgpony = { returned ->
+                    if (returned != null) {
+                        askForKey(returned, pickerShown = true, round = round + 1)
+                    } else {
+                        askForKey(request, pickerShown, round + 1)
+                    }
+                }
+                pgponyLaunch = reply.pending
+            }
+            is PgponyReply.Error -> {
+                // A PGPony that doesn't take our API version is an old one.
+                if (reply.reason == null && reply.errorId == PgponyContract.ERROR_INCOMPATIBLE_API_VERSIONS) {
+                    endPgpony(context.getString(R.string.pgpony_too_old_pick))
+                } else {
+                    throw PgponyException.Refused(reply.reason)
+                }
+            }
+            is PgponyReply.Success -> {
+                val ids = reply.data.getLongArrayExtra(PgponyContract.RESULT_KEY_IDS)
+                when (val answer = PgponyPick.read(ids, pickerShown)) {
+                    PickAnswer.TooOld -> endPgpony(context.getString(R.string.pgpony_too_old_pick))
+                    PickAnswer.None -> endPgpony(context.getString(R.string.pgpony_pick_none))
+                    PickAnswer.Several -> endPgpony(context.getString(R.string.pgpony_pick_one))
+                    is PickAnswer.One -> fetchPgponyKey(answer.keyId)
+                }
+            }
+        }
+    }
+
+    private suspend fun fetchPgponyKey(keyId: Long) {
+        val app = getApplication<Application>()
+        val request = PgponyClient.request(PgponyContract.ACTION_GET_KEY).putExtra(PgponyContract.EXTRA_KEY_ID, keyId)
+        val (reply, bytes) = PgponyClient.fetch(app, request)
+        when (reply) {
+            // PGPony's text for a key it can't hand over is written for a mail
+            // app's user, so it is not shown; ours says what to do.
+            is PgponyReply.Error -> endPgpony(context.getString(R.string.pgpony_key_not_given))
+            // The picker was just answered; asking again here is not in the contract.
+            is PgponyReply.NeedsUser -> throw PgponyException.BadReply()
+            is PgponyReply.Success -> {
+                val info = try {
+                    withContext(Dispatchers.Default) { pgpPublicKey(bytes) }
+                } catch (e: StegException.BadKey) {
+                    // RSA, NIST curves, post-quantum only: no Curve25519 encryption subkey.
+                    return endPgpony(context.getString(R.string.pgpony_pick_unusable))
+                }
+                val name = info.userIds.firstOrNull()?.let { KeysViewModel.displayName(it) }
+                    ?: context.getString(R.string.pgp_key_label)
+                pgponyRecipient = PgponyRecipient(name, info.recipient, info.subkeyFingerprint)
+                pickedRecipient = info.recipient
+                keyKind = KeyKind.Recipient
+                endPgpony()
+            }
+        }
+    }
+
+    /** The page has started the screen in [pgponyLaunch]. */
+    fun pgponyLaunched() {
+        pgponyLaunch = null
+    }
+
+    /** The screen could not be started at all. */
+    fun pgponyLaunchFailed() {
+        endPgpony(context.getString(R.string.pgpony_unreachable))
+    }
+
+    /** A PGPony screen closed. Anything but OK ends the pick, with nothing said: the user changed their mind. */
+    fun pgponyResult(resultCode: Int, data: Intent?) {
+        val then = afterPgpony ?: return
+        afterPgpony = null
+        if (resultCode != Activity.RESULT_OK) {
+            endPgpony()
+            return
+        }
+        runPgpony { then(data) }
+    }
+
+    /** Gives up a pick that is under way: the user stops waiting, or leaves the key step. */
+    fun cancelPgpony() {
+        pgponyJob?.cancel()
+        endPgpony()
+    }
+
+    /** Whether the key picked in PGPony is neither a contact nor one of your own keys yet. */
+    val pgponyRecipientUnsaved: Boolean
+        get() {
+            val r = pgponyRecipient?.recipient ?: return false
+            val keys = Keyring.current
+            return keys.contacts.none { it.recipient == r } && keys.mine.none { it.recipient == r }
+        }
+
+    /** Adds the key picked in PGPony to the keyring as a contact. */
+    fun savePgponyRecipient() {
+        val pick = pgponyRecipient ?: return
+        if (!pgponyRecipientUnsaved) return
+        viewModelScope.launch {
+            try {
+                Keyring.addContact(context, pick.name, pick.recipient, pick.fingerprint)
+            } catch (e: DuplicateKeyException) {
+                // Tapped twice: the first tap saved it.
+            } catch (e: Throwable) {
+                errorText = errorMessage(context, e)
+            }
+        }
+    }
 
     var decoyOn by mutableStateOf(false)
     var decoyText by mutableStateOf("")
@@ -456,11 +647,18 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         decoyOn = false
         decoyText = ""
         decoyPassphrase = ""
+        // A key picked in PGPony was for that hide only.
+        cancelPgpony()
+        if (pickedRecipient != null && pickedRecipient == pgponyRecipient?.recipient && pgponyRecipientUnsaved) {
+            pickedRecipient = null
+        }
+        pgponyRecipient = null
         step = HideStep.Cover
     }
 
     fun next() {
-        if (busy || loading || stepBlocker(step) != null) return
+        // Waiting on PGPony only holds the key step, where the pick lands.
+        if (busy || loading || (step == HideStep.Key && pgponyBusy) || stepBlocker(step) != null) return
         errorText = null
         step = when (step) {
             HideStep.Cover -> HideStep.Payload
@@ -472,6 +670,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
 
     fun back() {
         if (busy) return
+        // Leaving the key step gives up a pick that is still under way.
+        if (pgponyBusy) cancelPgpony()
         errorText = null
         step = when (step) {
             HideStep.Payload -> HideStep.Cover
@@ -517,6 +717,7 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
             val keys = Keyring.current
             return keys.contacts.firstOrNull { it.recipient == r }?.name
                 ?: keys.mine.firstOrNull { it.recipient == r }?.label
+                ?: pgponyRecipient?.takeIf { it.recipient == r }?.name
                 ?: if (r.length > 24) r.take(12) + "…" + r.takeLast(6) else r
         }
 
@@ -540,5 +741,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
 
     companion object {
         const val OCTET_STREAM = "application/octet-stream"
+
+        /** PGPony's screens before a pick is answered: its consent, then its picker. */
+        private const val MAX_PGPONY_SCREENS = 2
     }
 }

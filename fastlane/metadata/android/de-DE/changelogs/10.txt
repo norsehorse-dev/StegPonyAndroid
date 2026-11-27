@@ -1,0 +1,1 @@
+Neu: Beim Verstecken für einen öffentlichen Schlüssel lässt sich der Empfänger aus den Schlüsseln in PGPony wählen (PGPony 4.8.1 oder neuer), ohne ihn vorher als Kontakt hinzuzufügen. Der Schlüssel kann danach als Kontakt gespeichert werden.

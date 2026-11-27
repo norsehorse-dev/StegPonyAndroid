@@ -1,0 +1,1 @@
+Nouveau : quand vous cachez pour une clé publique, le destinataire peut être choisi parmi les clés de PGPony (PGPony 4.8.1 ou version plus récente) sans l'ajouter d'abord comme contact. La clé peut ensuite être enregistrée comme contact.

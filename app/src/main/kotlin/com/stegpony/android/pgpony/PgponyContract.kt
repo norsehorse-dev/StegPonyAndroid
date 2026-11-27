@@ -23,6 +23,15 @@ object PgponyContract {
     /** OpenPgpError.errorId when the provider doesn't take our API version. */
     const val ERROR_INCOMPATIBLE_API_VERSIONS = 1
 
+    // Standard OpenPGP API actions, for picking a recipient's public key.
+    const val ACTION_GET_KEY_IDS = "org.openintents.openpgp.action.GET_KEY_IDS"
+    const val ACTION_GET_KEY = "org.openintents.openpgp.action.GET_KEY"
+    const val EXTRA_KEY_ID = "key_id"
+    const val RESULT_KEY_IDS = "key_ids"
+
+    /** The most a public key read from PGPony may be. Far above any real key. */
+    const val MAX_KEY_BYTES = 1 * 1024 * 1024
+
     // PGPony's own actions.
     const val ACTION_GET_CAPABILITIES = "com.pgpony.android.action.GET_CAPABILITIES"
     const val ACTION_X25519_KEYS = "com.pgpony.android.action.X25519_KEYS"

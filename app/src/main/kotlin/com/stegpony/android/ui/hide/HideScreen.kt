@@ -4,6 +4,7 @@ import android.content.Intent
 import android.text.format.Formatter
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.PhotoCamera
 import androidx.compose.material.icons.outlined.Save
@@ -166,7 +168,7 @@ private fun NextButton(vm: HideViewModel, step: HideStep) {
         }
         Button(shape = ControlShape,
             onClick = vm::next,
-            enabled = blocker == null && !vm.loading && !vm.busy,
+            enabled = blocker == null && !vm.loading && !vm.busy && !(step == HideStep.Key && vm.pgponyBusy),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(stringResource(R.string.next))
@@ -471,7 +473,11 @@ private fun KeyStep(vm: HideViewModel) {
             RadioRow(
                 label = stringResource(R.string.key_passphrase),
                 selected = vm.keyKind == KeyKind.Passphrase,
-                onSelect = { vm.keyKind = KeyKind.Passphrase },
+                onSelect = {
+                    // The PGPony pick lives under the other choice; leaving it gives the pick up.
+                    vm.cancelPgpony()
+                    vm.keyKind = KeyKind.Passphrase
+                },
             )
             RadioRow(
                 label = stringResource(R.string.key_recipient),
@@ -519,9 +525,15 @@ private fun KeyStep(vm: HideViewModel) {
                 }
             }
             KeyKind.Recipient -> {
+                // A key picked in PGPony is listed after the saved ones, until it
+                // is saved as a contact and shows under its own name.
+                val fromPgpony = vm.pgponyRecipient
                 val saved = (
                     keys.contacts.map { it.name to it.recipient } +
-                        keys.mine.map { stringResource(R.string.recipient_yours, it.label) to it.recipient }
+                        keys.mine.map { stringResource(R.string.recipient_yours, it.label) to it.recipient } +
+                        listOfNotNull(
+                            fromPgpony?.let { stringResource(R.string.recipient_from_pgpony, it.name) to it.recipient },
+                        )
                     ).distinctBy { it.second }
                 // A picked key that has since been deleted falls back to pasting.
                 // Only once the keyring has loaded: before that the list is empty.
@@ -555,6 +567,12 @@ private fun KeyStep(vm: HideViewModel) {
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
+                if (fromPgpony != null && vm.pickedRecipient == fromPgpony.recipient && vm.pgponyRecipientUnsaved) {
+                    TextButton(onClick = vm::savePgponyRecipient) {
+                        Text(stringResource(R.string.pgpony_save_contact))
+                    }
+                }
+                PickFromPgpony(vm)
             }
         }
     }
@@ -575,6 +593,58 @@ private fun KeyStep(vm: HideViewModel) {
                 modifier = Modifier.fillMaxWidth(),
             )
             PassphraseField(vm.decoyPassphrase, { vm.decoyPassphrase = it }, stringResource(R.string.decoy_passphrase_label))
+        }
+    }
+}
+
+/**
+ * Picking the recipient from PGPony's keys. PGPony shows its own screens (its
+ * consent on first use, then its public key picker); they are started from
+ * here and answer here. Shown only when PGPony is installed.
+ */
+@Composable
+private fun PickFromPgpony(vm: HideViewModel) {
+    val context = LocalContext.current
+    val installed = remember(context) { vm.pgponyInstalled(context) }
+    val pgponyScreen = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        vm.pgponyResult(result.resultCode, result.data)
+    }
+    val launch = vm.pgponyLaunch
+    LaunchedEffect(launch) {
+        if (launch != null) {
+            try {
+                pgponyScreen.launch(IntentSenderRequest.Builder(launch.intentSender).build())
+                vm.pgponyLaunched()
+            } catch (e: Exception) {
+                vm.pgponyLaunchFailed()
+            }
+        }
+    }
+    if (!installed) return
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        OutlinedButton(
+            shape = ControlShape,
+            onClick = vm::pickFromPgpony,
+            enabled = !vm.pgponyBusy && !vm.busy,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Icon(Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = null)
+            Text(stringResource(R.string.hide_pick_from_pgpony), Modifier.padding(start = 8.dp))
+        }
+        if (vm.pgponyBusy) {
+            // PGPony's screen is normally on top. If it never came up, or was
+            // left without an answer, this is the way back.
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+                Text(stringResource(R.string.pgpony_waiting), style = MaterialTheme.typography.bodySmall)
+            }
+            TextButton(onClick = vm::cancelPgpony) { Text(stringResource(R.string.pgpony_stop_waiting)) }
+        } else {
+            Text(
+                stringResource(R.string.pgpony_pick_about),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
         }
     }
 }

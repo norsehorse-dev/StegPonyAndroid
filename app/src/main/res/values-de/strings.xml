@@ -58,6 +58,15 @@
     <string name="recipient_hint">Füge den age1…-Schlüssel der Person ein. Nur ihr geheimer Schlüssel öffnet es.</string>
     <string name="recipient_yours">%1$s (deiner)</string>
     <string name="recipient_paste">Schlüssel einfügen</string>
+    <string name="hide_pick_from_pgpony">Aus PGPony wählen</string>
+    <string name="recipient_from_pgpony">%1$s (aus PGPony)</string>
+    <string name="pgpony_save_contact">Als Kontakt speichern</string>
+    <string name="pgpony_pick_about">Öffnet die Liste der öffentlichen Schlüssel in PGPony. Der gewählte Schlüssel wird für diese Nachricht verwendet und hier nicht gespeichert, außer du speicherst ihn als Kontakt.</string>
+    <string name="pgpony_pick_one">StegPony versteckt immer nur für einen Schlüssel. Wähle in PGPony einen einzelnen Schlüssel.</string>
+    <string name="pgpony_pick_none">Es wurde kein Schlüssel gewählt.</string>
+    <string name="pgpony_pick_unusable">StegPony kann für diesen Schlüssel nichts verstecken. Nötig ist ein Curve25519-Verschlüsselungsschlüssel; RSA und andere Arten können nicht verwendet werden.</string>
+    <string name="pgpony_key_not_given">PGPony konnte diesen Schlüssel nicht übergeben. Prüfe den Schlüssel in PGPony und versuche es erneut.</string>
+    <string name="pgpony_too_old_pick">Dieses PGPony ist dafür zu alt. Aktualisiere PGPony auf 4.8.1 oder neuer.</string>
     <string name="hide_decoy_title">Köder</string>
     <string name="decoy_about">Eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand dazu bringt, das Bild zu öffnen, gib diese heraus. Niemand kann erkennen, ob ein Bild einen Köder enthält.</string>
     <string name="decoy_message_label">Ködernachricht</string>
@@ -332,7 +341,7 @@
     <string name="help_hardware_title">Hardware-Schlüssel</string>
     <string name="help_hardware_body">Ein OpenPGP-Hardware-Schlüssel mit einem Curve25519-Entschlüsselungsschlüssel (cv25519) kann Bilder öffnen, in denen etwas für ihn versteckt wurde, über NFC oder USB. Getestet ist das mit einem Token2 PIN+ und, über USB, mit einem Nitrokey 3A NFC; andere OpenPGP-Schlüssel sollten genauso funktionieren. Der Schlüssel führt den Schlüsselaustausch selbst durch, sein Geheimnis verlässt ihn also nie. Du gibst die PIN des Schlüssels jedes Mal ein; StegPony speichert sie nicht. RSA-Schlüssel können nicht verwendet werden.</string>
     <string name="help_pgpony_title">Schlüssel in PGPony</string>
-    <string name="help_pgpony_body">Wenn dein Curve25519-Schlüssel in PGPony liegt (4.8.2 oder neuer), kann StegPony Bilder öffnen, in denen etwas für ihn versteckt wurde, ohne den Schlüssel zu importieren: Wähle unter „Aufdecken“ die Option „Schlüssel in PGPony verwenden“. PGPony bittet dich jedes Mal um Bestätigung, mit der Passphrase des Schlüssels oder mit der PIN des Hardware-Schlüssels, den du dann an das Smartphone hältst. Der geheime Schlüssel bleibt in PGPony oder auf dem Hardware-Schlüssel. PGPony erfährt, welcher Schlüssel verwendet wurde, aber nie das Bild oder was gefunden wurde.</string>
+    <string name="help_pgpony_body">Wenn dein Curve25519-Schlüssel in PGPony liegt (4.8.2 oder neuer), kann StegPony Bilder öffnen, in denen etwas für ihn versteckt wurde, ohne den Schlüssel zu importieren: Wähle unter „Aufdecken“ die Option „Schlüssel in PGPony verwenden“. PGPony bittet dich jedes Mal um Bestätigung, mit der Passphrase des Schlüssels oder mit der PIN des Hardware-Schlüssels, den du dann an das Smartphone hältst. Der geheime Schlüssel bleibt in PGPony oder auf dem Hardware-Schlüssel. PGPony erfährt, welcher Schlüssel verwendet wurde, aber nie das Bild oder was gefunden wurde. Beim Verstecken kannst du im Schritt mit dem Schlüssel über „Aus PGPony wählen“ den Empfänger aus den öffentlichen Schlüsseln in PGPony wählen (PGPony 4.8.1 oder neuer).</string>
     <string name="help_decoy_title">Köder</string>
     <string name="help_decoy_body">Ein Köder ist eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand zwingt, ein Bild oder einen Text zu öffnen, gib den Köder heraus. Niemand kann daran erkennen, ob es einen Köder gibt, und StegPony gibt bei einer falschen Passphrase dieselbe Antwort wie bei einem Bild, in dem nichts ist.\n\nDie Grenze: Wer StegPony kennt, weiß, dass alles, was es versteckt, Platz für zwei Nachrichten hat, und glaubt möglicherweise nicht, dass es nur eine gibt. Mach den Köder glaubwürdig, und tippe auf deinem eigenen Smartphone seine Passphrase ein, statt das Feld leer zu lassen, denn das würde deine eigenen Schlüssel ausprobieren.</string>
     <string name="help_phone_title">Auf diesem Smartphone</string>

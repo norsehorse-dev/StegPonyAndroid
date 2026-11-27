@@ -1,0 +1,1 @@
+Novedad: al ocultar para una clave pública, se puede elegir al destinatario entre las claves de PGPony (PGPony 4.8.1 o posterior) sin añadirlo antes como contacto. La clave se puede guardar después como contacto.

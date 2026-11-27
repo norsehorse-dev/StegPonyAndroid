@@ -1,0 +1,1 @@
+New: when hiding for a public key, pick the recipient from PGPony's keys (PGPony 4.8.1 or newer) without adding them as a contact first. The key can be saved as a contact afterwards.

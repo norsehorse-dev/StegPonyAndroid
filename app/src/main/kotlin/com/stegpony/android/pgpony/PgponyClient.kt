@@ -6,7 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.IBinder
+import android.os.ParcelFileDescriptor
 import androidx.core.content.IntentCompat
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import kotlin.concurrent.thread
+import kotlin.random.Random
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +58,9 @@ object PgponyClient {
     /** No call here waits on the user: PGPony answers at once, or with a screen to start. */
     private const val CALL_TIMEOUT_MS = 15_000L
 
+    /** How long the pipe's reader may take to finish once the call has returned. */
+    private const val READ_TIMEOUT_MS = 5_000L
+
     private fun serviceIntent(): Intent =
         Intent(PgponyContract.SERVICE_ACTION).setPackage(PgponyContract.PACKAGE)
 
@@ -76,6 +84,49 @@ object PgponyClient {
         // extras can't be read at all on Android 12 and older.
         reply.setExtrasClassLoader(OpenPgpError::class.java.classLoader)
         classify(reply)
+    }
+
+    /**
+     * Sends [request] for an action that writes its answer to an output pipe
+     * (GET_KEY), and returns the reply with the bytes written. PGPony closes
+     * its end of the pipe when the call returns, whatever the answer, so the
+     * read always ends. More than [PgponyContract.MAX_KEY_BYTES] is refused.
+     */
+    suspend fun fetch(context: Context, request: Intent): Pair<PgponyReply, ByteArray> = withService(context) { service ->
+        val pipeId = Random.nextInt(1, Int.MAX_VALUE)
+        val readEnd = service.createOutputPipe(pipeId) ?: throw PgponyException.Unreachable()
+        val bytes = ByteArrayOutputStream()
+        var tooLarge = false
+        // Read while PGPony writes: a pipe holds only so much before the writer waits.
+        val reader = thread(name = "pgpony-read", isDaemon = true) {
+            try {
+                ParcelFileDescriptor.AutoCloseInputStream(readEnd).use { input ->
+                    val buffer = ByteArray(8192)
+                    while (true) {
+                        val n = input.read(buffer)
+                        if (n < 0) break
+                        if (bytes.size() + n > PgponyContract.MAX_KEY_BYTES) {
+                            tooLarge = true
+                            break
+                        }
+                        bytes.write(buffer, 0, n)
+                    }
+                }
+            } catch (e: IOException) {
+                // A broken pipe reads as whatever arrived; the reply says what happened.
+            }
+        }
+        val reply = try {
+            service.execute(request, null, pipeId) ?: throw PgponyException.Unreachable()
+        } catch (e: Exception) {
+            // The call never reached PGPony, so nobody will close the other end.
+            runCatching { readEnd.close() }
+            throw e
+        }
+        reply.setExtrasClassLoader(OpenPgpError::class.java.classLoader)
+        reader.join(READ_TIMEOUT_MS)
+        if (tooLarge || reader.isAlive) throw PgponyException.BadReply()
+        classify(reply) to bytes.toByteArray()
     }
 
     private fun classify(reply: Intent): PgponyReply = try {
