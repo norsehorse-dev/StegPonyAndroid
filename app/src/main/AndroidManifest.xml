@@ -25,6 +25,17 @@
     <uses-feature android:name="android.hardware.nfc" android:required="false" />
     <uses-feature android:name="android.hardware.usb.host" android:required="false" />
 
+    <!--
+      Reveal through PGPony binds PGPony's OpenPGP provider. From Android 11 an
+      app sees another app's service only when it says here what it looks for;
+      without this entry PGPony would read as not installed.
+    -->
+    <queries>
+        <intent>
+            <action android:name="org.openintents.openpgp.IOpenPgpService2" />
+        </intent>
+    </queries>
+
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"

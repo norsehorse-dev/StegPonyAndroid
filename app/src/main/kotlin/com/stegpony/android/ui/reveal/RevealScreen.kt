@@ -4,6 +4,7 @@ import android.content.ClipboardManager
 import android.text.format.Formatter
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -22,6 +23,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.automirrored.outlined.OpenInNew
 import androidx.compose.material.icons.outlined.ContentCopy
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.Folder
@@ -39,6 +41,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -101,6 +104,23 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
     val pickFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         uri?.let(vm::open)
     }
+    // PGPony's own screens (its consent, its confirmation) are started from
+    // here and answer here; the view model decides what each answer means.
+    val pgponyInstalled = remember(context) { vm.pgponyInstalled(context) }
+    val pgponyScreen = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        vm.pgponyResult(result.resultCode, result.data)
+    }
+    val pgponyLaunch = vm.pgponyLaunch
+    LaunchedEffect(pgponyLaunch) {
+        if (pgponyLaunch != null) {
+            try {
+                pgponyScreen.launch(IntentSenderRequest.Builder(pgponyLaunch.intentSender).build())
+                vm.pgponyLaunched()
+            } catch (e: Exception) {
+                vm.pgponyLaunchFailed()
+            }
+        }
+    }
 
     Column(
         Modifier
@@ -139,7 +159,7 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
                         onClick = {
                             pickPhoto.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                         },
-                        enabled = !vm.busy,
+                        enabled = !vm.blocked,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Icon(Icons.Outlined.Image, contentDescription = null)
@@ -148,7 +168,7 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
                     OutlinedButton(
                         shape = ControlShape,
                         onClick = { pickFile.launch(arrayOf("image/jpeg", "image/png")) },
-                        enabled = !vm.busy,
+                        enabled = !vm.blocked,
                         modifier = Modifier.fillMaxWidth(),
                     ) {
                         Icon(Icons.Outlined.Folder, contentDescription = null)
@@ -249,6 +269,21 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
             if (vm.busy) {
                 Working(stringResource(R.string.revealing))
             }
+            when (vm.pgponyStep) {
+                PgponyStep.Looking -> Working(stringResource(R.string.revealing))
+                // While PGPony is being asked, or one of its screens is up, there
+                // is a way back: its screen may never have come up, or was left
+                // without an answer. Stacked, so long translations have the width.
+                PgponyStep.Connecting, PgponyStep.Waiting -> Column {
+                    Working(
+                        stringResource(
+                            if (vm.pgponyStep == PgponyStep.Waiting) R.string.pgpony_waiting else R.string.pgpony_connecting,
+                        ),
+                    )
+                    TextButton(onClick = vm::cancelPgpony) { Text(stringResource(R.string.pgpony_stop_waiting)) }
+                }
+                is PgponyStep.Choosing, null -> Unit
+            }
             Button(
                 shape = ControlShape,
                 onClick = vm::reveal,
@@ -261,11 +296,22 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
                 OutlinedButton(
                     shape = ControlShape,
                     onClick = vm::openCard,
-                    enabled = vm.hasInput && !vm.busy,
+                    enabled = vm.hasInput && !vm.blocked,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Icon(Icons.Outlined.Key, contentDescription = null)
                     Text(stringResource(R.string.reveal_with_card), Modifier.padding(start = 8.dp))
+                }
+            }
+            if (pgponyInstalled) {
+                OutlinedButton(
+                    shape = ControlShape,
+                    onClick = vm::openPgpony,
+                    enabled = vm.hasInput && !vm.blocked,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(Icons.AutoMirrored.Outlined.OpenInNew, contentDescription = null)
+                    Text(stringResource(R.string.reveal_with_pgpony), Modifier.padding(start = 8.dp))
                 }
             }
         }
@@ -280,6 +326,9 @@ private fun LookPage(vm: RevealViewModel, nothingFound: Boolean) {
             onSuccess = vm::cardResult,
             onDismiss = vm::closeCard,
         )
+    }
+    (vm.pgponyStep as? PgponyStep.Choosing)?.let { choosing ->
+        PgponyKeyDialog(keys = choosing.keys, onPick = vm::pickPgponyKey, onDismiss = vm::cancelPgpony)
     }
 }
 

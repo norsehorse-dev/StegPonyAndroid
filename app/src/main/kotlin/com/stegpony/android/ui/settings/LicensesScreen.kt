@@ -16,6 +16,7 @@ fun LicensesScreen(onBack: () -> Unit) {
 private val LICENSES = listOf(
     "StegPony and StegPonyCore" to "Apache-2.0. Source: github.com/norsehorse-dev",
     "OpenPGP card and QR code from PGPony Android and PassPony Android" to "Apache-2.0, same author",
+    "OpenPGP API (OpenPgpError, the provider interface), © Dominik Schürmann" to "Apache-2.0",
     "RustCrypto crates (ChaCha20-Poly1305, Argon2, HKDF, SHA-2 and others)" to "MIT or Apache-2.0",
     "curve25519-dalek, x25519-dalek, ed25519-dalek, subtle, curve25519-elligator2" to "BSD-3-Clause",
     "rPGP (pgp)" to "MIT or Apache-2.0",

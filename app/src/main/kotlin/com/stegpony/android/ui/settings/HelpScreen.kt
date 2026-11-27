@@ -27,6 +27,7 @@ private val HELP_TOPICS = listOf(
     R.string.help_rating_title to R.string.help_rating_body,
     R.string.help_secrets_title to R.string.help_secrets_body,
     R.string.help_hardware_title to R.string.help_hardware_body,
+    R.string.help_pgpony_title to R.string.help_pgpony_body,
     R.string.help_decoy_title to R.string.help_decoy_body,
     R.string.help_phone_title to R.string.help_phone_body,
     R.string.help_limits_title to R.string.help_limits_body,

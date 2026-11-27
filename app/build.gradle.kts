@@ -26,8 +26,8 @@ android {
         applicationId = "com.stegpony.android"
         minSdk = 26
         targetSdk = 36
-        versionCode = 8
-        versionName = "1.1.0"
+        versionCode = 9
+        versionName = "1.2.0"
 
         ndk {
             // The core is built for these two ABIs only (scripts/build-core.sh);
@@ -79,6 +79,8 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        // PGPony's OpenPGP provider is an AIDL interface (pgpony/PgponyClient.kt).
+        aidl = true
     }
 
     // No Google dependency-metadata blob in the APK.

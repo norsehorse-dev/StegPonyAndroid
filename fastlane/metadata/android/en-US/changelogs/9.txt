@@ -1,0 +1,1 @@
+New: reveal with a key held in PGPony (4.8.2 or newer), on the phone or on a hardware key, without importing it into StegPony. New app icon.

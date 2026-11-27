@@ -1,0 +1,1 @@
+Novedad: revelar con una clave guardada en PGPony (4.8.2 o posterior), en el teléfono o en una llave de hardware, sin importarla a StegPony. Nuevo icono de la aplicación.

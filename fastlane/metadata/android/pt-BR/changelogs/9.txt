@@ -1,0 +1,1 @@
+Novidade: revelar com uma chave guardada no PGPony (4.8.2 ou mais recente), no celular ou em uma chave de hardware, sem importá-la para o StegPony. Novo ícone do app.

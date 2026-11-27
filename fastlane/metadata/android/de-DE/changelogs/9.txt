@@ -1,0 +1,1 @@
+Neu: Aufdecken mit einem Schlüssel, der in PGPony (4.8.2 oder neuer) liegt, auf dem Smartphone oder auf einem Hardware-Schlüssel, ohne ihn in StegPony zu importieren. Neues App-Symbol.

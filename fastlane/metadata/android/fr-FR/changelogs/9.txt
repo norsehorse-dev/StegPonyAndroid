@@ -1,0 +1,1 @@
+Nouveau : révéler avec une clé conservée dans PGPony (4.8.2 ou version plus récente), sur le téléphone ou sur une clé matérielle, sans l'importer dans StegPony. Nouvelle icône de l'application.
