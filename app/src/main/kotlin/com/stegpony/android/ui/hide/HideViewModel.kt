@@ -14,6 +14,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.stegpony.android.i18n.LanguageManager
 import com.stegpony.android.R
+import com.stegpony.android.format.Buckets
 import com.stegpony.android.io.Files
 import com.stegpony.android.io.PickedFile
 import android.media.ExifInterface
@@ -65,6 +66,9 @@ enum class Carrier { Image, Text }
 
 enum class PayloadKind { Text, File }
 enum class KeyKind { Passphrase, Recipient }
+
+/** What the decoy is: a message typed here, or a file. */
+enum class DecoyKind { Text, File }
 
 /** A public key picked in PGPony for this hide. It is not in the keyring unless the user saves it. */
 data class PgponyRecipient(val name: String, val recipient: String, val fingerprint: String?)
@@ -333,8 +337,72 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     var decoyOn by mutableStateOf(false)
+    var decoyKind by mutableStateOf(DecoyKind.Text)
     var decoyText by mutableStateOf("")
+    var decoyFile by mutableStateOf<PickedFile?>(null)
+        private set
     var decoyPassphrase by mutableStateOf("")
+
+    /**
+     * Set by the user to hide a file with a decoy that is shorter than it
+     * should be (see [decoyShortBy]). Never offered for a text message, where
+     * a longer decoy is easy to write.
+     */
+    val decoyShortAccepted: Boolean
+        get() = acceptedShort != null && acceptedShort == shortKey
+
+    /** The message and decoy lengths the user accepted a short decoy for; any change asks again. */
+    private var acceptedShort by mutableStateOf<Pair<Long?, Long?>?>(null)
+    private val shortKey: Pair<Long?, Long?> get() = payloadLen to decoyLen
+
+    fun acceptShortDecoy(accept: Boolean) {
+        acceptedShort = if (accept) shortKey else null
+    }
+
+    fun pickDecoyFile(uri: Uri) {
+        errorText = null
+        viewModelScope.launch {
+            try {
+                decoyFile = withContext(Dispatchers.IO) {
+                    val described = Files.describe(context, uri)
+                    // Some providers don't report a size; count it, so the size check is right.
+                    if (described.size != null) {
+                        described
+                    } else {
+                        described.copy(size = Files.readBytes(context, uri, Files.MAX_PAYLOAD_BYTES).size.toLong())
+                    }
+                }
+            } catch (e: Throwable) {
+                errorText = errorMessage(context, e)
+            }
+        }
+    }
+
+    /**
+     * How many bytes the decoy is short of the message's size class, or 0.
+     * Both slots are written with one size class, the larger of the two, and
+     * whoever opens the decoy sees how much of it the decoy used. A decoy that
+     * would have fit a smaller class shows that something larger is hidden
+     * beside it.
+     */
+    val decoyShortBy: Long
+        get() {
+            val payload = payloadLen ?: return 0
+            val decoy = decoyLen ?: return 0
+            return Buckets.decoyShortBy(payload, decoy)
+        }
+
+    /** A short decoy stops a text message outright, and a file until the user says to go on. */
+    private val decoyTooShort: Boolean
+        get() = decoyShortBy > 0 && (payloadKind == PayloadKind.Text || !decoyShortAccepted)
+
+    private fun framedLen(p: Payload): Long = when (p) {
+        is Payload.Text -> textPayloadLen(p.text).toLong()
+        is Payload.File -> filePayloadLen(p.name, p.mime, p.data.size.toULong()).toLong()
+    }
+
+    private val needDecoy: Int
+        get() = if (decoyKind == DecoyKind.File) R.string.need_decoy_file else R.string.need_decoy_text
 
     var keepMetadata by mutableStateOf(false)
 
@@ -491,7 +559,13 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         }
 
     private val decoyLen: Long?
-        get() = if (decoyOn && decoyText.isNotEmpty()) textPayloadLen(decoyText).toLong() else null
+        get() = when {
+            !decoyOn -> null
+            decoyKind == DecoyKind.Text -> if (decoyText.isEmpty()) null else textPayloadLen(decoyText).toLong()
+            else -> decoyFile?.let {
+                filePayloadLen(it.name, it.mime ?: OCTET_STREAM, (it.size ?: 0L).toULong()).toLong()
+            }
+        }
 
     val capacity: CoverCapacity?
         get() = capacities[mode]
@@ -531,7 +605,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
             keyKind == KeyKind.Passphrase && passphrase.isEmpty() -> R.string.need_passphrase
             keyKind == KeyKind.Passphrase && passphrase != passphraseAgain -> R.string.passphrases_differ
             keyKind == KeyKind.Recipient && effectiveRecipient.isEmpty() -> R.string.need_recipient
-            decoyOn && decoyText.isEmpty() -> R.string.need_decoy_text
+            decoyOn && decoyLen == null -> needDecoy
+            decoyOn && decoyTooShort -> R.string.need_longer_decoy
             decoyOn && decoyPassphrase.isEmpty() -> R.string.need_decoy_passphrase
             decoyOn && keyKind == KeyKind.Passphrase && decoyPassphrase == passphrase -> R.string.decoy_same_passphrase
             else -> null
@@ -563,7 +638,28 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
                         Payload.File(f.name, f.mime ?: OCTET_STREAM, data)
                     }
                 }
-                val decoy = if (decoyOn) Decoy(Payload.Text(decoyText), HideSecret.Passphrase(decoyPassphrase)) else null
+                val decoy = if (decoyOn) {
+                    val decoyPayload = when (decoyKind) {
+                        DecoyKind.Text -> Payload.Text(decoyText)
+                        DecoyKind.File -> {
+                            val f = decoyFile ?: throw IllegalStateException("no decoy file")
+                            val data = withContext(Dispatchers.IO) {
+                                Files.readBytes(context, f.uri, Files.MAX_PAYLOAD_BYTES)
+                            }
+                            Payload.File(f.name, f.mime ?: OCTET_STREAM, data)
+                        }
+                    }
+                    Decoy(decoyPayload, HideSecret.Passphrase(decoyPassphrase))
+                } else {
+                    null
+                }
+                // Checked again on the bytes that were read: a provider can report a size that is off.
+                if (decoy != null && !(payloadKind == PayloadKind.File && decoyShortAccepted) &&
+                    Buckets.decoyShortBy(framedLen(payload), framedLen(decoy.payload)) > 0
+                ) {
+                    errorText = context.getString(R.string.need_longer_decoy)
+                    return@launch
+                }
                 if (carrier == Carrier.Text) {
                     val mode = textMode
                     val size = textFit?.size?.toLong() ?: 0L
@@ -645,8 +741,11 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
         passphraseAgain = ""
         generatedPassphrase = null
         decoyOn = false
+        decoyKind = DecoyKind.Text
         decoyText = ""
+        decoyFile = null
         decoyPassphrase = ""
+        acceptedShort = null
         // A key picked in PGPony was for that hide only.
         cancelPgpony()
         if (pickedRecipient != null && pickedRecipient == pgponyRecipient?.recipient && pgponyRecipientUnsaved) {
@@ -699,7 +798,8 @@ class HideViewModel(app: Application) : AndroidViewModel(app) {
             keyKind == KeyKind.Passphrase && passphrase.isEmpty() -> R.string.need_passphrase
             keyKind == KeyKind.Passphrase && passphrase != passphraseAgain -> R.string.passphrases_differ
             keyKind == KeyKind.Recipient && effectiveRecipient.isEmpty() -> R.string.need_recipient
-            decoyOn && decoyText.isEmpty() -> R.string.need_decoy_text
+            decoyOn && decoyLen == null -> needDecoy
+            decoyOn && decoyTooShort -> R.string.need_longer_decoy
             decoyOn && decoyPassphrase.isEmpty() -> R.string.need_decoy_passphrase
             decoyOn && keyKind == KeyKind.Passphrase && decoyPassphrase == passphrase -> R.string.decoy_same_passphrase
             // The decoy takes room too, so adding one can push the payload out.

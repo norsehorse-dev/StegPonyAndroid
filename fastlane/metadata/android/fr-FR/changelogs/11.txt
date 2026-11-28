@@ -1,0 +1,3 @@
+Corrigé : un leurre bien plus court que le vrai message pouvait montrer, une fois ouvert, que quelque chose de plus gros était caché. StegPony vérifie maintenant la longueur du leurre avant de cacher.
+Nouveau : le leurre peut être un fichier.
+L'aide explique maintenant ce qu'une personne qui possède la clé publique du destinataire peut savoir d'une image.

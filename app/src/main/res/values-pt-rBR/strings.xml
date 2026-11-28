@@ -81,6 +81,18 @@
     <string name="passphrases_differ">As duas frases-senha não coincidem.</string>
     <string name="need_recipient">Cole uma chave pública.</string>
     <string name="need_decoy_text">Escreva a mensagem de isca.</string>
+    <string name="need_decoy_file">Escolha o arquivo de isca.</string>
+    <string name="need_longer_decoy">A isca é curta demais.</string>
+    <string name="decoy_short_about">Quem abrir esta isca pode perceber que há algo maior oculto junto com ela.</string>
+    <string name="decoy_short_size">Aumente a isca em cerca de %1$s ou use um arquivo como isca.</string>
+    <string name="decoy_short_file">Escolha um arquivo cerca de %1$s maior.</string>
+    <string name="decoy_short_accept">Ocultar com esta isca mesmo assim</string>
+    <string name="decoy_short_accept_about">Quem abrir a isca vai conseguir perceber. Use só quando não der para ter uma isca maior.</string>
+    <plurals name="decoy_short_chars">
+        <item quantity="one">Aumente a isca em cerca de %1$d caractere.</item>
+        <item quantity="many">Aumente a isca em cerca de %1$d caracteres.</item>
+        <item quantity="other">Aumente a isca em cerca de %1$d caracteres.</item>
+    </plurals>
     <string name="need_decoy_passphrase">Digite uma frase-senha para a isca.</string>
     <string name="decoy_same_passphrase">A isca precisa de uma frase-senha diferente.</string>
     <string name="hide_done_title">Concluído</string>
@@ -91,6 +103,7 @@
     <string name="review_format">Salvo como</string>
     <string name="review_payload_text">Uma mensagem que você digitou</string>
     <string name="review_decoy_on">Incluída</string>
+    <string name="review_decoy_short">Incluída, mas curta demais</string>
     <string name="review_decoy_off">Nenhuma</string>
     <string name="decoy_add">Adicionar uma isca</string>
     <string name="error_decoy_does_not_fit">Com a isca, não cabe mais. Encurte a isca ou a mensagem.</string>
@@ -345,13 +358,13 @@
     <string name="help_rating_title">Nível de detectabilidade</string>
     <string name="help_rating_body">O nível diz o quanto deve ser difícil distinguir o resultado de uma foto intacta, com base em quanto está oculto em relação ao tamanho e aos detalhes da foto. Baixa, Média e Alta vêm de testes com um detector padrão em fotos reais de celular, e são definidas abaixo do que esses testes mostraram, porque existem detectores melhores.\n\nBaixa é uma boa meta. Mantenha as mensagens curtas e use uma foto grande e detalhada para arquivos. Um nível alto não significa que o conteúdo pode ser lido; significa que alguém procurando conteúdo oculto tem mais chance de perceber que há algo ali.</string>
     <string name="help_secrets_title">Frases-senha e chaves</string>
-    <string name="help_secrets_body">Uma frase-senha protege a mensagem só na medida em que resiste a tentativas de adivinhação. Use várias palavras aleatórias, não algo sobre você, e compartilhe pessoalmente ou por um canal em que você confia.\n\nCom uma chave pública não existe segredo compartilhado: você oculta para a chave age1… de alguém, e só a chave secreta dessa pessoa abre. Uma chave OpenPGP Curve25519 do PGPony ou do GnuPG funciona do mesmo jeito. O StegPony mantém suas chaves secretas cifradas neste celular; ele nunca armazena frases-senha.</string>
+    <string name="help_secrets_body">Uma frase-senha protege a mensagem só na medida em que resiste a tentativas de adivinhação. Use várias palavras aleatórias, não algo sobre você, e compartilhe pessoalmente ou por um canal em que você confia.\n\nCom uma chave pública não existe segredo compartilhado: você oculta para a chave age1… de alguém, e só a chave secreta dessa pessoa abre. Uma chave OpenPGP Curve25519 do PGPony ou do GnuPG funciona do mesmo jeito. O StegPony mantém suas chaves secretas cifradas neste celular; ele nunca armazena frases-senha.\n\nO limite de uma chave pública: qualquer pessoa que tenha a chave pública do destinatário consegue examinar uma imagem e saber que há algo oculto ali para essa chave, e mais ou menos de que tamanho. Ela não consegue ler. Se ninguém além de você e do destinatário deve conseguir saber, use uma frase-senha ou uma chave que o destinatário não publicou.</string>
     <string name="help_hardware_title">Chaves de hardware</string>
     <string name="help_hardware_body">Uma chave de hardware OpenPGP com uma chave de decifragem Curve25519 (cv25519) consegue abrir imagens ocultadas para ela, por NFC ou USB. Foi testado com uma Token2 PIN+, e com uma Nitrokey 3A NFC conectada por USB; outras chaves de hardware OpenPGP devem funcionar do mesmo jeito. A própria chave de hardware faz a troca de chaves, então o segredo nunca sai dela. Você digita o PIN da chave de hardware todas as vezes; o StegPony não guarda o PIN. Chaves RSA não podem ser usadas.</string>
     <string name="help_pgpony_title">Chaves no PGPony</string>
     <string name="help_pgpony_body">Se a sua chave Curve25519 está no PGPony (4.8.2 ou mais recente), o StegPony consegue abrir imagens ocultadas para ela sem importar a chave: em Revelar, escolha “Usar uma chave do PGPony”. O PGPony pede sua confirmação todas as vezes, com a frase-senha da chave, ou com o PIN da chave de hardware, encostando a chave no celular em seguida. A chave secreta fica no PGPony, ou na chave de hardware. O PGPony fica sabendo qual chave foi usada, mas nunca a imagem nem o que foi encontrado. Ao ocultar, “Escolher no PGPony”, na etapa da chave, permite escolher o destinatário entre as chaves públicas do PGPony (PGPony 4.8.1 ou mais recente).</string>
     <string name="help_decoy_title">Isca</string>
-    <string name="help_decoy_body">Uma isca é uma segunda mensagem com uma segunda frase-senha. Se alguém forçar você a abrir uma imagem ou um texto, entregue a isca. Ninguém consegue saber por ela se existe uma isca, e o StegPony dá a mesma resposta para uma frase-senha errada e para uma imagem sem nada dentro.\n\nO limite: quem conhece o StegPony sabe que tudo o que ele oculta tem espaço para duas mensagens, e pode não acreditar que só existe uma. Faça uma isca convincente e, no seu próprio celular, digite a frase-senha dela em vez de deixar o campo vazio, o que tentaria as suas próprias chaves.</string>
+    <string name="help_decoy_body">Uma isca é uma segunda mensagem com uma segunda frase-senha. Se alguém forçar você a abrir uma imagem ou um texto, entregue a isca. Ninguém consegue saber por ela se existe uma isca, e o StegPony dá a mesma resposta para uma frase-senha errada e para uma imagem sem nada dentro.\n\nO limite: quem conhece o StegPony sabe que tudo o que ele oculta tem espaço para duas mensagens, e pode não acreditar que só existe uma. Faça uma isca convincente e, no seu próprio celular, digite a frase-senha dela em vez de deixar o campo vazio, o que tentaria as suas próprias chaves.\n\nA isca precisa ter mais ou menos o mesmo tamanho da mensagem verdadeira. As duas ocupam o mesmo espaço, e uma isca que deixa boa parte dele vazia mostra que há algo maior oculto junto com ela. O StegPony avisa quando a isca é curta demais. A isca também pode ser um arquivo.</string>
     <string name="help_phone_title">Neste celular</string>
     <string name="help_phone_body">O StegPony não tem acesso à rede. Suas chaves e contatos são cifrados com uma chave guardada no hardware seguro do Android, e ficam de fora de backups e de transferências entre celulares. As capturas de tela são bloqueadas em Revelar e Chaves, e as mensagens copiadas saem da área de transferência depois de um minuto.\n\nO bloqueio do app e o disfarce no launcher atrapalham uma olhada casual no seu celular. Eles não escondem que o StegPony está instalado: o nome real continua aparecendo nas configurações de apps do Android.</string>
     <string name="help_limits_title">Do que o StegPony não consegue proteger</string>

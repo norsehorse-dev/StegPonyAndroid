@@ -468,6 +468,9 @@ private fun KeyStep(vm: HideViewModel) {
     val context = LocalContext.current
     val keyring = Keyring.state.collectAsState().value
     val keys = (keyring as? KeyringState.Ready)?.keys ?: Keys()
+    val pickDecoyFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        uri?.let(vm::pickDecoyFile)
+    }
     Section(stringResource(R.string.hide_key_title)) {
         Column(Modifier.selectableGroup()) {
             RadioRow(
@@ -585,15 +588,71 @@ private fun KeyStep(vm: HideViewModel) {
             onChange = { vm.decoyOn = it },
         )
         if (vm.decoyOn) {
-            OutlinedTextField(
-                value = vm.decoyText,
-                onValueChange = { vm.decoyText = it },
-                label = { Text(stringResource(R.string.decoy_message_label)) },
-                minLines = 2,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Column(Modifier.selectableGroup()) {
+                RadioRow(
+                    label = stringResource(R.string.payload_text),
+                    selected = vm.decoyKind == DecoyKind.Text,
+                    onSelect = { vm.decoyKind = DecoyKind.Text },
+                )
+                RadioRow(
+                    label = stringResource(R.string.payload_file),
+                    selected = vm.decoyKind == DecoyKind.File,
+                    onSelect = { vm.decoyKind = DecoyKind.File },
+                )
+            }
+            when (vm.decoyKind) {
+                DecoyKind.Text -> OutlinedTextField(
+                    value = vm.decoyText,
+                    onValueChange = { vm.decoyText = it },
+                    label = { Text(stringResource(R.string.decoy_message_label)) },
+                    minLines = 2,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+                DecoyKind.File -> {
+                    OutlinedButton(shape = ControlShape, onClick = { pickDecoyFile.launch(arrayOf("*/*")) }, modifier = Modifier.fillMaxWidth()) {
+                        Icon(Icons.Outlined.AttachFile, contentDescription = null)
+                        Text(stringResource(R.string.pick_payload_file), Modifier.padding(start = 8.dp))
+                    }
+                    vm.decoyFile?.let { f ->
+                        val size = f.size?.let { Formatter.formatShortFileSize(context, it) } ?: "?"
+                        Text("${f.name} ($size)", style = MaterialTheme.typography.bodyLarge)
+                    }
+                }
+            }
+            DecoyShortNote(vm)
             PassphraseField(vm.decoyPassphrase, { vm.decoyPassphrase = it }, stringResource(R.string.decoy_passphrase_label))
         }
+    }
+}
+
+/**
+ * Says when the decoy is too short to pass for the only thing hidden, and by
+ * how much. A file can still be hidden with it, once the user says so.
+ */
+@Composable
+private fun DecoyShortNote(vm: HideViewModel) {
+    val missing = vm.decoyShortBy
+    if (missing <= 0) return
+    val context = LocalContext.current
+    val size = Formatter.formatShortFileSize(context, missing)
+    val howMuch = when {
+        vm.decoyKind == DecoyKind.File -> stringResource(R.string.decoy_short_file, size)
+        missing < 1000 -> pluralStringResource(R.plurals.decoy_short_chars, missing.toInt(), missing)
+        else -> stringResource(R.string.decoy_short_size, size)
+    }
+    Text(
+        stringResource(R.string.decoy_short_about),
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.error,
+    )
+    Text(howMuch, style = MaterialTheme.typography.bodyMedium)
+    if (vm.payloadKind == PayloadKind.File) {
+        SwitchRow(
+            title = stringResource(R.string.decoy_short_accept),
+            about = stringResource(R.string.decoy_short_accept_about),
+            checked = vm.decoyShortAccepted,
+            onChange = vm::acceptShortDecoy,
+        )
     }
 }
 
@@ -689,7 +748,13 @@ private fun ReviewStep(vm: HideViewModel) {
             ListDivider()
             SummaryRow(
                 stringResource(R.string.hide_decoy_title),
-                stringResource(if (vm.decoyOn) R.string.review_decoy_on else R.string.review_decoy_off),
+                stringResource(
+                    when {
+                        !vm.decoyOn -> R.string.review_decoy_off
+                        vm.decoyShortBy > 0 -> R.string.review_decoy_short
+                        else -> R.string.review_decoy_on
+                    },
+                ),
             )
         }
         SizeNote(vm)

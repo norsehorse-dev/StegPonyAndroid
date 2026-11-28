@@ -1,0 +1,3 @@
+Behoben: Ein Köder, der viel kürzer war als die echte Nachricht, konnte beim Öffnen zeigen, dass etwas Größeres versteckt war. StegPony prüft jetzt vor dem Verstecken die Länge des Köders.
+Neu: Der Köder kann eine Datei sein.
+Die Hilfe erklärt jetzt, was jemand mit dem öffentlichen Schlüssel des Empfängers an einem Bild erkennen kann.

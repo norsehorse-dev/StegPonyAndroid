@@ -81,6 +81,17 @@
     <string name="passphrases_differ">Die beiden Passphrasen stimmen nicht überein.</string>
     <string name="need_recipient">Füge einen öffentlichen Schlüssel ein.</string>
     <string name="need_decoy_text">Schreibe die Ködernachricht.</string>
+    <string name="need_decoy_file">Wähle die Köderdatei.</string>
+    <string name="need_longer_decoy">Der Köder ist zu kurz.</string>
+    <string name="decoy_short_about">Wer diesen Köder öffnet, könnte erkennen, dass daneben etwas Größeres versteckt ist.</string>
+    <string name="decoy_short_size">Mach ihn um etwa %1$s größer oder nimm eine Datei als Köder.</string>
+    <string name="decoy_short_file">Wähle eine Datei, die etwa %1$s größer ist.</string>
+    <string name="decoy_short_accept">Trotzdem mit diesem Köder verstecken</string>
+    <string name="decoy_short_accept_about">Wer den Köder öffnet, kann es dann erkennen. Nur verwenden, wenn kein größerer Köder möglich ist.</string>
+    <plurals name="decoy_short_chars">
+        <item quantity="one">Mach ihn um etwa %1$d Zeichen länger.</item>
+        <item quantity="other">Mach ihn um etwa %1$d Zeichen länger.</item>
+    </plurals>
     <string name="need_decoy_passphrase">Gib eine Köder-Passphrase ein.</string>
     <string name="decoy_same_passphrase">Der Köder braucht eine andere Passphrase.</string>
     <string name="hide_done_title">Fertig</string>
@@ -91,6 +102,7 @@
     <string name="review_format">Gespeichert als</string>
     <string name="review_payload_text">Eine von dir getippte Nachricht</string>
     <string name="review_decoy_on">Enthalten</string>
+    <string name="review_decoy_short">Enthalten, aber zu kurz</string>
     <string name="review_decoy_off">Keiner</string>
     <string name="decoy_add">Köder hinzufügen</string>
     <string name="error_decoy_does_not_fit">Mit dem Köder passt es nicht mehr. Kürze den Köder oder die Nachricht.</string>
@@ -337,13 +349,13 @@
     <string name="help_rating_title">Bewertung der Erkennbarkeit</string>
     <string name="help_rating_body">Die Bewertung sagt, wie schwer das Ergebnis von einem unberührten Foto zu unterscheiden sein sollte, ausgehend davon, wie viel im Verhältnis zu Größe und Detailreichtum des Fotos versteckt ist. Gering, Mittel und Hoch stammen aus Tests mit einem Standarddetektor an echten Smartphone-Fotos und sind niedriger angesetzt, als diese Tests ergeben haben, weil es bessere Detektoren gibt.\n\nGering ist ein gutes Ziel. Halte Nachrichten kurz und verwende für Dateien ein großes, detailreiches Foto. Eine hohe Bewertung bedeutet nicht, dass der Inhalt gelesen werden kann; sie bedeutet, dass jemand, der nach verstecktem Inhalt sucht, eine bessere Chance hat zu bemerken, dass etwas da ist.</string>
     <string name="help_secrets_title">Passphrasen und Schlüssel</string>
-    <string name="help_secrets_body">Eine Passphrase schützt die Nachricht nur so gut, wie sie dem Erraten standhält. Verwende mehrere zufällige Wörter, nichts über dich, und gib sie persönlich weiter oder über einen Kanal, dem du vertraust.\n\nMit einem öffentlichen Schlüssel gibt es kein gemeinsames Geheimnis: Du versteckst für den age1…-Schlüssel einer Person, und nur ihr geheimer Schlüssel öffnet es. Ein Curve25519-OpenPGP-Schlüssel aus PGPony oder GnuPG funktioniert genauso. StegPony bewahrt deine geheimen Schlüssel verschlüsselt auf diesem Smartphone auf; Passphrasen speichert es nie.</string>
+    <string name="help_secrets_body">Eine Passphrase schützt die Nachricht nur so gut, wie sie dem Erraten standhält. Verwende mehrere zufällige Wörter, nichts über dich, und gib sie persönlich weiter oder über einen Kanal, dem du vertraust.\n\nMit einem öffentlichen Schlüssel gibt es kein gemeinsames Geheimnis: Du versteckst für den age1…-Schlüssel einer Person, und nur ihr geheimer Schlüssel öffnet es. Ein Curve25519-OpenPGP-Schlüssel aus PGPony oder GnuPG funktioniert genauso. StegPony bewahrt deine geheimen Schlüssel verschlüsselt auf diesem Smartphone auf; Passphrasen speichert es nie.\n\nDie Grenze eines öffentlichen Schlüssels: Wer den öffentlichen Schlüssel des Empfängers hat, kann ein Bild prüfen und erkennen, dass darin etwas für diesen Schlüssel versteckt ist und wie groß es ungefähr ist. Lesen kann er es nicht. Wenn das außer dir und dem Empfänger niemand erkennen soll, verwende eine Passphrase oder einen Schlüssel, den der Empfänger nicht veröffentlicht hat.</string>
     <string name="help_hardware_title">Hardware-Schlüssel</string>
     <string name="help_hardware_body">Ein OpenPGP-Hardware-Schlüssel mit einem Curve25519-Entschlüsselungsschlüssel (cv25519) kann Bilder öffnen, in denen etwas für ihn versteckt wurde, über NFC oder USB. Getestet ist das mit einem Token2 PIN+ und, über USB, mit einem Nitrokey 3A NFC; andere OpenPGP-Schlüssel sollten genauso funktionieren. Der Schlüssel führt den Schlüsselaustausch selbst durch, sein Geheimnis verlässt ihn also nie. Du gibst die PIN des Schlüssels jedes Mal ein; StegPony speichert sie nicht. RSA-Schlüssel können nicht verwendet werden.</string>
     <string name="help_pgpony_title">Schlüssel in PGPony</string>
     <string name="help_pgpony_body">Wenn dein Curve25519-Schlüssel in PGPony liegt (4.8.2 oder neuer), kann StegPony Bilder öffnen, in denen etwas für ihn versteckt wurde, ohne den Schlüssel zu importieren: Wähle unter „Aufdecken“ die Option „Schlüssel in PGPony verwenden“. PGPony bittet dich jedes Mal um Bestätigung, mit der Passphrase des Schlüssels oder mit der PIN des Hardware-Schlüssels, den du dann an das Smartphone hältst. Der geheime Schlüssel bleibt in PGPony oder auf dem Hardware-Schlüssel. PGPony erfährt, welcher Schlüssel verwendet wurde, aber nie das Bild oder was gefunden wurde. Beim Verstecken kannst du im Schritt mit dem Schlüssel über „Aus PGPony wählen“ den Empfänger aus den öffentlichen Schlüsseln in PGPony wählen (PGPony 4.8.1 oder neuer).</string>
     <string name="help_decoy_title">Köder</string>
-    <string name="help_decoy_body">Ein Köder ist eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand zwingt, ein Bild oder einen Text zu öffnen, gib den Köder heraus. Niemand kann daran erkennen, ob es einen Köder gibt, und StegPony gibt bei einer falschen Passphrase dieselbe Antwort wie bei einem Bild, in dem nichts ist.\n\nDie Grenze: Wer StegPony kennt, weiß, dass alles, was es versteckt, Platz für zwei Nachrichten hat, und glaubt möglicherweise nicht, dass es nur eine gibt. Mach den Köder glaubwürdig, und tippe auf deinem eigenen Smartphone seine Passphrase ein, statt das Feld leer zu lassen, denn das würde deine eigenen Schlüssel ausprobieren.</string>
+    <string name="help_decoy_body">Ein Köder ist eine zweite Nachricht unter einer zweiten Passphrase. Wenn dich jemand zwingt, ein Bild oder einen Text zu öffnen, gib den Köder heraus. Niemand kann daran erkennen, ob es einen Köder gibt, und StegPony gibt bei einer falschen Passphrase dieselbe Antwort wie bei einem Bild, in dem nichts ist.\n\nDie Grenze: Wer StegPony kennt, weiß, dass alles, was es versteckt, Platz für zwei Nachrichten hat, und glaubt möglicherweise nicht, dass es nur eine gibt. Mach den Köder glaubwürdig, und tippe auf deinem eigenen Smartphone seine Passphrase ein, statt das Feld leer zu lassen, denn das würde deine eigenen Schlüssel ausprobieren.\n\nDer Köder muss ungefähr so lang sein wie die echte Nachricht. Beide belegen gleich viel Platz, und ein Köder, der viel davon leer lässt, zeigt, dass daneben etwas Größeres versteckt ist. StegPony meldet, wenn der Köder zu kurz ist. Ein Köder kann auch eine Datei sein.</string>
     <string name="help_phone_title">Auf diesem Smartphone</string>
     <string name="help_phone_body">StegPony hat keinen Netzwerkzugriff. Deine Schlüssel und Kontakte sind mit einem Schlüssel verschlüsselt, der in der sicheren Hardware von Android liegt, und werden von Backups und Smartphone-Übertragungen ausgenommen. Screenshots sind bei „Aufdecken“ und „Schlüssel“ blockiert, und kopierte Nachrichten verschwinden nach einer Minute aus der Zwischenablage.\n\nDie App-Sperre und die Launcher-Tarnung bremsen einen beiläufigen Blick auf dein Smartphone. Sie verbergen nicht, dass StegPony installiert ist: Der echte Name erscheint weiterhin in den App-Einstellungen von Android.</string>
     <string name="help_limits_title">Wovor StegPony nicht schützen kann</string>

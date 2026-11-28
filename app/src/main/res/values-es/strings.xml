@@ -81,6 +81,18 @@
     <string name="passphrases_differ">Las dos frases de contraseña no coinciden.</string>
     <string name="need_recipient">Pega una clave pública.</string>
     <string name="need_decoy_text">Escribe el mensaje señuelo.</string>
+    <string name="need_decoy_file">Elige el archivo señuelo.</string>
+    <string name="need_longer_decoy">El señuelo es demasiado corto.</string>
+    <string name="decoy_short_about">Quien abra este señuelo podría notar que junto a él hay oculto algo más grande.</string>
+    <string name="decoy_short_size">Hazlo aproximadamente %1$s más grande o usa un archivo como señuelo.</string>
+    <string name="decoy_short_file">Elige un archivo aproximadamente %1$s más grande.</string>
+    <string name="decoy_short_accept">Ocultar con este señuelo de todos modos</string>
+    <string name="decoy_short_accept_about">Quien abra el señuelo podrá notarlo. Úsalo solo cuando no sea posible un señuelo más grande.</string>
+    <plurals name="decoy_short_chars">
+        <item quantity="one">Alárgalo en aproximadamente %1$d carácter.</item>
+        <item quantity="many">Alárgalo en aproximadamente %1$d caracteres.</item>
+        <item quantity="other">Alárgalo en aproximadamente %1$d caracteres.</item>
+    </plurals>
     <string name="need_decoy_passphrase">Introduce una frase de contraseña para el señuelo.</string>
     <string name="decoy_same_passphrase">El señuelo necesita una frase de contraseña distinta.</string>
     <string name="hide_done_title">Listo</string>
@@ -91,6 +103,7 @@
     <string name="review_format">Se guarda como</string>
     <string name="review_payload_text">Un mensaje que escribiste</string>
     <string name="review_decoy_on">Incluido</string>
+    <string name="review_decoy_short">Incluido, pero demasiado corto</string>
     <string name="review_decoy_off">Ninguno</string>
     <string name="decoy_add">Añadir un señuelo</string>
     <string name="error_decoy_does_not_fit">Con el señuelo ya no cabe. Acorta el señuelo o el mensaje.</string>
@@ -345,13 +358,13 @@
     <string name="help_rating_title">Nivel de detectabilidad</string>
     <string name="help_rating_body">El nivel indica lo difícil que debería ser distinguir el resultado de una foto sin tocar, según cuánto se oculta en relación con el tamaño y el detalle de la foto. Baja, Media y Alta salen de pruebas con un detector estándar sobre fotos reales de teléfono, y se fijan por debajo de lo que mostraron esas pruebas, porque existen detectores mejores.\n\nBaja es un buen objetivo. Escribe mensajes cortos y usa una foto grande y con mucho detalle para los archivos. Un nivel alto no significa que el contenido se pueda leer; significa que alguien que busca contenido oculto tiene más posibilidades de notar que hay algo.</string>
     <string name="help_secrets_title">Frases de contraseña y claves</string>
-    <string name="help_secrets_body">Una frase de contraseña protege el mensaje solo en la medida en que resiste que la adivinen. Usa varias palabras al azar, no algo sobre ti, y compártela en persona o por un canal en el que confíes.\n\nCon una clave pública no hay ningún secreto compartido: ocultas para la clave age1… de alguien, y solo su clave secreta lo abre. Una clave OpenPGP Curve25519 de PGPony o GnuPG funciona de la misma manera. StegPony guarda tus claves secretas cifradas en este teléfono; nunca almacena frases de contraseña.</string>
+    <string name="help_secrets_body">Una frase de contraseña protege el mensaje solo en la medida en que resiste que la adivinen. Usa varias palabras al azar, no algo sobre ti, y compártela en persona o por un canal en el que confíes.\n\nCon una clave pública no hay ningún secreto compartido: ocultas para la clave age1… de alguien, y solo su clave secreta lo abre. Una clave OpenPGP Curve25519 de PGPony o GnuPG funciona de la misma manera. StegPony guarda tus claves secretas cifradas en este teléfono; nunca almacena frases de contraseña.\n\nEl límite de una clave pública: cualquiera que tenga la clave pública del destinatario puede examinar una imagen y saber que contiene algo oculto para esa clave, y aproximadamente cuánto ocupa. No puede leerlo. Si nadie aparte de ti y del destinatario debe poder saberlo, usa una frase de contraseña o una clave que el destinatario no haya publicado.</string>
     <string name="help_hardware_title">Llaves de hardware</string>
     <string name="help_hardware_body">Una llave de hardware OpenPGP con una clave de descifrado Curve25519 (cv25519) puede abrir imágenes ocultas para ella, por NFC o USB. Está probado con una Token2 PIN+, y con una Nitrokey 3A NFC conectada por USB; otras llaves OpenPGP deberían funcionar de la misma manera. La llave hace ella misma el intercambio de claves, así que su secreto nunca sale de ella. Introduces el PIN de la llave cada vez; StegPony no lo guarda. Las claves RSA no se pueden usar.</string>
     <string name="help_pgpony_title">Claves en PGPony</string>
     <string name="help_pgpony_body">Si tu clave Curve25519 está en PGPony (4.8.2 o posterior), StegPony puede abrir imágenes ocultas para ella sin importar la clave: en Revelar, elige «Usar una clave de PGPony». PGPony te pide que confirmes cada vez, con la frase de contraseña de la clave, o con el PIN de la llave de hardware, acercándola después al teléfono. La clave secreta se queda en PGPony, o en la llave de hardware. PGPony sabe qué clave se usó, pero nunca la imagen ni lo que se encontró. Al ocultar, «Elegir en PGPony», en el paso de la clave, te permite elegir al destinatario entre las claves públicas de PGPony (PGPony 4.8.1 o posterior).</string>
     <string name="help_decoy_title">Señuelo</string>
-    <string name="help_decoy_body">Un señuelo es un segundo mensaje con una segunda frase de contraseña. Si alguien te obliga a abrir una imagen o un texto, entrégale el señuelo. Nadie puede saber a partir de él si existe un señuelo, y StegPony da la misma respuesta para una frase de contraseña incorrecta que para una imagen sin nada dentro.\n\nEl límite: quien conoce StegPony sabe que todo lo que oculta tiene espacio para dos mensajes, y puede no creer que solo haya uno. Haz que el señuelo sea creíble y, en tu propio teléfono, escribe su frase de contraseña en lugar de dejar el campo vacío, lo que probaría tus propias claves.</string>
+    <string name="help_decoy_body">Un señuelo es un segundo mensaje con una segunda frase de contraseña. Si alguien te obliga a abrir una imagen o un texto, entrégale el señuelo. Nadie puede saber a partir de él si existe un señuelo, y StegPony da la misma respuesta para una frase de contraseña incorrecta que para una imagen sin nada dentro.\n\nEl límite: quien conoce StegPony sabe que todo lo que oculta tiene espacio para dos mensajes, y puede no creer que solo haya uno. Haz que el señuelo sea creíble y, en tu propio teléfono, escribe su frase de contraseña en lugar de dejar el campo vacío, lo que probaría tus propias claves.\n\nEl señuelo tiene que ser más o menos igual de largo que el mensaje real. Los dos ocupan el mismo espacio, y un señuelo que deja vacía buena parte delata que junto a él hay oculto algo más grande. StegPony avisa cuando el señuelo es demasiado corto. Un señuelo también puede ser un archivo.</string>
     <string name="help_phone_title">En este teléfono</string>
     <string name="help_phone_body">StegPony no tiene acceso a la red. Tus claves y contactos se cifran con una clave guardada en el hardware seguro de Android, y quedan fuera de las copias de seguridad y de las transferencias entre teléfonos. Las capturas de pantalla están bloqueadas en Revelar y Claves, y los mensajes copiados salen del portapapeles al cabo de un minuto.\n\nEl bloqueo de la aplicación y el disfraz en el lanzador frenan un vistazo casual a tu teléfono. No ocultan que StegPony está instalada: su nombre real sigue apareciendo en los ajustes de aplicaciones de Android.</string>
     <string name="help_limits_title">De qué no puede protegerte StegPony</string>

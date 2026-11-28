@@ -45,26 +45,43 @@ They learn nothing of its contents or positions.
 The app only says "make the decoy believable". It does not warn about length,
 and the decoy can only be text, so a decoy can never match a large file.
 
-## Step 0: measure
+## Step 0: measure (done)
 
-A test in StegPonyCore that, over the existing vectors and a set of untouched
-covers, reads slots through a public key's positions and reports how often a
-group is 2048 or more, and how well the all-below-2048 test separates the two.
-The same for decoy length against bucket. If the numbers differ from the
-reasoning above, this plan changes before any code does.
+A scratch test in StegPonyCore read both slots of a cover through the positions
+a public key gives, over one photo and three vector covers, 40 random keys per
+cover (80 slot reads per cover), then again over 13 covers with something
+hidden for a known key (10 bytes to 30 KB).
+
+Untouched covers:
+- head groups of 2048 or more: 5.4% to 6.7% (the reasoning said 6.4%);
+- a head with none at all: 10% to 20% of slot reads, so the head alone is a
+  weak test;
+- a clean head and a clean body at some bucket size: 0% to 2.5% of slot reads,
+  all at the smallest buckets.
+
+With the recipient's key, in all 13 hidden cases the message's slot had no
+group of 2048 or more in the head, and exactly one bucket size passed, the true
+one. The other slot and other keys looked like an untouched cover.
+
+So finding 1 holds as written, and it gives more than presence: the public key
+shows that something is hidden for it, in which slot, and in which size class.
+Finding 2 needs no measurement; it follows from both slots using the larger
+bucket.
 
 ## 1.3.1: what can be done without a new format
 
-1. Decoy size guard (app, with one small core addition).
-   - The core exposes the bucket a payload length falls in, so the app does not
-     copy the formula.
+1. Decoy size guard (app only; shipped in 1.3.1).
+   - The bucket sizes are fixed for format version 1, so the app carries them
+     (`format/Buckets.kt`, with tests against FORMAT.md) and 1.3.1 needs no core
+     release. If the core ever exposes the bucket of a length, the app should
+     use that.
    - On the key step, when a decoy is on and its bucket is smaller than the
      message's, say so and say how long the decoy needs to be. Recommended:
      block Next for a text message, where a longer decoy is easy to write, and
      warn with a way to go on for a file, where it may not be.
    - Let the decoy be a file as well as text, so a large payload can have a
      decoy of its own size.
-2. Help says what is true, in all seven languages:
+2. Help says what is true, in all seven languages (shipped in 1.3.1):
    - someone who has the recipient's public key can find where a public-key
      message sits and can tell that one is there, though not read it; use a
      passphrase when that matters;
@@ -76,7 +93,10 @@ reasoning above, this plan changes before any code does.
    result. This does not remove the test: groups of 2048 or more would then
    appear about 3.4% of the time against 6.4% in an untouched image. It takes
    the certainty out of short messages and does little for long ones. Worth
-   doing only if step 0 shows it helps the message sizes people use.
+   doing only if step 0 shows it helps the message sizes people use. Step 0
+   says it does not help enough: the body test found the true bucket in every
+   case, and a lower rate of high groups would still stand out over a body of
+   any real length. Not planned for 1.3.1.
 
 Items 1 and 2 need no format change. Item 3 changes what a writer emits, so it
 gets new test vectors and a core release.

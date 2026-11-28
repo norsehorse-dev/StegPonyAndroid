@@ -81,6 +81,18 @@
     <string name="passphrases_differ">Les deux phrases secrètes ne correspondent pas.</string>
     <string name="need_recipient">Collez une clé publique.</string>
     <string name="need_decoy_text">Écrivez le message leurre.</string>
+    <string name="need_decoy_file">Choisissez le fichier leurre.</string>
+    <string name="need_longer_decoy">Le leurre est trop court.</string>
+    <string name="decoy_short_about">La personne qui ouvre ce leurre pourrait voir que quelque chose de plus gros est caché à côté.</string>
+    <string name="decoy_short_size">Agrandissez-le d\'environ %1$s, ou utilisez un fichier comme leurre.</string>
+    <string name="decoy_short_file">Choisissez un fichier plus gros d\'environ %1$s.</string>
+    <string name="decoy_short_accept">Cacher quand même avec ce leurre</string>
+    <string name="decoy_short_accept_about">La personne qui ouvre le leurre pourra le voir. À utiliser seulement si aucun leurre plus gros n\'est possible.</string>
+    <plurals name="decoy_short_chars">
+        <item quantity="one">Allongez-le d\'environ %1$d caractère.</item>
+        <item quantity="many">Allongez-le d\'environ %1$d caractères.</item>
+        <item quantity="other">Allongez-le d\'environ %1$d caractères.</item>
+    </plurals>
     <string name="need_decoy_passphrase">Saisissez une phrase secrète pour le leurre.</string>
     <string name="decoy_same_passphrase">Le leurre a besoin d\'une phrase secrète différente.</string>
     <string name="hide_done_title">Terminé</string>
@@ -91,6 +103,7 @@
     <string name="review_format">Enregistrée en</string>
     <string name="review_payload_text">Un message que vous avez saisi</string>
     <string name="review_decoy_on">Inclus</string>
+    <string name="review_decoy_short">Inclus, mais trop court</string>
     <string name="review_decoy_off">Aucun</string>
     <string name="decoy_add">Ajouter un leurre</string>
     <string name="error_decoy_does_not_fit">Avec le leurre, cela ne rentre plus. Raccourcissez le leurre ou le message.</string>
@@ -345,13 +358,13 @@
     <string name="help_rating_title">Évaluation de la détectabilité</string>
     <string name="help_rating_body">L\'évaluation indique à quel point le résultat devrait être difficile à distinguer d\'une photo intacte, selon la quantité cachée par rapport à la taille et aux détails de la photo. Faible, Moyenne et Élevée viennent de tests réalisés avec un détecteur standard sur de vraies photos de téléphone, et sont fixées en dessous de ce que ces tests ont montré, parce que de meilleurs détecteurs existent.\n\nFaible est un bon objectif. Gardez des messages courts, et utilisez une grande photo détaillée pour les fichiers. Une évaluation élevée ne signifie pas que le contenu peut être lu ; elle signifie qu\'une personne qui cherche du contenu caché a plus de chances de remarquer que quelque chose est là.</string>
     <string name="help_secrets_title">Phrases secrètes et clés</string>
-    <string name="help_secrets_body">Une phrase secrète ne protège le message que dans la mesure où elle résiste aux tentatives pour la deviner. Utilisez plusieurs mots aléatoires, rien qui vous concerne, et transmettez-la en personne ou par un canal auquel vous faites confiance.\n\nAvec une clé publique, il n\'y a pas de secret partagé : vous cachez pour la clé age1… de quelqu\'un, et seule sa clé secrète l\'ouvre. Une clé OpenPGP Curve25519 venant de PGPony ou de GnuPG fonctionne de la même façon. StegPony conserve vos clés secrètes chiffrées sur ce téléphone ; il n\'enregistre jamais les phrases secrètes.</string>
+    <string name="help_secrets_body">Une phrase secrète ne protège le message que dans la mesure où elle résiste aux tentatives pour la deviner. Utilisez plusieurs mots aléatoires, rien qui vous concerne, et transmettez-la en personne ou par un canal auquel vous faites confiance.\n\nAvec une clé publique, il n\'y a pas de secret partagé : vous cachez pour la clé age1… de quelqu\'un, et seule sa clé secrète l\'ouvre. Une clé OpenPGP Curve25519 venant de PGPony ou de GnuPG fonctionne de la même façon. StegPony conserve vos clés secrètes chiffrées sur ce téléphone ; il n\'enregistre jamais les phrases secrètes.\n\nLa limite d\'une clé publique : toute personne qui possède la clé publique du destinataire peut examiner une image et savoir que quelque chose y est caché pour cette clé, et à peu près quelle taille cela fait. Elle ne peut pas le lire. Si personne d\'autre que vous et le destinataire ne doit pouvoir le savoir, utilisez une phrase secrète, ou une clé que le destinataire n\'a pas publiée.</string>
     <string name="help_hardware_title">Clés matérielles</string>
     <string name="help_hardware_body">Une clé matérielle OpenPGP dotée d\'une clé de déchiffrement Curve25519 (cv25519) peut ouvrir les images dans lesquelles quelque chose est caché pour elle, en NFC ou en USB. Elle est testée avec une Token2 PIN+ et, en USB, avec une Nitrokey 3A NFC ; les autres clés OpenPGP devraient fonctionner de la même façon. La clé effectue elle-même l\'échange de clés, son secret ne la quitte donc jamais. Vous saisissez le PIN de la clé à chaque fois ; StegPony ne le conserve pas. Les clés RSA ne peuvent pas être utilisées.</string>
     <string name="help_pgpony_title">Clés dans PGPony</string>
     <string name="help_pgpony_body">Si votre clé Curve25519 se trouve dans PGPony (4.8.2 ou version plus récente), StegPony peut ouvrir les images dans lesquelles quelque chose est caché pour elle sans importer la clé : dans « Révéler », choisissez « Utiliser une clé de PGPony ». PGPony vous demande de confirmer à chaque fois, avec la phrase secrète de la clé, ou avec le PIN de la clé matérielle, que vous tenez ensuite contre le téléphone. La clé secrète reste dans PGPony, ou sur la clé matérielle. PGPony sait quelle clé a été utilisée, jamais l\'image ni ce qui a été trouvé. Pour cacher, « Choisir dans PGPony », à l\'étape de la clé, permet de choisir le destinataire parmi les clés publiques de PGPony (PGPony 4.8.1 ou version plus récente).</string>
     <string name="help_decoy_title">Leurre</string>
-    <string name="help_decoy_body">Un leurre est un second message sous une seconde phrase secrète. Si quelqu\'un vous force à ouvrir une image ou un texte, donnez-lui le leurre. Personne ne peut en déduire si un leurre existe, et StegPony donne la même réponse pour une phrase secrète incorrecte que pour une image qui ne contient rien.\n\nLa limite : une personne qui connaît StegPony sait que tout ce qu\'il cache a de la place pour deux messages, et peut ne pas croire qu\'il n\'y en a qu\'un. Rendez le leurre crédible, et sur votre propre téléphone, saisissez sa phrase secrète plutôt que de laisser le champ vide, ce qui essaierait vos propres clés.</string>
+    <string name="help_decoy_body">Un leurre est un second message sous une seconde phrase secrète. Si quelqu\'un vous force à ouvrir une image ou un texte, donnez-lui le leurre. Personne ne peut en déduire si un leurre existe, et StegPony donne la même réponse pour une phrase secrète incorrecte que pour une image qui ne contient rien.\n\nLa limite : une personne qui connaît StegPony sait que tout ce qu\'il cache a de la place pour deux messages, et peut ne pas croire qu\'il n\'y en a qu\'un. Rendez le leurre crédible, et sur votre propre téléphone, saisissez sa phrase secrète plutôt que de laisser le champ vide, ce qui essaierait vos propres clés.\n\nLe leurre doit être à peu près aussi long que le vrai message. Les deux occupent la même place, et un leurre qui en laisse une bonne partie vide montre que quelque chose de plus gros est caché à côté. StegPony signale un leurre trop court. Un leurre peut aussi être un fichier.</string>
     <string name="help_phone_title">Sur ce téléphone</string>
     <string name="help_phone_body">StegPony n\'a aucun accès au réseau. Vos clés et vos contacts sont chiffrés avec une clé conservée dans le matériel sécurisé d\'Android, et sont exclus des sauvegardes et des transferts de téléphone. Les captures d\'écran sont bloquées dans « Révéler » et « Clés », et les messages copiés quittent le presse-papiers au bout d\'une minute.\n\nLe verrouillage de l\'application et le camouflage dans le lanceur ralentissent un coup d\'œil rapide à votre téléphone. Ils ne cachent pas que StegPony est installé : son vrai nom apparaît toujours dans les paramètres d\'applications d\'Android.</string>
     <string name="help_limits_title">Ce contre quoi StegPony ne peut pas vous protéger</string>

@@ -1,0 +1,3 @@
+Corrigido: uma isca muito mais curta que a mensagem verdadeira podia mostrar, a quem a abrisse, que havia algo maior oculto. O StegPony agora confere o tamanho da isca antes de ocultar.
+Novidade: a isca pode ser um arquivo.
+A ajuda agora explica o que alguém com a chave pública do destinatário consegue saber sobre uma imagem.

@@ -1,0 +1,3 @@
+Fixed: a decoy much shorter than the real message could show whoever opened it that something larger was hidden. StegPony now checks the decoy's length before hiding.
+New: the decoy can be a file.
+Help now says what someone holding a recipient's public key can tell about an image.

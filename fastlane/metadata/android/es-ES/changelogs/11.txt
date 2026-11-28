@@ -1,0 +1,3 @@
+Corregido: un señuelo mucho más corto que el mensaje real podía delatar, al abrirlo, que había oculto algo más grande. StegPony ahora comprueba la longitud del señuelo antes de ocultar.
+Novedad: el señuelo puede ser un archivo.
+La ayuda explica ahora qué puede saber de una imagen quien tenga la clave pública del destinatario.

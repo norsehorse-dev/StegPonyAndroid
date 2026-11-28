@@ -82,6 +82,17 @@
     <string name="passphrases_differ">The two passphrases don\'t match.</string>
     <string name="need_recipient">Paste a public key.</string>
     <string name="need_decoy_text">Write the decoy message.</string>
+    <string name="need_decoy_file">Choose the decoy file.</string>
+    <string name="need_longer_decoy">The decoy is too short.</string>
+    <string name="decoy_short_about">Whoever opens this decoy could tell that something larger is hidden with it.</string>
+    <string name="decoy_short_size">Make it about %1$s larger, or use a file as the decoy.</string>
+    <string name="decoy_short_file">Choose a file about %1$s larger.</string>
+    <string name="decoy_short_accept">Hide with this decoy anyway</string>
+    <string name="decoy_short_accept_about">Whoever opens the decoy will be able to tell. Use this only when no larger decoy will do.</string>
+    <plurals name="decoy_short_chars">
+        <item quantity="one">Make it about %1$d character longer.</item>
+        <item quantity="other">Make it about %1$d characters longer.</item>
+    </plurals>
     <string name="need_decoy_passphrase">Enter a decoy passphrase.</string>
     <string name="decoy_same_passphrase">The decoy needs a different passphrase.</string>
     <string name="hide_done_title">Done</string>
@@ -92,6 +103,7 @@
     <string name="review_format">Saved as</string>
     <string name="review_payload_text">A message you typed</string>
     <string name="review_decoy_on">Included</string>
+    <string name="review_decoy_short">Included, but too short</string>
     <string name="review_decoy_off">None</string>
     <string name="decoy_add">Add a decoy</string>
     <string name="error_decoy_does_not_fit">With the decoy it no longer fits. Shorten the decoy or the message.</string>
@@ -338,13 +350,13 @@
     <string name="help_rating_title">Detectability rating</string>
     <string name="help_rating_body">The rating says how hard the result should be to tell apart from an untouched photo, based on how much is hidden for the size and detail of the photo. Low, Medium and High come from tests with a standard detector on real phone photos, and are set below what those tests showed, because better detectors exist.\n\nLow is a good aim. Keep messages short, and use a large, detailed photo for files. A high rating doesn\'t mean the content can be read; it means someone looking for hidden content has a better chance of noticing that something is there.</string>
     <string name="help_secrets_title">Passphrases and keys</string>
-    <string name="help_secrets_body">A passphrase protects the message only as well as it resists guessing. Use several random words, not something about you, and share it in person or over a channel you trust.\n\nWith a public key there is no shared secret: you hide for someone\'s age1… key, and only their secret key opens it. A Curve25519 OpenPGP key from PGPony or GnuPG works the same way. StegPony keeps your secret keys encrypted on this phone; it never stores passphrases.</string>
+    <string name="help_secrets_body">A passphrase protects the message only as well as it resists guessing. Use several random words, not something about you, and share it in person or over a channel you trust.\n\nWith a public key there is no shared secret: you hide for someone\'s age1… key, and only their secret key opens it. A Curve25519 OpenPGP key from PGPony or GnuPG works the same way. StegPony keeps your secret keys encrypted on this phone; it never stores passphrases.\n\nThe limit of a public key: anyone who has the recipient\'s public key can test an image and tell that something is hidden in it for that key, and roughly how large it is. They can\'t read it. If nobody but you and the recipient should be able to tell, use a passphrase, or a key the recipient has not published.</string>
     <string name="help_hardware_title">Hardware keys</string>
     <string name="help_hardware_body">An OpenPGP hardware key with a Curve25519 (cv25519) decryption key can open images hidden for it, over NFC or USB. It is tested with a Token2 PIN+, and with a Nitrokey 3A NFC over USB; other OpenPGP keys should work the same way. The key does the key exchange itself, so its secret never leaves it. You enter the key\'s PIN each time; StegPony doesn\'t keep it. RSA keys can\'t be used.</string>
     <string name="help_pgpony_title">Keys in PGPony</string>
     <string name="help_pgpony_body">If your Curve25519 key lives in PGPony (4.8.2 or newer), StegPony can open images hidden for it without importing the key: on Reveal, choose \"Use a key in PGPony\". PGPony asks you to confirm each time, with the key\'s passphrase, or with the hardware key\'s PIN and the key held to the phone or plugged in. The secret key stays in PGPony, or on the hardware key. PGPony learns which key was used, never the image or what was found. When hiding, \"Pick from PGPony\" on the key step lets you choose the recipient from PGPony\'s public keys (PGPony 4.8.1 or newer).</string>
     <string name="help_decoy_title">Decoy</string>
-    <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.</string>
+    <string name="help_decoy_body">A decoy is a second message under a second passphrase. If someone forces you to open an image or a text, give them the decoy. Nobody can tell from it whether a decoy exists, and StegPony gives the same answer for a wrong passphrase as for an image with nothing in it.\n\nThe limit: someone who knows StegPony knows everything it hides has room for two messages, and may not believe there is only one. Make the decoy believable, and on your own phone type its passphrase rather than leaving the field empty, which would try your own keys.\n\nThe decoy has to be about as long as the real message. Both take up the same amount of room, and a decoy that leaves much of it empty shows that something larger is hidden with it. StegPony says when the decoy is too short. A decoy can also be a file.</string>
     <string name="help_phone_title">On this phone</string>
     <string name="help_phone_body">StegPony has no network access. Your keys and contacts are encrypted with a key held in Android\'s secure hardware, and are left out of backups and phone transfers. Screenshots are blocked on Reveal and Keys, and copied messages leave the clipboard after a minute.\n\nThe app lock and the launcher disguise slow down a casual look at your phone. They don\'t hide that StegPony is installed: its real name still shows in Android\'s app settings.</string>
     <string name="help_limits_title">What StegPony can\'t protect against</string>
